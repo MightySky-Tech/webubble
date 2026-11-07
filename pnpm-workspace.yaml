@@ -1,0 +1,10 @@
+packages:
+  - apps/web
+  - apps/admin
+  - packages/*
+
+# pnpm 11 blocks dependency install scripts by default; allow only the ones we have reviewed.
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

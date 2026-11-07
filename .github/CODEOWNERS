@@ -1,0 +1,8 @@
+# Replace the team names once the Webubble GitHub org exists (see docs/adr/ADR-002).
+*                    @webubble/maintainers
+/apps/api/           @webubble/backend
+/apps/web/           @webubble/frontend
+/apps/admin/         @webubble/frontend
+/apps/mobile/        @webubble/mobile
+/.github/            @webubble/maintainers
+/infra/              @webubble/maintainers

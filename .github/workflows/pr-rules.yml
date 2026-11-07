@@ -1,0 +1,25 @@
+# Client rule: every PR references its WB-xxx task (and screen IDs where a screen is touched).
+name: PR rules
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  references-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Title or body must reference a WB-xxx task
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if printf '%s\n%s' "$TITLE" "$BODY" | grep -qE 'WB-[0-9]{3}'; then
+            echo "Task reference found."
+          else
+            echo "::error::Reference the WB-xxx task in the PR title or description, for example WB-006."
+            exit 1
+          fi

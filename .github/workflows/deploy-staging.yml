@@ -1,0 +1,78 @@
+# WB-001 staging deploy. Runs only for commits on main after CI passes. Branch protection
+# lets commits reach main only through a reviewed PR with green CI ("approved commits").
+# Images are pushed to GHCR under the repo owner (the Webubble org). The deploy job stays
+# off until the staging host is chosen (ADR-002) and the repo variable
+# STAGING_DEPLOY_ENABLED is set to "true".
+name: Deploy staging
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: api
+            context: apps/api
+            file: apps/api/Dockerfile
+            target: prod
+          - name: web
+            context: .
+            file: infra/docker/next.Dockerfile
+            target: runtime
+          - name: admin
+            context: .
+            file: infra/docker/next.Dockerfile
+            target: runtime
+    env:
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SHA }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          target: ${{ matrix.target }}
+          build-args: |
+            APP=${{ matrix.name }}
+            APP_VERSION=${{ env.SHA }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/webubble-${{ matrix.name }}:${{ env.SHA }}
+            ghcr.io/${{ github.repository_owner }}/webubble-${{ matrix.name }}:staging
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  deploy:
+    needs: images
+    if: vars.STAGING_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Deploy to staging host
+        run: |
+          echo "Staging host not chosen yet (ADR-002). Replace this step with the host's deploy command."
+          exit 1

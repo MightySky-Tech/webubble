@@ -1,0 +1,50 @@
+# Local development stack (ADR-001). Start with: docker compose up -d
+name: webubble
+# Host ports can be overridden with WB_*_PORT env vars if they clash with other local projects.
+
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_USER: webubble
+      POSTGRES_PASSWORD: webubble
+      POSTGRES_DB: webubble
+    ports: ["${WB_PG_PORT:-5432}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webubble -d webubble"]
+      interval: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    ports: ["${WB_REDIS_PORT:-6380}:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports: ["${WB_MAIL_UI_PORT:-8025}:8025", "${WB_SMTP_PORT:-1025}:1025"]
+
+  api:
+    build:
+      context: ./apps/api
+      target: dev
+    env_file: ./apps/api/.env
+    environment:
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MAIL_HOST: mailpit
+    ports: ["${WB_API_PORT:-8100}:8000"]
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+volumes:
+  pgdata:

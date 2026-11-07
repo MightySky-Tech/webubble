@@ -1,0 +1,2211 @@
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WEBUBBLE 
+Complete Developer Handoff | Custom-Code Implementation & Visual Workflows 
+Android • iOS • Transactional Website • Seller Marketplace • Local Commerce • Payments • Communications • AI 
+Version 1.0  |  1 November 2026  |  Developer costing and implementation draft 
+This package combines the Programming Languages & Visual Implementation Guide, Street Vendor & Local Commerce Developer 
+Addendum, Phase 1 Screen-by-Screen Specification and the 58-task developer register. The separate Unified Master Development 
+Specification is intentionally NOT included. 
+How the developer must use this document 
+1. Read the custom-code rules, technical architecture and visual workflows. 
+2. Review all screen-by-screen requirements and the seven original local-commerce categories. 
+3. Estimate every numbered task, identify its owner and map its approved screen specification, API endpoint and GitHub pull request. 
+4. Build in dependencies order; demonstrate working Android, iOS and website functionality against acceptance criteria. 
+5. Submit code, tests, staging evidence, security results and documentation before requesting owner sign-off. 
+Mandatory technical baseline 
+Mobile apps Dart + Flutter; separate Android/iOS builds from shared mobile code. 
+Website and admin TypeScript + React/Next.js; full transactional site, not a catalogue mock-up. 
+Backend/API PHP + Laravel, custom modular marketplace logic and documented APIs. 
+Database PostgreSQL + SQL migrations; Redis for caching/queues where justified. 
+Real-time WebSockets for messaging; WebRTC-based infrastructure for calls/meetings. 
+Voice Commerce / AI Dart and TypeScript interfaces; Laravel orchestration; speech/AI services; Python only if 
+technically necessary. 
+Ownership and quality Webubble-controlled GitHub; no purchased marketplace clones, rebranded e-commerce 
+templates, no-code substitutes or static-only prototypes. 
+Visual 1 — System architecture 
+ 
+Visual 2 — Street vendor order flow 
+ 
+ 
+PART A — Languages, technologies and implementation sequence 
+WEBUBBLE 
+Programming Languages, Implementation Steps & Visual Architecture 
+Developer implementation companion | Version 1.0 | 1 November 2026 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Purpose: extend the existing 58-task master register with proposed programming languages, actual implementation work and proof-of-
+completion. This is a companion to—not a replacement for—the unified specification. Release classifications remain as recorded in the 
+original task register; the product owner must approve pilots and priorities. 
+1. Non-negotiable engineering standards 
+ Custom-written Webubble business logic and interfaces. No purchased marketplace clones, generic e-commerce themes, no-code 
+substitutes or prebuilt dashboard templates. 
+ Professional frameworks, libraries and SDKs are allowed with documented licensing, security review and maintainable integration. 
+ Source code and deployment pipelines must reside in Webubble-controlled GitHub repositories, with branch protection and pull-
+request reviews. 
+ One shared backend and consistent data model serve the Android app, iOS app and full transactional website. 
+ Registered-business onboarding collects CAC details; informal/local sellers can join without CAC subject to proportionate checks. 
+ Voice Commerce means spoken search, voice-assisted listing and language processing; it is not merely a voice call. Internet 
+voice/video calls remain a separate communication task. 
+2. Programming languages by layer 
+Layer Language Framework / role 
+Android + iOS Dart Flutter custom mobile applications 
+Customer and admin website TypeScript, HTML, CSS Next.js / React custom web 
+application 
+Marketplace backend PHP Laravel modular APIs and business 
+rules 
+Transactional database SQL PostgreSQL, migrations and 
+constraints 
+Jobs and messaging PHP / TypeScript Laravel queues, Redis, WebSockets 
+Calls and meetings Dart / TypeScript WebRTC client SDK + managed 
+media service 
+Speech and AI Dart / TypeScript / PHP Approved speech/AI APIs; Python 
+only if a separate service is justified 
+DevOps YAML / shell CI/CD, infrastructure configuration, 
+automated tests 
+3. System architecture: visual sequence 
+4. Street vendor journey: visual sequence 
+5. Build order and acceptance stages 
+1. Foundation: Architecture, GitHub, CI, identity, security and backups. 
+2. Marketplace: Registration, product catalogue, variants, search, checkout and order lifecycle. 
+3. Street Vendor & Local Commerce: The seven exact categories: Street Vendors, Live Markets, Budget Shopping, Buy for Me, Trust 
+Passport, Voice Commerce, Advanced Features. 
+4. Payments, communication and operations: Licensed payment integration, ledger, payouts, disputes, chat, calls, meetings, delivery, 
+moderation and AI. 
+5. Pilot and launch gate: Pilot features are gated; run end-to-end regression, performance, security and recovery tests. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+6. Detailed mapping: all 58 development tasks 
+Foundation 
+WB-001 — Architecture & repository setup 
+Release: P1-MUST | Languages: TypeScript, PHP, SQL, YAML 
+Technology: Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Build steps: Create Webubble-owned repositories, branch protection, CI pipelines, staging and architecture decision records. 
+Acceptance proof: A clean checkout builds all applications and deploys staging from approved commits. 
+WB-002 — Design system 
+Release: P1-MUST | Languages: TypeScript, PHP, SQL, YAML 
+Technology: Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Build steps: Translate approved approved screen specifications into reusable custom components and accessibility tokens; no purchased 
+UI kits. 
+Acceptance proof: Compare responsive web and mobile screens against approved approved screen specifications. 
+WB-003 — Shared API and identity model 
+Release: P1-MUST | Languages: TypeScript, PHP, SQL, YAML 
+Technology: Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Build steps: Define versioned OpenAPI contracts, user/seller roles, token lifecycle and permissions shared across clients. 
+Acceptance proof: Run API contract tests for web, Android and iOS. 
+WB-004 — Security baseline 
+Release: P1-MUST | Languages: TypeScript, PHP, SQL, YAML 
+Technology: Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Build steps: Implement security baseline as a custom-coded foundation module: design approved screens, define Laravel API endpoints, 
+PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate security baseline end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-005 — Observability and backups 
+Release: P1-MUST | Languages: TypeScript, PHP, SQL, YAML 
+Technology: Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Build steps: Implement observability and backups as a custom-coded foundation module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate observability and backups end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+Registration 
+WB-006 — Buyer signup and login 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Build steps: Implement buyer signup and login as a custom-coded registration module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate buyer signup and login end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-007 — Registered business seller onboarding 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Build steps: Build registered-business path with CAC fields, evidence upload and pending/approved/rejected states. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance proof: Registered-business signup requires CAC details; reviewer can verify status. 
+WB-008 — Unregistered seller onboarding 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Build steps: Build informal/local seller path without CAC; collect proportionate contact and payout verification. 
+Acceptance proof: Akara seller completes onboarding without a CAC certificate. 
+WB-009 — Seller/buyer role switching 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Build steps: Implement seller/buyer role switching as a custom-coded registration module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate seller/buyer role switching end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-010 — KYC and category rules 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Build steps: Implement kyc and category rules as a custom-coded registration module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate kyc and category rules end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+Marketplace 
+WB-011 — Product catalogue and categories 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Implement product catalogue and categories as a custom-coded marketplace module: design approved screens, define 
+Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate product catalogue and categories end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-012 — Product variants and stock 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Implement product variants and stock as a custom-coded marketplace module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate product variants and stock end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-013 — Search filters and sorting 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Implement search filters and sorting as a custom-coded marketplace module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate search filters and sorting end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-014 — Storefronts and ratings 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Build steps: Implement storefronts and ratings as a custom-coded marketplace module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate storefronts and ratings end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-015 — Cart and multi-seller checkout 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Reserve stock, split seller suborders, calculate totals and prevent duplicate checkout. 
+Acceptance proof: Two-seller basket creates correct seller orders and one traceable payment. 
+WB-016 — Promotions and wishlists 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Implement promotions and wishlists as a custom-coded marketplace module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate promotions and wishlists end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-017 — Order history and tracking 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Build steps: Implement order history and tracking as a custom-coded marketplace module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate order history and tracking end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+Street Vendors 
+WB-018 — Street vendor quick menu 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Build steps: Build quick menu, photos, prices, portions, stock, preparation times and open/closed toggle. 
+Acceptance proof: Street vendor updates availability and buyer sees it immediately. 
+WB-019 — Vendor locations and pickup 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Build steps: Support seller-selected location, pickup instructions, privacy controls and optional approximate map pin. 
+Acceptance proof: Buyer can choose pickup without exposing seller private home address. 
+WB-020 — Street vendor order flow 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Build steps: Implement prepare/accept/reject/ready/collected/delivered states with timeouts. 
+Acceptance proof: Simulate out-of-stock and cancelled street-food order. 
+Live Markets 
+WB-021 — Market profiles and stalls 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel market/stall/order APIs; PostgreSQL 
+Build steps: Build market landing page, stall directory, trader participation and market opening details. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance proof: Buyer navigates market to stall and real product listing. 
+WB-022 — Live Market multi-seller basket 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel market/stall/order APIs; PostgreSQL 
+Build steps: Support several market stalls in one basket with seller-level fulfilment and pricing. 
+Acceptance proof: Multiple stalls generate correctly separated seller orders. 
+Budget Shopping 
+WB-023 — Budget basket and quantity units 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel pricing engine; PostgreSQL 
+Build steps: Implement quantity units, portion conversions and suggested baskets for customer budget. 
+Acceptance proof: ₦ budget yields transparent, purchasable quantities. 
+WB-024 — Budget price validation 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel pricing engine; PostgreSQL 
+Build steps: Recalculate prices, fees and stock before confirmation; never promise impossible budget totals. 
+Acceptance proof: Price changes trigger explicit re-approval. 
+Buy for Me 
+WB-025 — Customer sourcing request 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Build steps: Capture requested item, image/voice/text description, budget, location and fulfilment deadline. 
+Acceptance proof: Unlisted item request reaches eligible sourcing agents. 
+WB-026 — Agent quotation and approval 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Build steps: Allow agent quotations, fees, expiry, buyer approval and payment only after explicit consent. 
+Acceptance proof: Buyer can reject quotation without being charged. 
+WB-027 — Sourcing exception and refund 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Build steps: Model failed sourcing, substitutions, cancellation and provider-mediated refunds. 
+Acceptance proof: Failed sourcing has visible refund and audit trail. 
+Trust Passport 
+WB-028 — Seller verification indicators 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js indicators; Laravel verification service; PostgreSQL 
+Build steps: Show verified claims only; distinguish CAC business verification from individual seller checks. 
+Acceptance proof: Unregistered seller is not falsely marked CAC-verified. 
+WB-029 — Performance and dispute indicators 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js indicators; Laravel verification service; PostgreSQL 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Build steps: Compute explainable completion, dispute and fulfilment indicators with appeal process. 
+Acceptance proof: Disputed transactions do not automatically create unreviewed accusations. 
+Voice Commerce 
+WB-030 — Voice search input 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL; optional Python 
+Technology: Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Build steps: Capture consented speech, transcribe, confirm intent and route to product search. 
+Acceptance proof: Unclear transcription asks buyer to confirm before any order. 
+WB-031 — Voice-assisted seller listings 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL; optional Python 
+Technology: Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Build steps: Allow seller to dictate item, quantity and price; show editable transcription before publish. 
+Acceptance proof: Vendor reviews voice-generated listing before it goes live. 
+WB-032 — Language and uncertainty handling 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL; optional Python 
+Technology: Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Build steps: Support tested languages only, low-confidence fallback and no unsupported-language claims. 
+Acceptance proof: Unrecognised speech fails safely to text/manual entry. 
+Advanced Features 
+WB-033 — Neighbourhood baskets 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement neighbourhood baskets as a custom-coded advanced features module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate neighbourhood baskets end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-034 — Offline alerts and low-data support 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement offline alerts and low-data support as a custom-coded advanced features module: design approved screens, 
+define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate offline alerts and low-data support end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+WB-035 — Moving vendors 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement moving vendors as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate moving vendors end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-036 — Repairs and service listings 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Build steps: Implement repairs and service listings as a custom-coded advanced features module: design approved screens, define 
+Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate repairs and service listings end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-037 — Custom orders 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement custom orders as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate custom orders end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-038 — Smart Bargain 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement smart bargain as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate smart bargain end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-039 — Farm-to-Home 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement farm-to-home as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate farm-to-home end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-040 — Community group buying 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement community group buying as a custom-coded advanced features module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate community group buying end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-041 — Community pickup 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement community pickup as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate community pickup end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+WB-042 — Diaspora family shopping 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement diaspora family shopping as a custom-coded advanced features module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate diaspora family shopping end-to-end on staging across relevant clients; show API tests, logs and source 
+pull request. 
+WB-043 — Surplus and freshness offers 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement surplus and freshness offers as a custom-coded advanced features module: design approved screens, define 
+Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate surplus and freshness offers end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-044 — Refurbished goods 
+Release: PILOT | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Build steps: Implement refurbished goods as a custom-coded advanced features module: design approved screens, define Laravel API 
+endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate refurbished goods end-to-end on staging across relevant clients; show API tests, logs and source pull 
+request. 
+Payments 
+WB-045 — Licensed payment provider integration 
+Release: P1-MUST | Languages: PHP, SQL, Dart, TypeScript 
+Technology: Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Build steps: Integrate licensed payment provider with signed webhooks, idempotency and reconciliation. 
+Acceptance proof: Duplicate webhook cannot duplicate payment or order. 
+WB-046 — Webubble Pay ledger and commissions 
+Release: P1-MUST | Languages: PHP, SQL, Dart, TypeScript 
+Technology: Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Build steps: Implement immutable double-entry-style marketplace ledger for commissions, refunds and liabilities. 
+Acceptance proof: Every balance ties to provider settlement and auditable ledger entries. 
+WB-047 — Seller payouts 
+Release: P1-MUST | Languages: PHP, SQL, Dart, TypeScript 
+Technology: Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Build steps: Calculate payout eligibility by category, risk and approved return policy; do not hardcode five-day holds. 
+Acceptance proof: Seller can view payout state and reconciliation. 
+WB-048 — Returns and disputes 
+Release: P1-MUST | Languages: PHP, SQL, Dart, TypeScript 
+Technology: Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Build steps: Build evidence intake, admin review, category rules, partial/full refunds and appeal. 
+Acceptance proof: Dispute case tracks decisions and payment reversals. 
+Communication 
+WB-049 — Buyer-seller chat 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Build steps: Add order-linked buyer/seller messaging, attachments, reporting and moderation. 
+Acceptance proof: Blocked users cannot continue unwanted messaging. 
+WB-050 — Voice and video calls 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Build steps: Integrate consented internet audio/video calling, permissions, call controls and abuse protections. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance proof: Android-to-web call works with mute/reject/end. 
+WB-051 — Group meetings and screen share 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Build steps: Add group meetings, invitations, participant controls and supported screen sharing. 
+Acceptance proof: Multi-participant meeting works and permission checks hold. 
+WB-052 — Notifications 
+Release: P1-MUST | Languages: Dart, TypeScript, PHP, SQL 
+Technology: Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Build steps: Implement notifications as a custom-coded communication module: design approved screens, define Laravel API endpoints, 
+PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate notifications end-to-end on staging across relevant clients; show API tests, logs and source pull request. 
+Operations 
+WB-053 — Delivery and pickup workflow 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Implement delivery and pickup workflow as a custom-coded operations module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate delivery and pickup workflow end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-054 — Admin moderation and support 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Implement admin moderation and support as a custom-coded operations module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate admin moderation and support end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-055 — AI shopping and seller assistance 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Add buyer/seller AI assistance with consent, grounding, uncertainty and human review. 
+Acceptance proof: AI cannot finalise purchase or dispute without authorised approval. 
+WB-056 — Cross-platform regression suite 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Implement cross-platform regression suite as a custom-coded operations module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+Acceptance proof: Demonstrate cross-platform regression suite end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-057 — Performance and accessibility 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Implement performance and accessibility as a custom-coded operations module: design approved screens, define Laravel 
+API endpoints, PostgreSQL tables/migrations, permissions, mobile/web integration, validation and automated tests. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance proof: Demonstrate performance and accessibility end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+WB-058 — Production launch gate 
+Release: P1-MUST | Languages: PHP, TypeScript, Dart, SQL, YAML 
+Technology: Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Build steps: Require source handover, security tests, rollback rehearsal, backups and owner signoff. 
+Acceptance proof: Production gate blocked if critical tests or ownership evidence missing. 
+7. How a developer completes each task 
+1. Open the task and identify its approved screen specifications and owner-approved scope. 
+2. Create a GitHub branch and define the data model and API contract. 
+3. Implement database migrations and Laravel business logic with validation and permissions. 
+4. Write the Flutter (Dart) and Next.js (TypeScript) interfaces required by the task. 
+5. Integrate approved third-party SDKs only where necessary, recording licence and cost. 
+6. Add unit, integration, API and UI tests; include failure and fraud/abuse cases. 
+7. Open a pull request, obtain review and deploy to staging through CI. 
+8. Demonstrate acceptance criteria to the product owner; record sign-off before closing. 
+Caution: feature-specific details beyond the original task titles and acceptance criteria are proposed engineering elaborations, not 
+evidence that those details were already approved. The existing task register is the source for task IDs and launch/pilot classifications. 
+ 
+PART B — Phase 1 screens and acceptance criteria 
+WEBUBBLE 
+Phase 1 Screen-by-Screen Development Tasks & 
+Acceptance Criteria 
+Companion to Webubble App & Website Development Master Document | Draft 1.0 | 1 November 2026 
+Purpose: developer-ready functional backlog for Android, iOS and the full transactional website. This document elaborates the supplied 
+master document; it is not evidence that features are already implemented. Scope classifications follow the master document: P1-MUST, 
+P1-PILOT and FUTURE. 
+1. Non-negotiable product rules 
+ One shared backend and authoritative data model for Android, iOS and web; responsive transactional website, not a brochure site. 
+ Amazon-style multi-vendor commerce is the foundation: ordinary products, seller storefronts, cart, checkout, delivery, returns and 
+payouts. 
+ Registered-business onboarding requires CAC details and verification. Informal/local/individual sellers may sign up without CAC; 
+proportionate identity, payment and product-specific compliance still apply. 
+ One user identity may buy and sell with role-based permissions; no duplicate account required. 
+ Webubble Pay initially orchestrates payments, accounting and settlement via appropriately licensed providers; do not assume 
+Webubble can hold funds. 
+ Chat and meetings are Phase 1 requirements. Travel, hotel, bus, train and taxi booking are FUTURE and excluded from initial 
+launch. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+ Every P1-MUST feature requires end-to-end acceptance on Android, iOS and web, with documented exceptions for device-specific 
+functions. 
+2. Global navigation and screen system 
+Experience Primary navigation / surfaces 
+Buyer Home; categories; search; product detail; cart; orders; 
+messages; profile 
+Seller Store dashboard; products; orders; inventory; earnings; 
+messages; analytics 
+Street vendor Simple dashboard; menu/listings; availability; incoming 
+orders; location; earnings 
+Administrator Users; verification; catalogue moderation; orders; 
+payments; disputes; reports; security 
+Shared Registration; verification; notifications; support; chat; 
+calls; meetings; settings 
+ 
+Design deliverables per screen: mobile portrait layout, responsive desktop/tablet layout, loading/empty/error/permission states, keyboard 
+accessibility, component tokens, copy, API contract and analytics event names. 
+3. Screen inventory and build tickets — P1-MUST 
+AUTH — Identity, registration and roles 
+Users: Buyer, seller, vendor, administrator 
+Screen / route ID Screen / user action 
+AUTH-UI-01 Welcome / sign in 
+AUTH-UI-02 Create account / phone or email verification 
+AUTH-UI-03 OTP verification and retry 
+AUTH-UI-04 Profile and address book 
+AUTH-UI-05 Choose buyer / individual seller / registered business 
+AUTH-UI-06 Registered business CAC verification 
+AUTH-UI-07 Individual/local vendor identity and payout verification 
+AUTH-UI-08 Account security, recovery and consent 
+AUTH-UI-09 Role switcher and account settings 
+ 
+ AUTH-FR-01  Enforce role permissions in backend; buyer account can become seller. 
+ AUTH-FR-02  Require CAC details for registered-business route only; do not force CAC on informal seller route. 
+ AUTH-FR-03  Track verification states: draft, submitted, pending, approved, rejected, needs-more-info. 
+ AUTH-FR-04  Use rate limits, MFA for privileged roles, consent records and account recovery. 
+Required exceptions: Expired OTP, invalid CAC, duplicate identities, verification rejected, locked accounts, unavailable verification 
+provider. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+BUY — Buyer shopping and discovery 
+Users: Buyer 
+Screen / route ID Screen / user action 
+BUY-UI-01 Homepage and promotions 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+BUY-UI-02 Category tree and listing 
+BUY-UI-03 Search with filters and sort 
+BUY-UI-04 Product detail with variants and seller 
+BUY-UI-05 Seller storefront and reputation 
+BUY-UI-06 Wishlist / saved items 
+BUY-UI-07 Cart with multi-seller groups 
+BUY-UI-08 Checkout address and delivery 
+BUY-UI-09 Payment confirmation and receipt 
+BUY-UI-10 Orders list and order detail 
+BUY-UI-11 Ratings and reviews 
+BUY-UI-12 Returns and customer support 
+ 
+ BUY-FR-01  Support physical product types, variants, stock, pricing, tax/fee breakdown and delivery estimates. 
+ BUY-FR-02  Cart must support multiple sellers and preserve seller attribution. 
+ BUY-FR-03  Prevent overselling using atomic stock reservations and expiry. 
+ BUY-FR-04  Checkout creates parent order and seller-specific suborders. 
+ BUY-FR-05  Reviews only for eligible verified purchases; moderation and abuse reporting. 
+Required exceptions: Out-of-stock after cart, price change, split delivery, address failure, duplicate checkout, partial refund, payment 
+timeout. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+SELL — Standard seller operations 
+Users: Individual seller and registered business 
+Screen / route ID Screen / user action 
+SELL-UI-01 Seller onboarding wizard 
+SELL-UI-02 Store profile and policies 
+SELL-UI-03 Create/edit product with photos and variants 
+SELL-UI-04 Bulk product import and validation 
+SELL-UI-05 Inventory and low-stock alerts 
+SELL-UI-06 Order queue and order detail 
+SELL-UI-07 Pick/pack/dispatch workflow 
+SELL-UI-08 Promotions and pricing 
+SELL-UI-09 Earnings and settlement ledger 
+SELL-UI-10 Returns and dispute response 
+SELL-UI-11 Seller analytics and notifications 
+ 
+ SELL-FR-01  Product publishing requires appropriate category approvals and moderation. 
+ SELL-FR-02  Seller sees only their own orders, customer data needed for fulfilment, earnings and disputes. 
+ SELL-FR-03  Track inventory adjustments and who made each change. 
+ SELL-FR-04  Support retail and wholesale quantity tiers when enabled. 
+Required exceptions: Invalid listings, prohibited goods, inventory race, suspended seller, payout mismatch, missing dispatch evidence. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+VEND — Street vendors and local commerce core 
+Users: Informal trader, local shop, farmer, mobile vendor 
+Screen / route ID Screen / user action 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+VEND-UI-01 Simplified vendor registration 
+VEND-UI-02 Stall/shop profile and optional photo 
+VEND-UI-03 Food/product menu and quick price update 
+VEND-UI-04 Open/closed and sold-out toggles 
+VEND-UI-05 Preparation time and order capacity 
+VEND-UI-06 Pickup and delivery choices 
+VEND-UI-07 Vendor trading area and opt-in location 
+VEND-UI-08 Incoming order accept/reject 
+VEND-UI-09 Quick sales and earnings 
+VEND-UI-10 Assisted onboarding / low-data mode 
+ 
+ VEND-FR-01  No CAC universal prerequisite; complete proportionate verification before restricted activities or payout. 
+ VEND-FR-02  Vendor can close ordering and update availability immediately. 
+ VEND-FR-03  Mobile location sharing must be opt-in, time-limited and revocable. 
+ VEND-FR-04  Food listings require applicable safety information and seller eligibility checks. 
+Required exceptions: No signal, vendor closed, out of stock, delayed preparation, location inaccurate, food unavailable, abandoned 
+order. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+ORD — Order and fulfilment 
+Users: Buyer, seller, courier partner, admin 
+Screen / route ID Screen / user action 
+ORD-UI-01 Order confirmation 
+ORD-UI-02 Seller fulfilment queue 
+ORD-UI-03 Shipping options and fees 
+ORD-UI-04 Shipment creation and tracking 
+ORD-UI-05 Pickup point selection when enabled 
+ORD-UI-06 Delivery proof / confirmation 
+ORD-UI-07 Cancellation and return request 
+ORD-UI-08 Refund status and evidence upload 
+ORD-UI-09 Delivery exception dashboard 
+ 
+ ORD-FR-01  Maintain event-based order state machine with explicit allowed transitions. 
+ ORD-FR-02  Support partial cancellation/refund per seller item and split shipments. 
+ ORD-FR-03  Proof of delivery cannot by itself erase statutory consumer rights. 
+ ORD-FR-04  Delivery fees and promises must be visible before payment. 
+Required exceptions: Courier failure, wrong item, partial delivery, refused delivery, lost package, incorrect status, expired pickup. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+PAY — Webubble Pay and settlement orchestration 
+Users: Buyer, seller, finance admin 
+Screen / route ID Screen / user action 
+PAY-UI-01 Payment method selection 
+PAY-UI-02 Payment pending/success/failure 
+PAY-UI-03 Receipt and transaction history 
+PAY-UI-04 Seller earnings ledger 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+PAY-UI-05 Settlement schedule and status 
+PAY-UI-06 Refund request and processing 
+PAY-UI-07 Dispute evidence and admin decision 
+PAY-UI-08 Finance reconciliation dashboard 
+ 
+ PAY-FR-01  Use licensed provider APIs for regulated processing and settlement; legal review before custody or wallet features. 
+ PAY-FR-02  Webhook processing must be authenticated, idempotent and reconciled to provider statements. 
+ PAY-FR-03  Track gross sale, fees, commission, tax treatment, seller net and refunds per suborder. 
+ PAY-FR-04  No automatic blanket five-day hold; use approved category and risk-based rules. 
+Required exceptions: Duplicate webhook, charge without order, provider outage, partial capture, payout failure, reversal, negative seller 
+balance. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+CHAT — Social and marketplace messaging 
+Users: Buyer, seller, community member, moderator 
+Screen / route ID Screen / user action 
+CHAT-UI-01 Inbox and conversation list 
+CHAT-UI-02 One-to-one conversation 
+CHAT-UI-03 Buyer-seller product-linked chat 
+CHAT-UI-04 Group chat and member management 
+CHAT-UI-05 Media / voice note sharing 
+CHAT-UI-06 Search, notifications and unread status 
+CHAT-UI-07 Block/report and moderation queue 
+ 
+ CHAT-FR-01  Authorise membership for every message/media request. 
+ CHAT-FR-02  Provide report, block, mute and moderation controls; define retention/privacy rules. 
+ CHAT-FR-03  Warn against off-platform payment scams and provide direct protected checkout link. 
+Required exceptions: Offline messages, attachment failure, blocked user, abusive content, spam, deleted account. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+MEET — Voice, video and meetings 
+Users: Buyer, seller, authorised user, moderator 
+Screen / route ID Screen / user action 
+MEET-UI-01 Call initiation and incoming call 
+MEET-UI-02 One-to-one audio/video 
+MEET-UI-03 Meeting creation and invitation 
+MEET-UI-04 Join / lobby / permissions 
+MEET-UI-05 Participant controls and leave 
+MEET-UI-06 Screen sharing where supported 
+MEET-UI-07 Call history and abuse report 
+ 
+ MEET-FR-01  Use secure real-time infrastructure with consent and device permission handling. 
+ MEET-FR-02  Support bandwidth adaptation and reconnection. 
+ MEET-FR-03  Define recording as disabled unless separately specified and legally reviewed. 
+Required exceptions: Camera denied, poor network, participant removed, call drop, browser screen-share unsupported. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+AI — AI assistants and safety 
+Users: Buyer, seller, administrator 
+Screen / route ID Screen / user action 
+AI-UI-01 Buyer assistant chat 
+AI-UI-02 Product and budget guidance 
+AI-UI-03 Seller listing assistant 
+AI-UI-04 Seller business assistant basics 
+AI-UI-05 Admin case summarisation 
+AI-UI-06 AI feedback and correction 
+ 
+ AI-FR-01  AI must not invent product stock, prices, delivery times or authenticity; retrieve authoritative records. 
+ AI-FR-02  Purchases and refunds require explicit authorised user action. 
+ AI-FR-03  High-impact admin enforcement and dispute outcomes require human review. 
+ AI-FR-04  Log model outputs and tool actions with appropriate privacy controls. 
+Required exceptions: Unsupported language, low confidence, unsafe listing, hallucinated claim, sensitive data exposure, provider 
+outage. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+ADMIN — Administration and customer support 
+Users: Super admin, support, moderation, finance, compliance 
+Screen / route ID Screen / user action 
+ADMIN-UI-01 Role-based admin sign-in 
+ADMIN-UI-02 Overview metrics 
+ADMIN-UI-03 User and seller verification 
+ADMIN-UI-04 Product/category moderation 
+ADMIN-UI-05 Order and delivery oversight 
+ADMIN-UI-06 Dispute and refund casework 
+ADMIN-UI-07 Payment reconciliation 
+ADMIN-UI-08 Commission and configuration 
+ADMIN-UI-09 Abuse, risk and audit logs 
+ADMIN-UI-10 Customer support tickets 
+ADMIN-UI-11 Reports and exports 
+ 
+ ADMIN-FR-01  Enforce least privilege and dual approval for high-risk financial changes. 
+ ADMIN-FR-02  Maintain immutable event/audit records for decisions and payout changes. 
+ ADMIN-FR-03  Allow manual case assignment, evidence capture and reason-coded decisions. 
+Required exceptions: Unauthorised staff access, duplicate refund, stale case, data export misuse, configuration rollback. 
+Acceptance gate: All listed routes work on supported platforms (or documented role-specific equivalents); server-side authorisation, 
+validation, audit events, accessibility and negative-path tests pass. 
+4. Innovation register: screen design and delivery classification 
+The existing master document classifies most advanced local-commerce ideas as PILOT. The table below preserves them all; do not 
+silently promote a pilot to a mandatory nationwide launch promise. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Idea Planning class Required user journey / design 
+brief 
+Buy for Me P1-PILOT Request unlisted item → quote → 
+accept → purchase evidence → 
+delivery → dispute 
+Live Market P1-PILOT Market discovery → active stalls → 
+available products 
+Moving Vendors P1-PILOT Opt-in temporary vendor location → 
+nearby search → location expiry 
+Smart Bargain P1-PILOT Offer → seller counteroffer → 
+agreed price expiry → checkout 
+Small Quantity Shopping P1-PILOT Portion size, unit pricing, minimum 
+order and fulfilment 
+Neighbourhood Basket P1-PILOT Multi-vendor local basket → 
+coordination → split fulfilment 
+Farm-to-Home P1-PILOT Farmer listing → produce 
+availability → delivery/pickup 
+Repair Before Replace P1-PILOT Repair request → provider quote → 
+booking/fulfilment 
+Seller Without Internet P1-PILOT Offline draft / assisted listing → 
+synchronisation and conflict 
+handling 
+Trust Passport P1-PILOT Verification evidence and reputation 
+signals, no unsupported guarantees 
+Made for You P1-PILOT Consent-based recommendations 
+and controls 
+Voice Commerce P1-PILOT Speech search with 
+language/confidence fallback 
+Budget Basket Optimiser P1-PILOT Budget and item list → price plus 
+delivery optimisation 
+Community Group Buying P1-PILOT Group target → commitment → 
+payment → fulfilment/refund 
+Community Pickup Network P1-PILOT Pickup location → code → 
+handover and exceptions 
+Diaspora Family Shopping P1-PILOT Overseas payer → Nigeria recipient 
+→ verified delivery 
+Wholesale and Retail P1-PILOT Quantity tiers → pricing → 
+inventory allocation 
+Freshness and Surplus FUTURE Safety/expiry declarations → time-
+sensitive sale 
+Seller Business Assistant P1-PILOT Sales, expenses, stock and restock 
+guidance 
+Protected Delivery Confirmation P1-PILOT Receipt evidence → exception 
+reporting → settlement rules 
+Product Authenticity Passport P1-PILOT Product evidence, serial, warranty 
+and claim provenance 
+Smart Delivery Consolidation P1-PILOT Compatible order clustering and 
+promised delivery windows 
+Certified Used and Refurbished FUTURE Condition grade, inspection, 
+warranty and dispute terms 
+AI Shopping Agent FUTURE Agent basket preparation, human-
+approved checkout 
+Camera-to-Cart FUTURE Photo-based product matching with 
+confidence checks 
+Local-Language Voice Shopping FUTURE Expanded language coverage and 
+fallback 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Virtual Try-Before-Buy FUTURE Size and AR visualisation 
+Predictive Local Commerce FUTURE Forecasting demand and restocking 
+ 
+5. Cross-platform acceptance matrix 
+Test Android iOS Web 
+Account registration and 
+role switching 
+Required Required Required 
+Product browsing and 
+checkout 
+Required Required Required 
+Seller listing and 
+fulfilment 
+Required Required Required 
+Street vendor quick 
+order 
+Required Required Required 
+Payment reconciliation 
+and refunds 
+Required Required Required 
+Chat, calls and meeting 
+join 
+Required Required Required 
+Admin controls 
+(responsive role portal) 
+Required Required Required 
+Accessibility and 
+security 
+Required Required Required 
+Recovery from 
+offline/network errors 
+Required Required Required 
+ 
+Device-specific capabilities (for example browser screen sharing or push notifications) require documented equivalent or explicit 
+product-owner approval for differences. 
+6. Example executable acceptance scenarios 
+ID Scenario Given / when / then acceptance 
+ACC-01 Unregistered trader Given a trader selects 
+individual/local seller, when they 
+submit valid non-CAC verification, 
+then onboarding progresses without 
+a CAC field being required. 
+ACC-02 Registered business Given a seller selects registered 
+business, when CAC details are 
+absent or invalid, then verification 
+cannot be approved. 
+ACC-03 One account two roles Given an existing buyer, when seller 
+onboarding is approved, then the 
+same login can switch buyer/seller 
+without losing buyer orders. 
+ACC-04 Multi-seller checkout Given items from two sellers, when 
+payment succeeds once, then one 
+parent order and two correctly 
+allocated seller suborders exist. 
+ACC-05 Duplicate payment callback Given a repeated payment webhook, 
+when it is replayed, then no 
+duplicate order, ledger entry or 
+payout occurs. 
+ACC-06 Stock conflict Given one unit remains and two 
+buyers check out, when reservations 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+compete, then at most one 
+successful sale is confirmed. 
+ACC-07 Vendor closed Given vendor marks closed, when a 
+buyer tries ordering, then checkout 
+is prevented with an understandable 
+message. 
+ACC-08 Refund split Given one seller item is refunded, 
+when reconciliation runs, then other 
+seller items and settlements remain 
+correct. 
+ACC-09 Chat security Given a user is not a chat 
+participant, when they request its 
+messages or attachments, then 
+access is denied and logged. 
+ACC-10 Video network drop Given a meeting participant loses 
+connectivity, when they reconnect, 
+then membership and media state 
+recover without exposing other 
+sessions. 
+ACC-11 AI purchase approval Given AI proposes a cart, when no 
+explicit user approval exists, then no 
+payment or order submission is 
+executed. 
+ACC-12 Cross-device sync Given a seller changes stock on 
+web, when buyers view 
+Android/iOS, then the authoritative 
+stock is consistent within the agreed 
+freshness target. 
+ 
+7. Developer work package template 
+ Ticket ID and feature classification (P1-MUST / P1-PILOT / FUTURE) 
+ Owner, dependencies, estimate, priority and target release 
+ Approved screen specifications for Android, iOS, desktop and responsive breakpoints 
+ API request/response schemas, permissions, validation and errors 
+ Data model, state transitions, audit events and financial effects 
+ Unit, integration, end-to-end, accessibility and security tests 
+ Definition of done: reviewed code, tests passing, staging demo, documentation, product-owner sign-off 
+8. Release gates and sign-off 
+ Gate A: Approved functional scope and screen designs; open questions resolved. 
+ Gate B: API, data model and security architecture reviewed. 
+ Gate C: Multi-seller checkout, ledger and refunds reconcile under normal and failure scenarios. 
+ Gate D: Seller and street-vendor onboarding verified with CAC rule correctly enforced. 
+ Gate E: Chat/video safety, privacy, moderation and device testing completed. 
+ Gate F: Cross-platform end-to-end regression, load, recovery and app-store compliance checks pass. 
+ Gate G: Operational readiness: support playbooks, incident response, backups, monitoring and rollback. 
+9. Decisions requiring product-owner approval 
+ Which pilot ideas must be in the very first public release versus a limited test? 
+ Nigeria launch geography and delivery/pickup operating partners. 
+ Exact payment provider, split settlement contract and legal structure for Webubble Pay. 
+ Seller fee model, commission tiers, return windows by category and dispute SLAs. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+ Chat group size, meeting participant limits, video provider and moderation policy. 
+ Minimum supported Android/iOS/browser versions and web accessibility target. 
+ Approved languages, AI budget and personalisation consent approach. 
+ Final technology stack after independent code audit and infrastructure costing. 
+Source note: Derived from the previously prepared Webubble App & Website Development Master Document and the user’s clarified 
+scope in this conversation. Screen IDs, technical decomposition and acceptance tests in this companion are proposed implementation 
+details for approval, not contractual facts from the original development agreement. 
+ 
+PART C — Seven original Street Vendor & Local Commerce categories 
+Webubble 
+Street Vendor & Local Commerce — Developer Implementation Addendum 
+Version 1.0 | 01 November 2026 | Status: requirements baseline for developer estimation and sign-off 
+Purpose. This addendum preserves the seven original Street Vendor & Local Commerce categories and translates them into screens, 
+workflows, APIs, business rules and testable acceptance criteria. It supplements—not replaces—the main Amazon/Jumia-style multi-
+vendor marketplace and the Android, iOS and transactional web applications. 
+1. Non-negotiable scope and boundaries 
+ Keep the original seven category names and order exactly as specified by the founder: Street Vendors; Live Markets; Budget 
+Shopping; Buy for Me; Trust Passport; Voice Commerce; Advanced Features. 
+ All three client platforms—Android app, iOS app and responsive transactional website—use the same backend, accounts, 
+catalogue, orders, payment ledger and permissions. 
+ Registered-business sellers supply CAC details for verification. Informal traders, individuals and unregistered local businesses can 
+sign up without CAC; apply proportionate identity, payout and category-specific compliance checks. 
+ No purchased marketplace clones, rebranded templates or static-only prototypes. Use custom maintainable source code; vetted 
+frameworks, libraries and licensed service SDKs are permitted. 
+ Webubble Pay initially orchestrates payments, refunds, reconciliation, commissions and payouts via licensed payment partners; 
+Webubble does not assume unlicensed custody of funds. 
+ Travel bookings (flight, hotel, train, bus, taxi) are excluded from Phase 1 and require separate future approval. 
+2. Delivery statuses and acceptance definitions 
+Status Meaning 
+Launch core Required for initial launch; must pass end-to-end 
+acceptance tests on all three platforms. 
+Pilot / controlled rollout Must be designed and estimated now; enable only for 
+approved vendors, locations or customers after testing. 
+Future enhancement Recorded in backlog with dependencies; not implied to 
+be launch-ready. 
+The proposed statuses below are planning recommendations, not a substitute for founder approval. The developer must not silently 
+downgrade a named feature. All seven categories remain in the requirements register. 
+SV-01 — Street Vendors 
+Proposed release classification: Launch core 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+User screens and workflows 
+ Buyer: local vendor discovery, vendor profile, product/quick-menu view, quantity selection, pickup or delivery choice, checkout 
+and order status. 
+ Seller: choose individual/unregistered or registered-business onboarding; add trading name, phone, service area, operating hours, 
+prep time, menu, prices, availability and pickup instructions. 
+ Admin: vendor approval where necessary, prohibited-category controls, complaint handling and vendor suspension. 
+Business and safety rules 
+ Vendor location may be approximate; exact live position is opt-in and must not be publicly exposed by default. 
+ Food vendors must disclose relevant allergens and meet applicable food safety obligations; availability and prices are time-
+sensitive. 
+ Out-of-stock items cannot be sold; seller can pause orders and change opening status. 
+Minimum acceptance tests 
+ Unregistered seller completes onboarding without a CAC field blocking submission. 
+ Buyer can discover a nearby participating seller, purchase an available item, and receive order updates. 
+ Unavailable item cannot be checked out; closed seller displays an accurate unavailable status. 
+LM-02 — Live Markets 
+Proposed release classification: Pilot / controlled rollout 
+User screens and workflows 
+ Buyer: browse a traditional market page, participating stalls, stall catalogues and a multi-seller basket. 
+ Seller: join an approved market, maintain stall profile and stock, fulfil own order lines. 
+ Admin: create market records, verify stall association and manage disputes. 
+Business and safety rules 
+ A market basket splits into seller-specific fulfilment units while preserving one buyer checkout experience. 
+ Delivery/pickup options, fees and availability are shown before payment; no promise of single delivery without a supported 
+consolidation service. 
+Minimum acceptance tests 
+ Basket with products from two stalls produces two traceable seller suborders. 
+ One stall rejecting an item triggers correct partial cancellation/refund logic. 
+BS-03 — Budget Shopping 
+Proposed release classification: Launch core (basic); optimisation pilot 
+User screens and workflows 
+ Buyer: enter spending limit, browse price-per-unit and supported quantity units, create suggested baskets, manually adjust 
+quantities. 
+ Seller: configure permitted portion sizes, minimum quantity, pack conversions and transparent unit prices. 
+ Admin: monitor misleading units and pricing. 
+Business and safety rules 
+ Totals include item cost, delivery, service charges and discounts before payment. 
+ Never imply a basket is within budget when checkout fees exceed the limit. 
+ Recommendations are suggestions; user approves the final basket. 
+Minimum acceptance tests 
+ ₦5,000 budget example never presents ₦5,500 payable total as within budget. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+ Fractional quantity and unit conversion are validated for eligible products. 
+BFM-04 — Buy for Me 
+Proposed release classification: Launch core with approved agents 
+User screens and workflows 
+ Buyer: submit item description, image/voice note, budget, location, deadline and substitution preference. 
+ Agent: accept request, send itemised quotation (item cost, service fee, delivery, estimated time) and availability evidence. 
+ Buyer: approve, reject or request revised quotation before any charge. 
+ Admin: manage approved agents, disputes, audit trail and cancellation/refund cases. 
+Business and safety rules 
+ Agent may not increase a quote or substitute an item without explicit buyer approval. 
+ Payment authorisation/collection occurs only after confirmed approval through licensed partner flow. 
+ Quote expiration, partial availability and failed sourcing must have defined refund/cancellation states. 
+Minimum acceptance tests 
+ No charge is created before buyer approves quote. 
+ Rejected/expired quote cannot be fulfilled as if approved. 
+ Failed sourcing follows visible cancellation and refund workflow. 
+TP-05 — Trust Passport 
+Proposed release classification: Launch core (verified facts); advanced scoring pilot 
+User screens and workflows 
+ Buyer: view seller type, verification status, completed-order signals, review summary and dispute-resolution information where 
+appropriate. 
+ Seller: see verification tasks, provide permitted evidence and appeal inaccuracies. 
+ Admin: evidence review, correction and fraud investigations. 
+Business and safety rules 
+ A CAC badge is displayed only after CAC verification; unregistered traders are not falsely labelled registered. 
+ Never reveal sensitive identity documents or private dispute details. 
+ Trust indicators must be evidence-based, explainable and contestable; avoid unsupported blanket guarantees. 
+Minimum acceptance tests 
+ Unregistered seller can be active without displaying a CAC badge. 
+ Seller cannot edit their own verified badge or performance totals. 
+VC-06 — Voice Commerce 
+Proposed release classification: Pilot / controlled rollout; voice notes at launch where supported 
+User screens and workflows 
+ Buyer: use microphone to search products, dictate a shopping request or describe a Buy for Me order. 
+ Seller: dictate a product name, description, price or quick-menu entry, then review before publishing. 
+ System: transcribe supported languages, show editable text and require confirmation before creating orders or publishing listings. 
+Business and safety rules 
+ Voice Commerce is speech-driven shopping/listing, NOT the same as person-to-person voice calling. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+ Supported languages and dialects must be explicitly tested; no unsupported accuracy claims. 
+ Obtain microphone permission and disclose voice data handling; provide text fallback. 
+ Spoken price, quantity and payment instructions require visible confirmation. 
+Minimum acceptance tests 
+ Voice input produces editable text and does not publish a listing automatically. 
+ Misheard amount is corrected before submission; unsupported speech falls back gracefully to text. 
+AF-07 — Advanced Features 
+Proposed release classification: Mixed: specified subfeatures below 
+User screens and workflows 
+ Neighbourhood Basket: group eligible nearby seller items and show separate seller fulfilment. 
+ Offline Alerts: queue selected alerts and sync when connectivity resumes; do not promise full offline checkout. 
+ Moving Vendors: optional location updates, active route/availability controls and location privacy. 
+ Repairs: repair service profiles, quotes, booking/request flow and dispute rules. 
+ Custom Orders: customer specifications, seller quote, proof/approval, lead time and revisions. 
+Business and safety rules 
+ Each subfeature has its own feature flag, risk review and acceptance gate. 
+ Moving vendor location sharing requires explicit opt-in, expiry and seller control. 
+ Custom-order charges and cancellation terms must be accepted before payment. 
+Minimum acceptance tests 
+ Neighbourhood basket correctly handles multiple sellers. 
+ Moving vendor can disable location sharing instantly. 
+ Custom-order quote changes require renewed buyer approval. 
+3. Advanced Features — proposed subfeature rollout 
+Subfeature Proposed rollout Dependency 
+Neighbourhood baskets Pilot Multi-seller checkout, order 
+splitting, delivery fees 
+Offline alerts Launch basic notifications; offline 
+sync pilot 
+Push notifications, queue/sync and 
+conflict handling 
+Moving vendors Pilot Opt-in location, permissions, expiry, 
+map controls 
+Repair Before Replace Pilot Service provider vetting, quotation 
+and dispute flow 
+Custom orders Pilot Request/quote/approval states, 
+refund terms 
+Smart Bargain Pilot Seller opt-in, offer expiry, price-lock 
+and abuse controls 
+Farm-to-Home Pilot Fresh produce units, sourcing and 
+fulfilment 
+Small Quantity Shopping Launch where supported Units, stock decrement, food 
+handling 
+Community Group Buying Future enhancement Group commitment, discounts and 
+payment handling 
+Community Pickup Network Pilot Verified pickup partners and chain 
+of custody 
+Diaspora Family Shopping Pilot Cross-border buyer eligibility and 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Nigeria fulfilment 
+Wholesale and Retail Launch core Tier pricing and inventory 
+Freshness / Surplus Pilot Food safety, expiry and disclosures 
+Seller Business Assistant Pilot Sales, costs and stock records 
+Protected Delivery Confirmation Launch core Delivery evidence, dispute deadlines 
+Product Authenticity Passport Pilot Evidence validation and anti-fraud 
+Smart Delivery Consolidation Future enhancement Routing, compatible orders and 
+partners 
+Certified Used / Refurbished Pilot Condition grades, warranties and 
+returns 
+Made for You Pilot Privacy-aware recommendations 
+4. Required shared screens and data contracts 
+Client / role Minimum screens 
+Buyer (mobile and web) Home/local discovery; vendor listing; seller profile; 
+product/menu; cart; budget basket; Buy for Me request 
+and quote; order tracking; trust passport; voice search 
+interface; support. 
+Seller (mobile and web) Onboarding; identity/CAC verification as applicable; 
+storefront; product/menu editor; opening hours; 
+location/privacy; stock; orders; Buy for Me quotations 
+(authorised agents); payouts; disputes. 
+Admin (web) Seller verification; market/stall management; category 
+and product moderation; Buy for Me agent controls; 
+payment reconciliation; refunds; dispute evidence; voice 
+feature settings; audit logs. 
+Minimum entities: users, seller_profiles, business_verifications, markets, stalls, vendor_locations, listings, listing_variants, inventory, 
+baskets, orders, seller_suborders, fulfilments, quotations, quotation_revisions, buyer_approvals, payments, ledger_entries, payouts, 
+refunds, disputes, trust_evidence, voice_requests, notifications, audit_events. Database naming is illustrative; developers must supply 
+the final schema and migration plan. 
+5. Example API contract and event requirements 
+Capability Example endpoint / event (illustrative) 
+Vendor onboarding POST /api/v1/sellers; POST 
+/api/v1/sellers/{id}/verification 
+Vendor discovery GET /api/v1/vendors?area=...&open=... 
+Market stalls GET /api/v1/markets/{id}/stalls 
+Budget basket POST /api/v1/baskets/budget-suggestions 
+Buy for Me POST /api/v1/buy-for-me/requests; POST /quotes; 
+POST /quotes/{id}/approve 
+Trust Passport GET /api/v1/sellers/{id}/trust 
+Voice Commerce POST /api/v1/voice/transcriptions; POST 
+/api/v1/voice/draft-listings 
+Orders and payment POST /api/v1/checkout; payment webhook; 
+payment.reconciled; order.confirmed 
+Moving vendors POST /api/v1/vendors/{id}/location-sharing; 
+vendor.location-expired 
+Use authentication, authorisation, idempotency keys for checkout/quote approval, rate limits, pagination, structured errors and API 
+versioning. The examples above are proposed contracts, not existing implemented endpoints. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+6. Core end-to-end acceptance scenarios 
+Test Pass condition 
+A Unregistered akara seller signs up without CAC; 
+identity/payout checks completed; menu listed; customer 
+places order; seller fulfils; payout is reconciled. 
+B CAC-registered store provides registration details; 
+admin verifies evidence; verified-business indicator 
+appears only after approval. 
+C Buyer combines goods from two market stalls; system 
+creates separate seller fulfilments and accurate buyer 
+total. 
+D Buyer enters budget; basket suggestions and final 
+payable amount honour the limit. 
+E Buyer submits Buy for Me request; agent quotes; buyer 
+approves; payment proceeds; sourcing fails; refund is 
+traceable. 
+F Buyer dictates product request; transcript is editable; 
+explicit confirmation required before order action. 
+G Moving vendor disables live location; no further 
+location is displayed or distributed. 
+H Seller changes availability during checkout; inventory 
+protection prevents overselling. 
+I Payment webhook retries twice; order and ledger are 
+updated once (idempotency). 
+J Customer reports wrong item; evidence, seller response, 
+admin decision and refund state are auditable. 
+7. Developer deliverables and payment gates 
+ Before implementation: architecture diagram; complete screen inventory and approved screen specifications; user stories; API 
+specification; database schema; security/data-protection assessment; itemised estimate for each of the seven categories and 
+advanced subfeatures. 
+ During implementation: Webubble-controlled GitHub repositories; meaningful commits and pull requests; code reviews; automated 
+unit/integration/end-to-end tests; environment-specific configuration; dependency and licence inventory. 
+ Demonstrations: working Android build, iOS build and deployed web app using the same test environment; no static-only demo or 
+hardcoded orders. 
+ Payment gates: sign-off on actual acceptance tests, source-code delivery and reproducible builds; not on screenshots, template 
+screens or completion percentages alone. 
+ Operational handover: monitoring, backups/restore test, fraud controls, error reporting, accessibility checks, deployment and 
+rollback runbooks, and admin training. 
+8. Decisions to confirm before fixed-price contracting 
+ Founder to approve final launch-versus-pilot classification for Voice Commerce and Advanced Features; all seven categories 
+remain in scope register. 
+ Agree whether Buy for Me agents are vetted third parties, Webubble staff or approved sellers, and define liability and commissions. 
+ Agree geographic launch area, fulfilment partners, food-vendor compliance process, supported languages and minimum voice 
+transcription accuracy thresholds. 
+ Agree payment processor, settlement/payout rules, return categories, data retention and Nigerian legal review. 
+ Agree target devices, accessibility, performance, uptime, load-test and support SLAs before sign-off. 
+Document control: This addendum is a proposed engineering specification derived from the founder-confirmed seven-category checklist 
+and previously discussed Webubble features. It is not evidence that any function has already been implemented, tested or legally 
+approved. 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+PART D — Complete 58-task development register 
+Each task below contains its workstream, required programming languages, suggested technology, implementation steps, dependencies, 
+acceptance demonstration and delivery evidence. Blank assignment fields must be completed by the developer and approved by 
+Webubble. 
+WB-001 — Architecture & repository setup 
+Workstream / release Foundation | P1-MUST 
+Languages TypeScript, PHP, SQL, YAML 
+Technology Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Dependencies Architecture/API contracts 
+Step-by-step implementation Create Webubble-owned repositories, branch protection, CI pipelines, staging and architecture 
+decision records. 
+Acceptance criteria Webubble-owned repos; documented architecture; CI and staging deploy 
+Developer demonstration A clean checkout builds all applications and deploys staging from approved commits. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-002 — Design system 
+Workstream / release Foundation | P1-MUST 
+Languages TypeScript, PHP, SQL, YAML 
+Technology Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Dependencies Architecture/API contracts 
+Step-by-step implementation Translate approved approved screen specifications into reusable custom components and 
+accessibility tokens; no purchased UI kits. 
+Acceptance criteria Custom UI components mapped to approved screen specifications and responsive breakpoints 
+Developer demonstration Compare responsive web and mobile screens against approved approved screen specifications. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-003 — Shared API and identity model 
+Workstream / release Foundation | P1-MUST 
+Languages TypeScript, PHP, SQL, YAML 
+Technology Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Dependencies Architecture/API contracts 
+Step-by-step implementation Define versioned OpenAPI contracts, user/seller roles, token lifecycle and permissions shared 
+across clients. 
+Acceptance criteria One API and role model across web, Android and iOS 
+Developer demonstration Run API contract tests for web, Android and iOS. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WB-004 — Security baseline 
+Workstream / release Foundation | P1-MUST 
+Languages TypeScript, PHP, SQL, YAML 
+Technology Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Dependencies Architecture/API contracts 
+Step-by-step implementation Implement security baseline as a custom-coded foundation module: design approved screens, 
+define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Threat model, permissions, secrets, audit logs and vulnerability checks 
+Developer demonstration Demonstrate security baseline end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-005 — Observability and backups 
+Workstream / release Foundation | P1-MUST 
+Languages TypeScript, PHP, SQL, YAML 
+Technology Next.js/Flutter UI foundations; Laravel API; PostgreSQL; GitHub Actions 
+Dependencies Architecture/API contracts 
+Step-by-step implementation Implement observability and backups as a custom-coded foundation module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Monitoring, alerting, backup and tested restoration 
+Developer demonstration Demonstrate observability and backups end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-006 — Buyer signup and login 
+Workstream / release Registration | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Dependencies Shared API and identity model 
+Step-by-step implementation Implement buyer signup and login as a custom-coded registration module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Buyer can register without CAC and sign in securely 
+Developer demonstration Demonstrate buyer signup and login end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WB-007 — Registered business seller onboarding 
+Workstream / release Registration | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Dependencies Shared API and identity model 
+Step-by-step implementation Build registered-business path with CAC fields, evidence upload and pending/approved/rejected 
+states. 
+Acceptance criteria CAC details collected and verification status managed 
+Developer demonstration Registered-business signup requires CAC details; reviewer can verify status. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-008 — Unregistered seller onboarding 
+Workstream / release Registration | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Dependencies Shared API and identity model 
+Step-by-step implementation Build informal/local seller path without CAC; collect proportionate contact and payout 
+verification. 
+Acceptance criteria Street and local sellers register without CAC 
+Developer demonstration Akara seller completes onboarding without a CAC certificate. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-009 — Seller/buyer role switching 
+Workstream / release Registration | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Dependencies Shared API and identity model 
+Step-by-step implementation Implement seller/buyer role switching as a custom-coded registration module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria One account can shop and sell with permission checks 
+Developer demonstration Demonstrate seller/buyer role switching end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-010 — KYC and category rules 
+Workstream / release Registration | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Technology Flutter + Next.js forms; Laravel auth/API; PostgreSQL 
+Dependencies Shared API and identity model 
+Step-by-step implementation Implement kyc and category rules as a custom-coded registration module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Proportionate verification and restricted-category checks 
+Developer demonstration Demonstrate kyc and category rules end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-011 — Product catalogue and categories 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Implement product catalogue and categories as a custom-coded marketplace module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Sellers publish approved products with media and attributes 
+Developer demonstration Demonstrate product catalogue and categories end-to-end on staging across relevant clients; 
+show API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-012 — Product variants and stock 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Implement product variants and stock as a custom-coded marketplace module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Variant stock updates atomically across channels 
+Developer demonstration Demonstrate product variants and stock end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-013 — Search filters and sorting 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Implement search filters and sorting as a custom-coded marketplace module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Relevant searchable products and clear filters 
+Developer demonstration Demonstrate search filters and sorting end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-014 — Storefronts and ratings 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Implement storefronts and ratings as a custom-coded marketplace module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Seller pages and eligible review rules 
+Developer demonstration Demonstrate storefronts and ratings end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-015 — Cart and multi-seller checkout 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Reserve stock, split seller suborders, calculate totals and prevent duplicate checkout. 
+Acceptance criteria Orders split per seller with totals and shipping correct 
+Developer demonstration Two-seller basket creates correct seller orders and one traceable payment. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-016 — Promotions and wishlists 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Step-by-step implementation Implement promotions and wishlists as a custom-coded marketplace module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Discount eligibility and saved products work 
+Developer demonstration Demonstrate promotions and wishlists end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-017 — Order history and tracking 
+Workstream / release Marketplace | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel catalogue/orders; PostgreSQL; search engine 
+Dependencies Registration 
+Step-by-step implementation Implement order history and tracking as a custom-coded marketplace module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Buyers and sellers view correct order states 
+Developer demonstration Demonstrate order history and tracking end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-018 — Street vendor quick menu 
+Workstream / release Street Vendors | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Dependencies Marketplace 
+Step-by-step implementation Build quick menu, photos, prices, portions, stock, preparation times and open/closed toggle. 
+Acceptance criteria Vendor can publish menu, availability and preparation time 
+Developer demonstration Street vendor updates availability and buyer sees it immediately. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-019 — Vendor locations and pickup 
+Workstream / release Street Vendors | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Dependencies Marketplace 
+Step-by-step implementation Support seller-selected location, pickup instructions, privacy controls and optional approximate 
+map pin. 
+Acceptance criteria Location permission, privacy and pickup instructions work 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Developer demonstration Buyer can choose pickup without exposing seller private home address. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-020 — Street vendor order flow 
+Workstream / release Street Vendors | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js vendor UI; Laravel location/menu APIs; PostgreSQL/PostGIS 
+Dependencies Marketplace 
+Step-by-step implementation Implement prepare/accept/reject/ready/collected/delivered states with timeouts. 
+Acceptance criteria Buyer orders, vendor accepts and status progresses 
+Developer demonstration Simulate out-of-stock and cancelled street-food order. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-021 — Market profiles and stalls 
+Workstream / release Live Markets | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel market/stall/order APIs; PostgreSQL 
+Dependencies Street Vendors 
+Step-by-step implementation Build market landing page, stall directory, trader participation and market opening details. 
+Acceptance criteria Market page lists participating verified stalls 
+Developer demonstration Buyer navigates market to stall and real product listing. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-022 — Live Market multi-seller basket 
+Workstream / release Live Markets | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel market/stall/order APIs; PostgreSQL 
+Dependencies Street Vendors 
+Step-by-step implementation Support several market stalls in one basket with seller-level fulfilment and pricing. 
+Acceptance criteria Basket correctly separates vendors and fulfilment 
+Developer demonstration Multiple stalls generate correctly separated seller orders. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WB-023 — Budget basket and quantity units 
+Workstream / release Budget Shopping | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel pricing engine; PostgreSQL 
+Dependencies Marketplace 
+Step-by-step implementation Implement quantity units, portion conversions and suggested baskets for customer budget. 
+Acceptance criteria Buyer sets budget and valid local quantity units 
+Developer demonstration ₦ budget yields transparent, purchasable quantities. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-024 — Budget price validation 
+Workstream / release Budget Shopping | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel pricing engine; PostgreSQL 
+Dependencies Marketplace 
+Step-by-step implementation Recalculate prices, fees and stock before confirmation; never promise impossible budget totals. 
+Acceptance criteria Suggested basket never misrepresents live checkout totals 
+Developer demonstration Price changes trigger explicit re-approval. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-025 — Customer sourcing request 
+Workstream / release Buy for Me | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Dependencies Payments 
+Step-by-step implementation Capture requested item, image/voice/text description, budget, location and fulfilment deadline. 
+Acceptance criteria Customer describes requested item and limits 
+Developer demonstration Unlisted item request reaches eligible sourcing agents. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-026 — Agent quotation and approval 
+Workstream / release Buy for Me | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Dependencies Payments 
+Step-by-step implementation Allow agent quotations, fees, expiry, buyer approval and payment only after explicit consent. 
+Acceptance criteria Buyer approves full quote before payment commitment 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Developer demonstration Buyer can reject quotation without being charged. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-027 — Sourcing exception and refund 
+Workstream / release Buy for Me | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js request/quote UI; Laravel state machine; PostgreSQL 
+Dependencies Payments 
+Step-by-step implementation Model failed sourcing, substitutions, cancellation and provider-mediated refunds. 
+Acceptance criteria Unfulfilled request follows clear cancellation and refund rules 
+Developer demonstration Failed sourcing has visible refund and audit trail. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-028 — Seller verification indicators 
+Workstream / release Trust Passport | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js indicators; Laravel verification service; PostgreSQL 
+Dependencies Registration 
+Step-by-step implementation Show verified claims only; distinguish CAC business verification from individual seller checks. 
+Acceptance criteria Verified claims match approved evidence and are not misleading 
+Developer demonstration Unregistered seller is not falsely marked CAC-verified. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-029 — Performance and dispute indicators 
+Workstream / release Trust Passport | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js indicators; Laravel verification service; PostgreSQL 
+Dependencies Registration 
+Step-by-step implementation Compute explainable completion, dispute and fulfilment indicators with appeal process. 
+Acceptance criteria Metrics are accurate and privacy-preserving 
+Developer demonstration Disputed transactions do not automatically create unreviewed accusations. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WB-030 — Voice search input 
+Workstream / release Voice Commerce | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL; optional Python 
+Technology Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Dependencies Marketplace 
+Step-by-step implementation Capture consented speech, transcribe, confirm intent and route to product search. 
+Acceptance criteria User can submit voice request with permission and fallback 
+Developer demonstration Unclear transcription asks buyer to confirm before any order. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-031 — Voice-assisted seller listings 
+Workstream / release Voice Commerce | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL; optional Python 
+Technology Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Dependencies Marketplace 
+Step-by-step implementation Allow seller to dictate item, quantity and price; show editable transcription before publish. 
+Acceptance criteria Seller confirms transcript before publishing listing 
+Developer demonstration Vendor reviews voice-generated listing before it goes live. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-032 — Language and uncertainty handling 
+Workstream / release Voice Commerce | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL; optional Python 
+Technology Flutter speech capture; web speech capture; Laravel orchestration; approved speech/AI APIs 
+Dependencies Marketplace 
+Step-by-step implementation Support tested languages only, low-confidence fallback and no unsupported-language claims. 
+Acceptance criteria Unsupported or uncertain recognition prompts correction; no silent purchase 
+Developer demonstration Unrecognised speech fails safely to text/manual entry. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-033 — Neighbourhood baskets 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement neighbourhood baskets as a custom-coded advanced features module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Nearby sellers and split fulfilment are handled 
+Developer demonstration Demonstrate neighbourhood baskets end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-034 — Offline alerts and low-data support 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement offline alerts and low-data support as a custom-coded advanced features module: 
+design approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, 
+permissions, mobile/web integration, validation and automated tests. 
+Acceptance criteria Queued changes sync safely and conflicts are surfaced 
+Developer demonstration Demonstrate offline alerts and low-data support end-to-end on staging across relevant clients; 
+show API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-035 — Moving vendors 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement moving vendors as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Location is opt-in, time-bounded and user-controlled 
+Developer demonstration Demonstrate moving vendors end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-036 — Repairs and service listings 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement repairs and service listings as a custom-coded advanced features module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Service terms and booking/request flow are clear 
+Developer demonstration Demonstrate repairs and service listings end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-037 — Custom orders 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement custom orders as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Seller quotes and buyer approval are recorded 
+Developer demonstration Demonstrate custom orders end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-038 — Smart Bargain 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement smart bargain as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Offers and acceptance form auditable price agreement 
+Developer demonstration Demonstrate smart bargain end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-039 — Farm-to-Home 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement farm-to-home as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+integration, validation and automated tests. 
+Acceptance criteria Farm produce ordering and availability supported 
+Developer demonstration Demonstrate farm-to-home end-to-end on staging across relevant clients; show API tests, logs 
+and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-040 — Community group buying 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement community group buying as a custom-coded advanced features module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Group purchase thresholds and refunds defined 
+Developer demonstration Demonstrate community group buying end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-041 — Community pickup 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement community pickup as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Pickup authorisation and custody evidence captured 
+Developer demonstration Demonstrate community pickup end-to-end on staging across relevant clients; show API tests, 
+logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-042 — Diaspora family shopping 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement diaspora family shopping as a custom-coded advanced features module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Payer and recipient details handled securely 
+Developer demonstration Demonstrate diaspora family shopping end-to-end on staging across relevant clients; show API 
+tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-043 — Surplus and freshness offers 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement surplus and freshness offers as a custom-coded advanced features module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Food safety restrictions and expiry information enforced 
+Developer demonstration Demonstrate surplus and freshness offers end-to-end on staging across relevant clients; show 
+API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-044 — Refurbished goods 
+Workstream / release Advanced Features | PILOT 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; Laravel feature modules; PostgreSQL 
+Dependencies Core commerce + product owner sign-off 
+Step-by-step implementation Implement refurbished goods as a custom-coded advanced features module: design approved 
+screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Condition, warranty and authenticity claims documented 
+Developer demonstration Demonstrate refurbished goods end-to-end on staging across relevant clients; show API tests, 
+logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-045 — Licensed payment provider integration 
+Workstream / release Payments | P1-MUST 
+Languages PHP, SQL, Dart, TypeScript 
+Technology Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Dependencies Cart and multi-seller checkout 
+Step-by-step implementation Integrate licensed payment provider with signed webhooks, idempotency and reconciliation. 
+Acceptance criteria Successful, failed and pending payments reconcile correctly 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Developer demonstration Duplicate webhook cannot duplicate payment or order. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-046 — Webubble Pay ledger and commissions 
+Workstream / release Payments | P1-MUST 
+Languages PHP, SQL, Dart, TypeScript 
+Technology Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Dependencies Cart and multi-seller checkout 
+Step-by-step implementation Implement immutable double-entry-style marketplace ledger for commissions, refunds and 
+liabilities. 
+Acceptance criteria Immutable transaction references and seller earnings reconcile 
+Developer demonstration Every balance ties to provider settlement and auditable ledger entries. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-047 — Seller payouts 
+Workstream / release Payments | P1-MUST 
+Languages PHP, SQL, Dart, TypeScript 
+Technology Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Dependencies Cart and multi-seller checkout 
+Step-by-step implementation Calculate payout eligibility by category, risk and approved return policy; do not hardcode five-
+day holds. 
+Acceptance criteria Category-specific payout rules and holds are auditable 
+Developer demonstration Seller can view payout state and reconciliation. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-048 — Returns and disputes 
+Workstream / release Payments | P1-MUST 
+Languages PHP, SQL, Dart, TypeScript 
+Technology Laravel ledger/payment APIs; PostgreSQL transactions; provider SDK; Flutter/Next.js UI 
+Dependencies Cart and multi-seller checkout 
+Step-by-step implementation Build evidence intake, admin review, category rules, partial/full refunds and appeal. 
+Acceptance criteria Human-review dispute evidence and refund states recorded 
+Developer demonstration Dispute case tracks decisions and payment reversals. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+WB-049 — Buyer-seller chat 
+Workstream / release Communication | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Dependencies Registration 
+Step-by-step implementation Add order-linked buyer/seller messaging, attachments, reporting and moderation. 
+Acceptance criteria Secure order-linked messaging and abuse reporting 
+Developer demonstration Blocked users cannot continue unwanted messaging. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-050 — Voice and video calls 
+Workstream / release Communication | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Dependencies Registration 
+Step-by-step implementation Integrate consented internet audio/video calling, permissions, call controls and abuse 
+protections. 
+Acceptance criteria Permissioned cross-platform calling with safe fallback 
+Developer demonstration Android-to-web call works with mute/reject/end. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-051 — Group meetings and screen share 
+Workstream / release Communication | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Dependencies Registration 
+Step-by-step implementation Add group meetings, invitations, participant controls and supported screen sharing. 
+Acceptance criteria Meeting roles and supported screen-sharing tested 
+Developer demonstration Multi-participant meeting works and permission checks hold. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-052 — Notifications 
+Workstream / release Communication | P1-MUST 
+Languages Dart, TypeScript, PHP, SQL 
+Technology Flutter + Next.js; WebSockets; WebRTC media service; Laravel permissions 
+Dependencies Registration 
+Step-by-step implementation Implement notifications as a custom-coded communication module: design approved screens, 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+define Laravel API endpoints, PostgreSQL tables/migrations, permissions, mobile/web 
+integration, validation and automated tests. 
+Acceptance criteria Transactional and consent-based notifications delivered 
+Developer demonstration Demonstrate notifications end-to-end on staging across relevant clients; show API tests, logs and 
+source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-053 — Delivery and pickup workflow 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Implement delivery and pickup workflow as a custom-coded operations module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Correct delivery state, handoff and proof of receipt 
+Developer demonstration Demonstrate delivery and pickup workflow end-to-end on staging across relevant clients; show 
+API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-054 — Admin moderation and support 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Implement admin moderation and support as a custom-coded operations module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Role-limited case handling and audit trail 
+Developer demonstration Demonstrate admin moderation and support end-to-end on staging across relevant clients; show 
+API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-055 — AI shopping and seller assistance 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Add buyer/seller AI assistance with consent, grounding, uncertainty and human review. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Acceptance criteria User confirmation before consequential actions 
+Developer demonstration AI cannot finalise purchase or dispute without authorised approval. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-056 — Cross-platform regression suite 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Implement cross-platform regression suite as a custom-coded operations module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Critical flows pass on Android, iOS and web 
+Developer demonstration Demonstrate cross-platform regression suite end-to-end on staging across relevant clients; show 
+API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-057 — Performance and accessibility 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Implement performance and accessibility as a custom-coded operations module: design 
+approved screens, define Laravel API endpoints, PostgreSQL tables/migrations, permissions, 
+mobile/web integration, validation and automated tests. 
+Acceptance criteria Measured performance and accessibility criteria approved 
+Developer demonstration Demonstrate performance and accessibility end-to-end on staging across relevant clients; show 
+API tests, logs and source pull request. 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+WB-058 — Production launch gate 
+Workstream / release Operations | P1-MUST 
+Languages PHP, TypeScript, Dart, SQL, YAML 
+Technology Laravel operations; Next.js admin; Flutter; PostgreSQL; CI/CD 
+Dependencies All relevant modules 
+Step-by-step implementation Require source handover, security tests, rollback rehearsal, backups and owner signoff. 
+Acceptance criteria Backups, monitoring, support runbook and owner sign-off 
+Developer demonstration Production gate blocked if critical tests or ownership evidence missing. 
+
+=====PAGE=====
+ 
+WEBUBBLE LIMITED  •  DEVELOPER HANDOFF  •  DRAFT FOR APPROVAL 
+Evidence Approved screen specification + PR + automated test + staging demo 
+Screen specification / API / 
+PR 
+To assign | To define | To link 
+Owner / estimate / sign-off Assignee: To assign; Estimate: To estimate; Approval: Pending 
+ 
+PART E — Developer delivery and approval checklist 
+☐ Confirm no prebuilt marketplace template or clone script is used. 
+☐ Provide Webubble ownership/access to repositories, cloud, domains and deployment pipelines. 
+☐ Provide architecture diagram, database ERD, API contracts, threat model and data-flow map. 
+☐ Map all 58 task IDs to approved screen specifications and GitHub issues/pull requests. 
+☐ Demonstrate CAC-registered business verification and no-CAC onboarding for informal sellers. 
+☐ Demonstrate all seven local-commerce categories including Voice Commerce (not ordinary voice calling). 
+☐ Demonstrate end-to-end multi-vendor checkout, payment reconciliation, order splitting and returns. 
+☐ Demonstrate chat, voice/video calls, moderation, AI permissions and privacy controls. 
+☐ Provide Android, iOS and web test evidence, security scans, accessibility and performance results. 
+☐ Provide rollback, backup/restore, monitoring, support and handover documentation. 
+☐ Obtain written Webubble acceptance per milestone; no static-screen-only sign-off. 
+Scope note: All named functions are retained in the requirements register. Proposed P1/pilot/future labels are planning suggestions and 
+require founder approval; flight, hotel, train, bus and taxi booking remain outside Phase 1. 
