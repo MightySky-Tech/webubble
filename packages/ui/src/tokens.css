@@ -1,0 +1,57 @@
+/* Generated from packages/ui/tokens/tokens.json by build-tokens.mjs. Do not edit. */
+:root {
+  --wb-color-bg: #FFFFFF;
+  --wb-color-surface: #F4F5F7;
+  --wb-color-text: #16181D;
+  --wb-color-text-muted: #4A5160;
+  --wb-color-border: #7A8394;
+  --wb-color-primary: #1F5FBF;
+  --wb-color-on-primary: #FFFFFF;
+  --wb-color-danger: #B42318;
+  --wb-color-on-danger: #FFFFFF;
+  --wb-color-success: #18794E;
+  --wb-color-focus: #1F5FBF;
+  --wb-space-0: 0;
+  --wb-space-1: 4px;
+  --wb-space-2: 8px;
+  --wb-space-3: 12px;
+  --wb-space-4: 16px;
+  --wb-space-5: 24px;
+  --wb-space-6: 32px;
+  --wb-space-7: 48px;
+  --wb-space-8: 64px;
+  --wb-radius-sm: 4px;
+  --wb-radius-md: 8px;
+  --wb-radius-lg: 12px;
+  --wb-radius-full: 9999px;
+  --wb-font-size-xs: 0.75rem;
+  --wb-font-size-sm: 0.875rem;
+  --wb-font-size-md: 1rem;
+  --wb-font-size-lg: 1.125rem;
+  --wb-font-size-xl: 1.375rem;
+  --wb-font-size-xxl: 1.75rem;
+  --wb-font-size-xxxl: 2.125rem;
+  --wb-font-weight-regular: 400;
+  --wb-font-weight-medium: 500;
+  --wb-font-weight-bold: 700;
+  --wb-line-height-tight: 1.25;
+  --wb-line-height-normal: 1.5;
+  --wb-size-touch-target: 48px;
+  --wb-size-border-width: 1px;
+  --wb-size-focus-ring-width: 3px;
+  --wb-font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --wb-color-bg: #121418;
+  --wb-color-surface: #1C1F26;
+  --wb-color-text: #F2F4F7;
+  --wb-color-text-muted: #B4BCC8;
+  --wb-color-border: #7D8597;
+  --wb-color-primary: #7FAEF5;
+  --wb-color-on-primary: #0B1830;
+  --wb-color-danger: #F97066;
+  --wb-color-on-danger: #2A0A07;
+  --wb-color-success: #47CD89;
+  --wb-color-focus: #7FAEF5;
+}

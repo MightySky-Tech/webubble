@@ -9,6 +9,7 @@ ENV SERVER_NAME=:8000 \
 
 FROM base AS dev
 EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s CMD curl -fsS http://localhost:8000/api/v1/health || exit 1
 CMD ["sh", "-c", "composer install --no-interaction && exec frankenphp php-server --root public/ --listen :8000"]
 
 FROM base AS prod

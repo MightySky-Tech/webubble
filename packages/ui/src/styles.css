@@ -1,0 +1,144 @@
+/* WB-002 component styles. All values come from tokens.css (import it first). */
+
+/* ---------- Button ---------- */
+.wb-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wb-space-2);
+  min-height: var(--wb-size-touch-target);
+  min-width: var(--wb-size-touch-target);
+  padding: 0 var(--wb-space-5);
+  border: var(--wb-size-border-width) solid transparent;
+  border-radius: var(--wb-radius-md);
+  font: inherit;
+  font-size: var(--wb-font-size-md);
+  font-weight: var(--wb-font-weight-medium);
+  line-height: var(--wb-line-height-tight);
+  cursor: pointer;
+}
+
+.wb-button:focus-visible,
+.wb-field__input:focus-visible {
+  outline: var(--wb-size-focus-ring-width) solid var(--wb-color-focus);
+  outline-offset: 2px;
+}
+
+.wb-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.wb-button--primary {
+  background: var(--wb-color-primary);
+  color: var(--wb-color-on-primary);
+}
+
+.wb-button--secondary {
+  background: var(--wb-color-bg);
+  color: var(--wb-color-text);
+  border-color: var(--wb-color-border);
+}
+
+.wb-button--danger {
+  background: var(--wb-color-danger);
+  color: var(--wb-color-on-danger);
+}
+
+.wb-button--full {
+  width: 100%;
+}
+
+.wb-button__spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--wb-radius-full);
+  animation: wb-spin 0.8s linear infinite;
+}
+
+@keyframes wb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wb-button__spinner {
+    animation: none;
+  }
+}
+
+/* ---------- TextField ---------- */
+.wb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wb-space-1);
+}
+
+.wb-field__label {
+  color: var(--wb-color-text);
+  font-size: var(--wb-font-size-sm);
+  font-weight: var(--wb-font-weight-medium);
+}
+
+.wb-field__required {
+  color: var(--wb-color-danger);
+}
+
+.wb-field__hint {
+  margin: 0;
+  color: var(--wb-color-text-muted);
+  font-size: var(--wb-font-size-sm);
+}
+
+.wb-field__input {
+  min-height: var(--wb-size-touch-target);
+  padding: 0 var(--wb-space-3);
+  border: var(--wb-size-border-width) solid var(--wb-color-border);
+  border-radius: var(--wb-radius-md);
+  background: var(--wb-color-bg);
+  color: var(--wb-color-text);
+  font: inherit;
+  /* 16px minimum stops iOS Safari zooming into the field. */
+  font-size: var(--wb-font-size-md);
+}
+
+.wb-field--invalid .wb-field__input {
+  border-color: var(--wb-color-danger);
+  border-width: 2px;
+}
+
+.wb-field__error {
+  margin: 0;
+  color: var(--wb-color-danger);
+  font-size: var(--wb-font-size-sm);
+}
+
+/* ---------- Alert ---------- */
+.wb-alert {
+  padding: var(--wb-space-3) var(--wb-space-4);
+  border: var(--wb-size-border-width) solid var(--wb-color-border);
+  border-left-width: 4px;
+  border-radius: var(--wb-radius-md);
+  background: var(--wb-color-surface);
+  color: var(--wb-color-text);
+}
+
+.wb-alert--error {
+  border-left-color: var(--wb-color-danger);
+}
+
+.wb-alert--success {
+  border-left-color: var(--wb-color-success);
+}
+
+.wb-alert--info {
+  border-left-color: var(--wb-color-primary);
+}
+
+.wb-alert__title {
+  margin: 0 0 var(--wb-space-1);
+  font-weight: var(--wb-font-weight-bold);
+}

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "@webubble/ui/tokens.css";
+import "@webubble/ui/styles.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

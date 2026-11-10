@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AdminMfaController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CataloguePreviewController;
+use App\Http\Controllers\Api\V1\SellerOnboardingController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +27,50 @@ Route::get('/health', function () {
         'checks' => ['database' => $db],
     ], $db === 'ok' ? 200 : 503);
 })->name('health');
+
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::post('/otp/request', [AuthController::class, 'requestOtp'])
+        ->middleware('throttle:otp-request')
+        ->name('otp.request');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])
+        ->middleware('throttle:otp-verify')
+        ->name('otp.verify');
+    Route::post('/otp/resend', [AuthController::class, 'resendOtp'])
+        ->middleware('throttle:otp-request')
+        ->name('otp.resend');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/me', [AuthController::class, 'me'])->name('me');
+        Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
+    });
+});
+
+Route::get('/catalogue/preview', [CataloguePreviewController::class, 'index'])
+    ->name('catalogue.preview');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/seller/me', [SellerOnboardingController::class, 'show'])->name('seller.me');
+    Route::post('/seller/onboarding', [SellerOnboardingController::class, 'submit'])
+        ->middleware('throttle:10,1')
+        ->name('seller.onboarding');
+
+    Route::prefix('admin/seller-applications')->name('admin.seller-applications.')->group(function () {
+        Route::get('/', [SellerOnboardingController::class, 'applications'])->name('index');
+        Route::post('/{sellerProfile}/review', [SellerOnboardingController::class, 'review'])->name('review');
+        Route::get('/{sellerProfile}/evidence', [SellerOnboardingController::class, 'evidence'])->name('evidence');
+    });
+
+    Route::prefix('admin/catalogue/preview')->name('admin.catalogue.preview.')->group(function () {
+        Route::get('/', [CataloguePreviewController::class, 'adminIndex'])->name('index');
+        Route::post('/', [CataloguePreviewController::class, 'store'])->name('store');
+        Route::put('/{cataloguePreview}', [CataloguePreviewController::class, 'update'])->name('update');
+        Route::delete('/{cataloguePreview}', [CataloguePreviewController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('admin/mfa')->name('admin.mfa.')->group(function () {
+        Route::get('/setup', [AdminMfaController::class, 'setup'])->name('setup');
+        Route::post('/verify', [AdminMfaController::class, 'verify'])
+            ->middleware('throttle:5,1')
+            ->name('verify');
+    });
+});

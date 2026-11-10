@@ -1,0 +1,582 @@
+openapi: 3.1.0
+info:
+  title: Webubble API
+  version: 1.0.0
+  description: Versioned API shared by the Webubble web and mobile applications.
+servers:
+  - url: http://localhost:8100/api/v1
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      responses:
+        "200":
+          description: API and database are available.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: ok }
+                  service: { type: string }
+                  version: { type: string }
+                  checks:
+                    type: object
+                    properties:
+                      database: { type: string, const: ok }
+                    required: [database]
+                required: [status, service, version, checks]
+  /auth/otp/request:
+    post:
+      operationId: requestEmailOtp
+      summary: Request an email code for registration or sign-in.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    email: { type: string, format: email, maxLength: 254 }
+                    intent: { type: string, const: register }
+                    name: { type: string, minLength: 2, maxLength: 100 }
+                  required: [email, intent, name]
+                - type: object
+                  properties:
+                    email: { type: string, format: email, maxLength: 254 }
+                    intent: { type: string, const: login }
+                  required: [email, intent]
+      responses:
+        "202":
+          description: A code was sent when the address is eligible.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /auth/otp/resend:
+    post:
+      operationId: resendEmailOtp
+      summary: Resend the current registration or sign-in code.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email, maxLength: 254 }
+                intent: { type: string, enum: [register, login] }
+              required: [email, intent]
+      responses:
+        "202":
+          description: A code was resent when the address is eligible.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /auth/otp/verify:
+    post:
+      operationId: verifyEmailOtp
+      summary: Verify a one-time email code and issue an API bearer token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email, maxLength: 254 }
+                intent: { type: string, enum: [register, login] }
+                code: { type: string, pattern: "^[0-9]{6}$" }
+              required: [email, intent, code]
+      responses:
+        "200":
+          description: Email verified and an API token issued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user: { $ref: "#/components/schemas/User" }
+                    required: [user]
+                  token: { type: string }
+                  admin_mfa_required: { type: boolean }
+                  admin_mfa_setup_required: { type: boolean }
+                required: [data, token]
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Current authenticated user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user: { $ref: "#/components/schemas/User" }
+                    required: [user]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /auth/logout:
+    delete:
+      operationId: revokeCurrentToken
+      security: [{ bearerAuth: [] }]
+      responses:
+        "204":
+          description: Current API token was revoked.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /seller/me:
+    get:
+      operationId: getSellerApplication
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: The authenticated user's seller application, if any.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      seller: { oneOf: [{ $ref: "#/components/schemas/SellerProfile" }, { type: "null" }] }
+                    required: [seller]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+  /seller/onboarding:
+    post:
+      operationId: submitSellerApplication
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                seller_type: { type: string, enum: [registered_business, informal] }
+                trading_name: { type: string, minLength: 2, maxLength: 100 }
+                phone: { type: string, maxLength: 32 }
+                legal_name: { type: string, minLength: 2, maxLength: 160 }
+                cac_number: { type: string, maxLength: 32 }
+                cac_evidence: { type: string, format: binary }
+              required: [seller_type, trading_name, phone]
+      responses:
+        "202":
+          description: Seller application submitted for review.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      seller: { $ref: "#/components/schemas/SellerProfile" }
+                    required: [seller]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "409":
+          description: The application cannot be changed in its current state.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/seller-applications:
+    get:
+      operationId: listSellerApplications
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Pending seller applications for administrator review.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      applications:
+                        type: array
+                        items: { $ref: "#/components/schemas/SellerApplication" }
+                    required: [applications]
+                  meta:
+                    type: object
+                    properties:
+                      current_page: { type: integer }
+                      last_page: { type: integer }
+                      per_page: { type: integer }
+                      total: { type: integer }
+                    required: [current_page, last_page, per_page, total]
+                required: [data, meta]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Administrator access is required.
+  /admin/seller-applications/{sellerProfile}/review:
+    post:
+      operationId: reviewSellerApplication
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: sellerProfile
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: { type: string, enum: [approved, rejected, needs_more_info] }
+                note: { type: string, maxLength: 1000 }
+              required: [status]
+      responses:
+        "200":
+          description: Seller application review recorded.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Administrator access is required.
+        "409":
+          description: The application is no longer reviewable.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/seller-applications/{sellerProfile}/evidence:
+    get:
+      operationId: downloadSellerEvidence
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: sellerProfile
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Private CAC evidence document.
+          content:
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Administrator access is required.
+        "404":
+          description: Evidence was not found.
+  /admin/mfa/setup:
+    get:
+      operationId: getAdminMfaSetup
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: One-time TOTP enrollment secret for an administrator.
+          headers:
+            Cache-Control:
+              schema: { type: string, const: no-store }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      secret: { type: string }
+                      otpauth_uri: { type: string }
+                    required: [secret, otpauth_uri]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An administrator email-OTP challenge is required.
+        "409":
+          description: MFA is already enabled.
+  /admin/mfa/verify:
+    post:
+      operationId: verifyAdminMfa
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: { type: string, pattern: "^[0-9]{6}$" }
+              required: [code]
+      responses:
+        "200":
+          description: MFA verified; an administrator session token is issued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user: { $ref: "#/components/schemas/User" }
+                    required: [user]
+                  token: { type: string }
+                required: [data, token]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An administrator email-OTP challenge is required.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /catalogue/preview:
+    get:
+      operationId: listCataloguePreview
+      summary: List concept-only storefront catalogue cards.
+      responses:
+        "200":
+          description: Preview cards without prices, stock or checkout claims.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CataloguePreviewList"
+  /admin/catalogue/preview:
+    get:
+      operationId: listAdminCataloguePreview
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Catalogue preview cards for administrator review.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CataloguePreviewList"
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+    post:
+      operationId: createCataloguePreviewCard
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CataloguePreviewInput" }
+      responses:
+        "201":
+          description: A preview-only catalogue card was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      card: { $ref: "#/components/schemas/CataloguePreviewCard" }
+                    required: [card]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/catalogue/preview/{cataloguePreview}:
+    put:
+      operationId: updateCataloguePreviewCard
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: cataloguePreview
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CataloguePreviewInput" }
+      responses:
+        "200":
+          description: The preview-only catalogue card was updated.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "404":
+          description: The preview card was not found.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    delete:
+      operationId: deleteCataloguePreviewCard
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: cataloguePreview
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "204":
+          description: The preview-only catalogue card was removed.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "404":
+          description: The preview card was not found.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        name: { type: string }
+        email: { type: string, format: email }
+        roles:
+          type: array
+          items: { type: string, enum: [buyer, seller, vendor, admin] }
+      required: [id, name, email, roles]
+    CataloguePreviewCard:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        category: { type: string, maxLength: 80 }
+        name: { type: string, maxLength: 100 }
+        description: { type: string, maxLength: 280 }
+        icon: { type: string, maxLength: 8 }
+        position: { type: integer, minimum: 0, maximum: 999 }
+        currency: { type: string, enum: [NGN] }
+        price_minor: { type: integer, minimum: 1, maximum: 100000000, description: Demo price in kobo; never a live offer. }
+        stock_quantity: { type: integer, minimum: 0, maximum: 10000, description: Fictional demo stock quantity. }
+        seller_name: { type: string, maxLength: 100, description: Fictional seller name. }
+        seller_claim: { type: string, maxLength: 240, description: Sample seller blurb, not a verified claim. }
+        preview_only: { type: boolean, const: true }
+        demo_data: { type: boolean, const: true }
+      required: [id, category, name, description, icon, position, currency, price_minor, stock_quantity, seller_name, seller_claim, preview_only, demo_data]
+    CataloguePreviewInput:
+      type: object
+      properties:
+        category: { type: string, minLength: 2, maxLength: 80 }
+        name: { type: string, minLength: 2, maxLength: 100 }
+        description: { type: string, minLength: 2, maxLength: 280 }
+        icon: { type: string, minLength: 1, maxLength: 8 }
+        position: { type: integer, minimum: 0, maximum: 999 }
+        price_minor: { type: integer, minimum: 1, maximum: 100000000, description: Demo price in kobo. }
+        stock_quantity: { type: integer, minimum: 0, maximum: 10000 }
+        seller_name: { type: string, minLength: 2, maxLength: 100 }
+        seller_claim: { type: string, minLength: 2, maxLength: 240 }
+      required: [category, name, description, icon, price_minor, stock_quantity, seller_name, seller_claim]
+    CataloguePreviewList:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            catalogue:
+              type: array
+              items: { $ref: "#/components/schemas/CataloguePreviewCard" }
+          required: [catalogue]
+      required: [data]
+    SellerProfile:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        seller_type: { type: string, enum: [registered_business, informal] }
+        status: { type: string, enum: [draft, pending, approved, rejected, needs_more_info] }
+        trading_name: { type: string }
+        phone: { type: string }
+        legal_name: { type: [string, "null"] }
+        cac_number: { type: [string, "null"] }
+        cac_verified: { type: boolean }
+        identity_verification_status: { type: string, enum: [not_required, pending, approved, rejected, needs_more_info] }
+        payout_verification_status: { type: string, enum: [not_started, pending, verified, failed] }
+        submitted_at: { type: [string, "null"], format: date-time }
+        reviewed_at: { type: [string, "null"], format: date-time }
+        review_notes: { type: [string, "null"] }
+      required:
+        - id
+        - seller_type
+        - status
+        - trading_name
+        - phone
+        - legal_name
+        - cac_number
+        - cac_verified
+        - identity_verification_status
+        - payout_verification_status
+        - submitted_at
+        - reviewed_at
+        - review_notes
+    SellerApplication:
+      allOf:
+        - $ref: "#/components/schemas/SellerProfile"
+        - type: object
+          properties:
+            user:
+              type: object
+              properties:
+                id: { type: integer, minimum: 1 }
+                name: { type: string }
+                email: { type: string, format: email }
+              required: [id, name, email]
+          required: [user]
+    Message:
+      type: object
+      properties:
+        message: { type: string }
+      required: [message]
+    Error:
+      type: object
+      properties:
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+  responses:
+    ValidationError:
+      description: Invalid or expired input.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    RateLimited:
+      description: Too many requests.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthenticated:
+      description: A valid bearer token is required.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
