@@ -184,6 +184,23 @@ class SellerOnboardingController extends Controller
                 'string',
                 'max:1000',
             ],
+            'identity_verification_status' => [
+                Rule::requiredIf(
+                    $sellerProfile->seller_type === SellerProfile::TYPE_INFORMAL
+                    && $request->input('status') === SellerProfile::STATUS_APPROVED
+                ),
+                Rule::prohibitedIf($sellerProfile->seller_type === SellerProfile::TYPE_BUSINESS),
+                Rule::in(
+                    $request->input('status') === SellerProfile::STATUS_APPROVED
+                        ? [SellerProfile::STATUS_APPROVED]
+                        : [
+                            SellerProfile::STATUS_PENDING,
+                            SellerProfile::STATUS_APPROVED,
+                            SellerProfile::STATUS_REJECTED,
+                            SellerProfile::STATUS_NEEDS_MORE_INFO,
+                        ],
+                ),
+            ],
         ]);
 
         if (! in_array($sellerProfile->status, [
@@ -206,19 +223,24 @@ class SellerOnboardingController extends Controller
             }
 
             $previousStatus = $lockedProfile->status;
+            $identityStatus = $lockedProfile->seller_type === SellerProfile::TYPE_INFORMAL
+                ? ($validated['identity_verification_status'] ?? $lockedProfile->identity_verification_status)
+                : 'not_required';
+
             $lockedProfile->update([
                 'status' => $validated['status'],
                 'reviewed_by' => $request->user()->id,
                 'reviewed_at' => now(),
                 'review_notes' => $validated['note'] ?? null,
-                'identity_verification_status' => $lockedProfile->seller_type === SellerProfile::TYPE_INFORMAL
-                    ? $validated['status']
-                    : 'not_required',
+                'identity_verification_status' => $identityStatus,
             ]);
             $lockedProfile->reviews()->create([
                 'reviewer_id' => $request->user()->id,
                 'previous_status' => $previousStatus,
                 'new_status' => $validated['status'],
+                'identity_verification_status' => $lockedProfile->seller_type === SellerProfile::TYPE_INFORMAL
+                    ? $identityStatus
+                    : null,
                 'note' => $validated['note'] ?? null,
             ]);
 

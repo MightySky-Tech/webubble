@@ -82,11 +82,12 @@ provider. Production email delivery requires an approved SMTP service.
 Buyers can apply as a CAC-registered business or an informal seller from their account.
 Business applications require CAC details and a PDF/JPG/PNG evidence file, stored on
 Laravel's private local disk; informal applications require a contact phone and do not
-collect CAC, ID documents, or payout credentials. Applications remain pending until an
-administrator reviews them. Seller/vendor roles are granted only on approval; every
-account retains its buyer role. CAC verification is shown only for approved registered
-businesses. Payout verification remains unstarted until Webubble selects a licensed
-payment provider.
+collect CAC, ID documents, or payout credentials. For an informal seller, an administrator
+records a separate manual identity-check status; approval is blocked until that status is
+explicitly approved, and the decision is audited without storing identity documents.
+Seller/vendor roles are granted only on approval; every account retains its buyer role.
+CAC verification is shown only for approved registered businesses. Payout verification
+remains unstarted until Webubble selects a licensed payment provider.
 
 The admin portal has its own email-OTP sign-in at `http://localhost:3001/sign-in`.
 Administrators must also enroll in or verify an authenticator app (TOTP). Email login

@@ -693,6 +693,11 @@ export interface operations {
                     /** @enum {string} */
                     status: "approved" | "rejected" | "needs_more_info";
                     note?: string;
+                    /**
+                     * @description Required as approved before an informal seller application can be approved. A manual admin check; do not store identity documents in this MVP.
+                     * @enum {string}
+                     */
+                    identity_verification_status?: "pending" | "approved" | "rejected" | "needs_more_info";
                 };
             };
         };

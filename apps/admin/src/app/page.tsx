@@ -6,6 +6,7 @@ import { Alert, Button, TextField } from "@webubble/ui";
 
 type SellerApplication = components["schemas"]["SellerApplication"];
 type ReviewStatus = "approved" | "rejected" | "needs_more_info";
+type InformalIdentityStatus = Exclude<SellerApplication["identity_verification_status"], "not_required">;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -20,6 +21,9 @@ function isApplication(value: unknown): value is SellerApplication {
     && (item.seller_type === "registered_business" || item.seller_type === "informal")
     && typeof item.trading_name === "string"
     && typeof item.status === "string"
+    && ["not_required", "pending", "approved", "rejected", "needs_more_info"].includes(
+      String(item.identity_verification_status),
+    )
     && (typeof item.cac_number === "string" || item.cac_number === null)
     && typeof user.id === "number"
     && typeof user.name === "string"
@@ -29,6 +33,7 @@ function isApplication(value: unknown): value is SellerApplication {
 export default function Home() {
   const [applications, setApplications] = useState<SellerApplication[]>([]);
   const [notes, setNotes] = useState<Record<number, string>>({});
+  const [identityStatuses, setIdentityStatuses] = useState<Record<number, InformalIdentityStatus>>({});
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -71,7 +76,16 @@ export default function Home() {
     ) {
       throw new Error("The server returned an invalid seller application list.");
     }
+    const nextIdentityStatuses: Record<number, InformalIdentityStatus> = {};
+    for (const application of payload.data.applications) {
+      if (application.seller_type !== "informal") continue;
+      if (application.identity_verification_status === "not_required") {
+        throw new Error("The server returned an invalid informal seller identity status.");
+      }
+      nextIdentityStatuses[application.id] = application.identity_verification_status;
+    }
     setApplications(payload.data.applications);
+    setIdentityStatuses(nextIdentityStatuses);
   }
 
   useEffect(() => {
@@ -95,7 +109,13 @@ export default function Home() {
       const response = await fetch(`/api/seller-applications/${id}/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, note: notes[id] ?? "" }),
+        body: JSON.stringify({
+          status,
+          note: notes[id] ?? "",
+          ...(applications.find((application) => application.id === id)?.seller_type === "informal"
+            ? { identity_verification_status: identityStatuses[id] ?? "pending" }
+            : {}),
+        }),
       });
       const payload: unknown = await response.json();
       if (!response.ok) {
@@ -141,7 +161,26 @@ export default function Home() {
                 </>
               )}
               {application.seller_type === "informal" && (
-                <p>No CAC required. Review identity by the approved proportionate process; no ID document is stored in this MVP.</p>
+                <>
+                  <p>No CAC required. Record the manual identity-check decision; do not upload or store ID documents in this MVP.</p>
+                  <label>
+                    Identity verification status
+                    <select
+                      aria-label={`Identity verification status for ${application.trading_name}`}
+                      value={identityStatuses[application.id] ?? application.identity_verification_status}
+                      onChange={(event) => setIdentityStatuses((current) => ({
+                        ...current,
+                        [application.id]: event.target.value as InformalIdentityStatus,
+                      }))}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved — manual check complete</option>
+                      <option value="needs_more_info">Needs more information</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </label>
+                  <p>Payout verification remains unstarted until Webubble selects a licensed provider.</p>
+                </>
               )}
               <TextField
                 label={`Review note for ${application.trading_name}`}
@@ -150,7 +189,12 @@ export default function Home() {
                 maxLength={1000}
               />
               <div className="wb-admin-actions">
-                <Button loading={busyId === application.id} onClick={() => review(application.id, "approved")}>
+                <Button
+                  loading={busyId === application.id}
+                  disabled={application.seller_type === "informal"
+                    && identityStatuses[application.id] !== "approved"}
+                  onClick={() => review(application.id, "approved")}
+                >
                   Approve
                 </Button>
                 <Button loading={busyId === application.id} onClick={() => review(application.id, "needs_more_info")}>

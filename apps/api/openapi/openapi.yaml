@@ -256,6 +256,10 @@ paths:
               properties:
                 status: { type: string, enum: [approved, rejected, needs_more_info] }
                 note: { type: string, maxLength: 1000 }
+                identity_verification_status:
+                  type: string
+                  enum: [pending, approved, rejected, needs_more_info]
+                  description: Required as approved before an informal seller application can be approved. A manual admin check; do not store identity documents in this MVP.
               required: [status]
       responses:
         "200":

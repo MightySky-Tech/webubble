@@ -11,6 +11,7 @@ class SellerProfileReview extends Model
         'reviewer_id',
         'previous_status',
         'new_status',
+        'identity_verification_status',
         'note',
     ];
 

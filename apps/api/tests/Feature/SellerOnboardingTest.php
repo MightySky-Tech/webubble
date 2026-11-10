@@ -51,6 +51,22 @@ class SellerOnboardingTest extends TestCase
             ->postJson("/api/v1/admin/seller-applications/{$applicationId}/review", [
                 'status' => SellerProfile::STATUS_APPROVED,
             ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['identity_verification_status']);
+
+        $this->asUser($admin, ['admin:verified'])
+            ->postJson("/api/v1/admin/seller-applications/{$applicationId}/review", [
+                'status' => SellerProfile::STATUS_APPROVED,
+                'identity_verification_status' => SellerProfile::STATUS_PENDING,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['identity_verification_status']);
+
+        $this->asUser($admin, ['admin:verified'])
+            ->postJson("/api/v1/admin/seller-applications/{$applicationId}/review", [
+                'status' => SellerProfile::STATUS_APPROVED,
+                'identity_verification_status' => SellerProfile::STATUS_APPROVED,
+            ])
             ->assertOk()
             ->assertJsonPath('data.seller.cac_verified', false)
             ->assertJsonPath('data.seller.identity_verification_status', SellerProfile::STATUS_APPROVED);
@@ -63,6 +79,7 @@ class SellerOnboardingTest extends TestCase
             'seller_profile_id' => $applicationId,
             'reviewer_id' => $admin->id,
             'new_status' => SellerProfile::STATUS_APPROVED,
+            'identity_verification_status' => SellerProfile::STATUS_APPROVED,
         ]);
     }
 
@@ -108,7 +125,8 @@ class SellerOnboardingTest extends TestCase
                 'status' => SellerProfile::STATUS_APPROVED,
             ])
             ->assertOk()
-            ->assertJsonPath('data.seller.cac_verified', true);
+            ->assertJsonPath('data.seller.cac_verified', true)
+            ->assertJsonPath('data.seller.identity_verification_status', 'not_required');
         $this->assertEqualsCanonicalizing(
             ['buyer', 'seller'],
             $buyer->fresh()->roles->pluck('name')->all(),
@@ -140,6 +158,7 @@ class SellerOnboardingTest extends TestCase
             ->postJson($reviewUrl, [
                 'status' => SellerProfile::STATUS_REJECTED,
                 'note' => 'Please provide additional business details.',
+                'identity_verification_status' => SellerProfile::STATUS_NEEDS_MORE_INFO,
             ])
             ->assertOk()
             ->assertJsonPath('data.seller.status', SellerProfile::STATUS_REJECTED);
