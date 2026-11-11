@@ -45,6 +45,7 @@ export default function Home() {
   const [catalogue, setCatalogue] = useState<CataloguePreviewCard[]>([]);
   const [catalogueLoading, setCatalogueLoading] = useState(true);
   const [catalogueError, setCatalogueError] = useState("");
+  const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -105,10 +106,24 @@ export default function Home() {
           <span className="wb-wordmark__mark" aria-hidden="true">w</span>
           webubble
         </Link>
-        <nav className="wb-site-nav" aria-label="Main navigation">
-          <a href="#shop">Explore</a>
-          <a href="#how-it-works">How it works</a>
-          <Link href="/seller/onboarding">Sell on Webubble</Link>
+        <button
+          className="wb-mobile-nav-toggle"
+          type="button"
+          aria-label={mobileNavigationOpen ? "Close main navigation" : "Open main navigation"}
+          aria-expanded={mobileNavigationOpen}
+          aria-controls="main-navigation"
+          onClick={() => setMobileNavigationOpen((open) => !open)}
+        >
+          <span aria-hidden="true">{mobileNavigationOpen ? "×" : "☰"}</span>
+        </button>
+        <nav
+          id="main-navigation"
+          className={`wb-site-nav${mobileNavigationOpen ? " wb-site-nav--open" : ""}`}
+          aria-label="Main navigation"
+        >
+          <a href="#shop" onClick={() => setMobileNavigationOpen(false)}>Explore</a>
+          <a href="#how-it-works" onClick={() => setMobileNavigationOpen(false)}>How it works</a>
+          <Link href="/seller/onboarding" onClick={() => setMobileNavigationOpen(false)}>Sell on Webubble</Link>
         </nav>
         <Link className="wb-account-link" href="/account">My account <span aria-hidden="true">↗</span></Link>
       </header>

@@ -12,6 +12,7 @@ export default function AccountPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+  const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -60,9 +61,23 @@ export default function AccountPage() {
           <span className="wb-wordmark__mark" aria-hidden="true">w</span>
           webubble
         </Link>
-        <nav className="wb-site-nav" aria-label="Main navigation">
-          <Link href="/">Explore Webubble</Link>
-          <Link href="/seller/onboarding">Sell on Webubble</Link>
+        <button
+          className="wb-mobile-nav-toggle"
+          type="button"
+          aria-label={mobileNavigationOpen ? "Close main navigation" : "Open main navigation"}
+          aria-expanded={mobileNavigationOpen}
+          aria-controls="account-main-navigation"
+          onClick={() => setMobileNavigationOpen((open) => !open)}
+        >
+          <span aria-hidden="true">{mobileNavigationOpen ? "×" : "☰"}</span>
+        </button>
+        <nav
+          id="account-main-navigation"
+          className={`wb-site-nav${mobileNavigationOpen ? " wb-site-nav--open" : ""}`}
+          aria-label="Main navigation"
+        >
+          <Link href="/" onClick={() => setMobileNavigationOpen(false)}>Explore Webubble</Link>
+          <Link href="/seller/onboarding" onClick={() => setMobileNavigationOpen(false)}>Sell on Webubble</Link>
         </nav>
         <Button
           variant="secondary"

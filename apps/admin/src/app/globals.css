@@ -64,6 +64,18 @@ main {
   gap: var(--wb-space-2);
 }
 
+.wb-admin-applications select {
+  min-height: var(--wb-size-touch-target);
+  width: 100%;
+  padding: 0 var(--wb-space-3);
+  border: 1px solid var(--wb-color-border);
+  border-radius: var(--wb-radius-md);
+  background: var(--wb-color-surface);
+  color: var(--wb-color-text);
+  font: inherit;
+  font-size: 1rem;
+}
+
 .wb-admin-nav {
   display: flex;
   justify-content: flex-end;
@@ -79,6 +91,8 @@ main {
 .wb-catalogue-admin {
   width: min(100% - 48px, 1180px);
   max-width: none;
+  padding: 0;
+  margin: 0 auto;
   color: #203b32;
 }
 
@@ -313,8 +327,15 @@ main {
 
 .wb-catalogue-form__row {
   display: grid;
-  grid-template-columns: 0.7fr 1.3fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.wb-catalogue-form__row > *,
+.wb-catalogue-form__row .wb-field,
+.wb-catalogue-form__row .wb-field__input {
+  min-width: 0;
+  width: 100%;
 }
 
 .wb-catalogue-form__actions {
@@ -344,7 +365,8 @@ main {
 
 @media (max-width: 480px) {
   .wb-catalogue-admin {
-    width: min(100% - 32px, 1180px);
+    width: calc(100% - 32px);
+    padding: 0;
   }
 
   .wb-catalogue-list,

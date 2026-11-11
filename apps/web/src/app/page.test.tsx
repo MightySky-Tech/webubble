@@ -72,6 +72,17 @@ describe("home page", () => {
     expect(screen.getByRole("heading", { level: 1, name: /good things are closer/i })).toBeDefined();
   });
 
+  it("makes primary navigation available through the mobile menu", () => {
+    renderHome();
+
+    const toggle = screen.getByRole("button", { name: "Open main navigation" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(toggle);
+
+    expect(screen.getByRole("button", { name: "Close main navigation" }).getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("navigation", { name: "Main navigation" }).textContent).toContain("Sell on Webubble");
+  });
+
   it("filters proposed shopping categories as the visitor searches", () => {
     renderHome();
 

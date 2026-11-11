@@ -116,6 +116,15 @@ The OpenAPI contract is `apps/api/openapi/openapi.yaml`; generate shared TypeScr
 types with `pnpm --filter @webubble/api-client generate`. Set `WEBUBBLE_API_URL` to the
 API origin for the web server (defaults to `http://localhost:8100` for local development).
 
+## Installable mobile web app
+
+The storefront is responsive and installable as a PWA from a supported mobile browser.
+Use HTTPS in staging/production (localhost is allowed for local testing), then choose
+**Install** in a supported browser or **Share → Add to Home Screen** in iOS Safari. The
+service worker only provides a static offline notice; it does not cache account pages,
+API responses, forms, or checkout information. The admin portal is responsive but is
+not configured as an installable app.
+
 ## Contributing
 
 - Branch from `main` as `wb-xxx-short-name`. Open a PR that names the WB-xxx task and any

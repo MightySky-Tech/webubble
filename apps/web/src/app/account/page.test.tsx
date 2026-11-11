@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { replace } = vi.hoisted(() => ({ replace: vi.fn() }));
@@ -39,5 +39,8 @@ describe("account page", () => {
     expect(screen.getByText("Orders & deliveries")).toBeDefined();
     expect(screen.getByRole("link", { name: /become a seller/i })).toBeDefined();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open main navigation" }));
+    expect(screen.getByRole("link", { name: "Explore Webubble" })).toBeDefined();
   });
 });

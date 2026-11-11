@@ -80,6 +80,14 @@ main {
   gap: clamp(16px, 3vw, 36px);
 }
 
+.wb-mobile-nav-toggle {
+  display: none;
+}
+
+.wb-site-nav--open {
+  display: flex;
+}
+
 .wb-site-nav a,
 .wb-site-footer > a:not(.wb-wordmark) {
   color: var(--wb-local-ink);
@@ -1030,6 +1038,82 @@ main {
   font-weight: var(--wb-font-weight-medium);
 }
 
+.wb-pwa-install {
+  width: min(100% - 32px, 430px);
+  position: fixed;
+  z-index: 20;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dfe6d7;
+  border-radius: 16px;
+  background: #fffefa;
+  box-shadow: 0 10px 32px rgba(32, 59, 50, 0.16);
+  color: #203b32;
+}
+
+.wb-pwa-install__copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  font-size: 0.78rem;
+}
+
+.wb-pwa-install__copy span {
+  color: #65756e;
+}
+
+.wb-pwa-install__action {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #315d49;
+  color: white;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wb-pwa-install__action:focus-visible {
+  outline: 3px solid rgba(49, 93, 73, 0.35);
+  outline-offset: 2px;
+}
+
+.wb-pwa-install__dismiss {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #65756e;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.wb-pwa-install__dismiss:focus-visible {
+  outline: 3px solid rgba(49, 93, 73, 0.35);
+  outline-offset: 2px;
+}
+
+.wb-pwa-install__help,
+.wb-pwa-install__error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #65756e;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.wb-pwa-install__error {
+  color: #9d3026;
+}
+
 @media (max-width: 480px) {
   .wb-auth-page {
     padding-top: var(--wb-space-6);
@@ -1044,12 +1128,55 @@ main {
   }
 
   .wb-site-header {
+    position: relative;
     min-height: 72px;
     gap: 12px;
   }
 
+  .wb-mobile-nav-toggle {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    flex: 0 0 44px;
+    place-items: center;
+    border: 1px solid var(--wb-local-border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--wb-local-ink);
+    font: inherit;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  .wb-mobile-nav-toggle:focus-visible {
+    outline: 3px solid rgba(49, 93, 73, 0.35);
+    outline-offset: 2px;
+  }
+
   .wb-site-nav {
     display: none;
+  }
+
+  .wb-site-nav.wb-site-nav--open {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 1px);
+    right: 0;
+    left: 0;
+    display: grid;
+    gap: 0;
+    padding: 8px;
+    border: 1px solid var(--wb-local-border);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(32, 59, 50, 0.12);
+  }
+
+  .wb-site-nav.wb-site-nav--open a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
   }
 
   .wb-hero {
@@ -1185,5 +1312,65 @@ main {
   .wb-account-panel--seller {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .wb-hero h1 {
+    font-size: clamp(2.65rem, 12vw, 3.3rem);
+  }
+
+  .wb-pwa-install {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 360px) {
+  .wb-storefront,
+  .wb-account-page,
+  .wb-account-loading {
+    width: calc(100% - 24px);
+  }
+
+  .wb-hero-art {
+    min-height: 270px;
+  }
+
+  .wb-market-card {
+    gap: 7px;
+    padding: 10px;
+  }
+
+  .wb-market-card--top {
+    left: -4px;
+  }
+
+  .wb-market-card--bottom {
+    right: -4px;
+  }
+
+  .wb-account-panel__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .wb-account-roles {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .wb-hero {
+    min-height: 0;
+    padding-block: 36px;
+  }
+
+  .wb-hero-art {
+    min-height: 260px;
+  }
+
+  .wb-pwa-install {
+    bottom: max(8px, env(safe-area-inset-bottom));
   }
 }
