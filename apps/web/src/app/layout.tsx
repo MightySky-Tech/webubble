@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
+      { url: "/favicon.jpg", type: "image/jpeg", sizes: "640x640" },
       { url: "/webubble-icon-192.png", type: "image/png", sizes: "192x192" },
       { url: "/webubble-icon-512.png", type: "image/png", sizes: "512x512" },
       { url: "/webubble-icon.svg", type: "image/svg+xml", sizes: "any" },

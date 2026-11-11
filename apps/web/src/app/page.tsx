@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { components } from "@webubble/api-client";
 
@@ -103,7 +104,7 @@ export default function Home() {
     <main className="wb-storefront">
       <header className="wb-site-header">
         <Link className="wb-wordmark" href="/" aria-label="Webubble home">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
         <button
@@ -309,7 +310,7 @@ export default function Home() {
 
       <footer className="wb-site-footer">
         <Link className="wb-wordmark" href="/">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} />
           webubble
         </Link>
         <p>Local commerce, with more heart.</p>

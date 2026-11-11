@@ -1361,6 +1361,12 @@ export interface operations {
             query?: {
                 category?: string;
                 q?: string;
+                /** @description Inclusive minimum price in NGN kobo. */
+                min_price_minor?: number;
+                /** @description Inclusive maximum price in NGN kobo. */
+                max_price_minor?: number;
+                availability?: "in_stock";
+                sort?: "newest" | "price_asc" | "price_desc";
                 page?: number;
             };
             header?: never;

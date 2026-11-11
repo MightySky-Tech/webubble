@@ -181,6 +181,10 @@ export default function ProductModerationPage() {
           <p>Review seller listings and manage the approved categories. Only approved listings appear in the live storefront.</p>
         </div>
         <nav aria-label="Admin tools">
+          <Link className="wb-admin-brand" href="/" aria-label="Webubble admin home">
+            <Image src="/webubble_logo.jpg" alt="" width={32} height={32} />
+            <span>Webubble</span>
+          </Link>
           <Link href="/">Seller applications</Link>
           <Link href="/catalogue">Concept catalogue</Link>
         </nav>

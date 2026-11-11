@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Button, TextField } from "@webubble/ui";
@@ -101,6 +102,7 @@ export default function AdminSignInPage() {
   return (
     <main>
       <section className="wb-auth-card" aria-labelledby="admin-signin-title">
+        <Image className="wb-admin-signin-logo" src="/webubble_logo.jpg" alt="Webubble" width={48} height={48} priority />
         <p className="wb-auth-eyebrow">Webubble Admin</p>
         <h1 id="admin-signin-title">Administrator sign in</h1>
         {error && <Alert tone="error">{error}</Alert>}

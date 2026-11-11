@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -228,6 +229,60 @@ class ProductCatalogueTest extends TestCase
             'label' => '1 kg',
             'stock_quantity' => 8,
         ]);
+    }
+
+    public function test_live_catalogue_search_filters_availability_and_sorting(): void
+    {
+        $category = $this->category();
+        [, $profile] = $this->approvedSeller();
+        $now = now();
+        $products = [];
+
+        foreach ([
+            ['Rice pantry bundle', 250000, 5],
+            ['Rice and beans bundle', 450000, 0],
+            ['Family rice sack', 650000, 3],
+        ] as [$name, $price, $stock]) {
+            $product = Product::query()->create([
+                'seller_profile_id' => $profile->id,
+                'product_category_id' => $category->id,
+                'name' => $name,
+                'description' => 'A fictional test listing for catalogue discovery.',
+                'attributes' => [],
+                'price_minor' => $price,
+                'currency' => 'NGN',
+                'status' => Product::STATUS_DRAFT,
+            ]);
+            $product->variants()->create([
+                'label' => 'Standard',
+                'stock_quantity' => $stock,
+            ]);
+            DB::table('products')->where('id', $product->id)->update([
+                'status' => Product::STATUS_APPROVED,
+                'reviewed_at' => $now,
+            ]);
+            $products[] = $product;
+        }
+
+        $categoryAndPriceSort = $this->getJson('/api/v1/catalogue/products?category='.$category->slug.'&sort=price_asc')
+            ->assertOk();
+        $this->assertSame(
+            array_map(fn (Product $product): int => $product->id, $products),
+            array_column($categoryAndPriceSort->json('data.products'), 'id'),
+        );
+
+        $filtered = $this->getJson(
+            '/api/v1/catalogue/products?q=rice&min_price_minor=300000&max_price_minor=700000&availability=in_stock&sort=price_desc',
+        )->assertOk();
+        $this->assertSame([$products[2]->id], array_column($filtered->json('data.products'), 'id'));
+        $filtered->assertJsonPath('meta.total', 1);
+
+        $this->getJson('/api/v1/catalogue/products?min_price_minor=700000&max_price_minor=300000')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['max_price_minor']);
+        $this->getJson('/api/v1/catalogue/products?sort=popular')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['sort']);
     }
 
     public function test_seller_can_only_manage_owned_products_and_active_categories(): void

@@ -23,7 +23,15 @@ async function handle(request: NextRequest): Promise<NextResponse> {
 
   const target = new URL(`/api/v1/catalogue/${path}`, apiOrigin);
   if (isProducts) {
-    for (const key of ["category", "q", "page"]) {
+    for (const key of [
+      "category",
+      "q",
+      "min_price_minor",
+      "max_price_minor",
+      "availability",
+      "sort",
+      "page",
+    ]) {
       const value = request.nextUrl.searchParams.get(key);
       if (value) target.searchParams.set(key, value);
     }

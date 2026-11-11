@@ -62,16 +62,12 @@ main {
   text-decoration: none;
 }
 
-.wb-wordmark__mark {
+.wb-wordmark__image {
   width: 30px;
   height: 30px;
-  display: grid;
-  place-items: center;
-  border-radius: 11px 11px 11px 4px;
-  background: #d7ed9f;
-  color: var(--wb-local-green);
-  font-size: 1.2rem;
-  letter-spacing: -0.08em;
+  border: 1px solid rgba(17, 18, 19, 0.12);
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 .wb-site-nav {
@@ -1828,26 +1824,49 @@ main {
 
 .wb-shop-filters {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 240px) auto;
-  gap: 12px;
-  align-items: center;
-  margin: 0 0 16px;
+  grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(150px, 1fr));
+  gap: 14px;
+  align-items: end;
+  margin: 0 0 20px;
 }
 
 .wb-shop-filters .wb-discovery-search {
   margin: 0;
+  align-self: end;
 }
 
-.wb-shop-category select {
+.wb-shop-filter-field {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  color: var(--wb-local-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.wb-shop-filter-field input,
+.wb-shop-filter-field select {
   width: 100%;
-  min-height: 48px;
-  padding: 0 12px;
+  min-height: 46px;
+  padding: 0 11px;
   border: 1px solid #d5ddd2;
-  border-radius: 12px;
+  border-radius: 11px;
   background: #fff;
   color: var(--wb-local-ink);
   font: inherit;
   font-size: 0.9rem;
+}
+
+.wb-shop-filter-field input:focus,
+.wb-shop-filter-field select:focus {
+  outline: 3px solid rgba(49, 93, 73, 0.2);
+  border-color: var(--wb-local-green);
+}
+
+.wb-shop-filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .wb-shop-search-button {
@@ -1855,6 +1874,47 @@ main {
   border: 0;
   cursor: pointer;
   font: inherit;
+  white-space: nowrap;
+}
+
+.wb-shop-clear-button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--wb-local-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--wb-local-green);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.wb-product-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 0 56px;
+  color: var(--wb-local-muted);
+  font-size: 0.9rem;
+}
+
+.wb-product-pagination button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--wb-local-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--wb-local-green);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.wb-product-pagination button:disabled {
+  color: #8d978e;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .wb-live-count {
@@ -2190,15 +2250,7 @@ main {
   }
 
   .wb-shop-filters {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .wb-shop-filters .wb-discovery-search {
-    grid-column: 1 / -1;
-  }
-
-  .wb-shop-category {
-    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .wb-product-detail__layout {
@@ -2235,11 +2287,8 @@ main {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .wb-shop-filters .wb-discovery-search {
-    grid-column: auto;
-  }
-
-  .wb-shop-search-button {
+  .wb-shop-filter-actions {
+    display: grid;
     width: 100%;
   }
 

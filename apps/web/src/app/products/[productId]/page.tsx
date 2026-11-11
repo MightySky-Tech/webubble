@@ -72,7 +72,7 @@ export default function ProductDetailsPage() {
     <main className="wb-product-detail">
       <header className="wb-product-detail__header">
         <Link className="wb-wordmark" href="/" aria-label="Webubble home">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
         <Link className="wb-text-link" href="/products">← All products</Link>

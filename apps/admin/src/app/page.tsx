@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { components } from "@webubble/api-client";
 import { Alert, Button, TextField } from "@webubble/ui";
@@ -140,6 +142,10 @@ export default function Home() {
   return (
     <main>
       <nav className="wb-admin-nav" aria-label="Admin tools">
+        <Link className="wb-admin-brand" href="/" aria-label="Webubble admin home">
+          <Image src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
+          <span>Webubble</span>
+        </Link>
         <a href="/products">Moderate live products</a>
         <a href="/catalogue">Review catalogue concepts</a>
       </nav>

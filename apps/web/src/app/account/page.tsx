@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Alert, Button } from "@webubble/ui";
@@ -60,7 +61,7 @@ export default function AccountPage() {
     <main className="wb-account-page">
       <header className="wb-site-header wb-site-header--account">
         <Link className="wb-wordmark" href="/" aria-label="Webubble home">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
         <button
@@ -153,7 +154,7 @@ export default function AccountPage() {
 
       <footer className="wb-site-footer wb-site-footer--account">
         <Link className="wb-wordmark" href="/">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} />
           webubble
         </Link>
         <Link href="/">Back to the storefront</Link>

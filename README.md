@@ -111,8 +111,10 @@ Sellers submit drafts for moderation. An MFA-verified administrator reviews list
 New categories are inactive until approved in the same admin screen. Only listings from
 approved sellers in active categories appear in the live browse page at
 `http://localhost:3000/products`; the fictional concept catalogue remains separate.
-See the WB-012 section below for variant and inventory behavior. Cart, reservations and
-checkout are not part of this listing slice.
+The live browse page supports product/category/seller search, category and availability
+filters, minimum/maximum price, price sorting and pagination. See the WB-012 section
+below for variant and inventory behavior. Cart, reservations and checkout are not part
+of this listing slice.
 
 ## Product variants and inventory (WB-012; SELL-UI-03, SELL-UI-05, BUY-UI-04)
 
@@ -131,7 +133,7 @@ payment or checkout is included here; those behaviors belong to WB-015.
 
 ## Catalogue concept review
 
-The storefront starts with 36 example catalogue cards across six proposed shopping
+The storefront starts with 48 example catalogue cards across six proposed shopping
 categories as a first-pass design for Webubble's owner to review. Prices (stored as
 integer kobo), stock counts, seller names and seller blurbs are fictional demo data:
 they are not real offers, real businesses or verified seller claims. The cards are

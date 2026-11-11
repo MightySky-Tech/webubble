@@ -78,7 +78,9 @@ main {
 
 .wb-admin-nav {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wb-space-3);
   margin-bottom: var(--wb-space-4);
 }
 
@@ -86,6 +88,37 @@ main {
 .wb-admin-header nav a {
   color: var(--wb-color-primary);
   font-weight: var(--wb-font-weight-bold);
+}
+
+.wb-admin-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--wb-color-text) !important;
+  text-decoration: none;
+}
+
+.wb-admin-brand img {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(17, 18, 19, 0.12);
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.wb-admin-signin-logo {
+  border: 1px solid rgba(17, 18, 19, 0.12);
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.wb-admin-header nav .wb-admin-brand {
+  color: var(--wb-color-text);
+}
+
+.wb-admin-nav {
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .wb-catalogue-admin {

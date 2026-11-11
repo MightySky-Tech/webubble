@@ -18,7 +18,7 @@ class CataloguePreviewTest extends TestCase
         $response = $this->getJson('/api/v1/catalogue/preview');
         $catalogue = $response->json('data.catalogue');
 
-        $response->assertOk()->assertJsonCount(36, 'data.catalogue');
+        $response->assertOk()->assertJsonCount(48, 'data.catalogue');
         $this->assertSame(
             [
                 'Food & groceries',

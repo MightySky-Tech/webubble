@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CatalogueProductController extends Controller
@@ -23,8 +24,20 @@ class CatalogueProductController extends Controller
                 Rule::exists('product_categories', 'slug')->where('is_active', true),
             ],
             'q' => ['sometimes', 'string', 'min:1', 'max:80'],
+            'min_price_minor' => ['sometimes', 'integer', 'min:0', 'max:100000000'],
+            'max_price_minor' => ['sometimes', 'integer', 'min:0', 'max:100000000'],
+            'availability' => ['sometimes', Rule::in(['in_stock'])],
+            'sort' => ['sometimes', Rule::in(['newest', 'price_asc', 'price_desc'])],
             'page' => ['sometimes', 'integer', 'min:1'],
         ]);
+        if (
+            isset($validated['min_price_minor'], $validated['max_price_minor'])
+            && $validated['min_price_minor'] > $validated['max_price_minor']
+        ) {
+            throw ValidationException::withMessages([
+                'max_price_minor' => 'The maximum price must be greater than or equal to the minimum price.',
+            ]);
+        }
 
         $query = Product::query()
             ->with(['category', 'media', 'sellerProfile', 'variants'])
@@ -40,11 +53,30 @@ class CatalogueProductController extends Controller
             $query->where(function ($products) use ($search): void {
                 $products
                     ->whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%'])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ['%'.$search.'%']);
+                    ->orWhereRaw('LOWER(description) LIKE ?', ['%'.$search.'%'])
+                    ->orWhereHas('sellerProfile', fn ($seller) => $seller->whereRaw('LOWER(trading_name) LIKE ?', ['%'.$search.'%']))
+                    ->orWhereHas('category', fn ($category) => $category->whereRaw('LOWER(name) LIKE ?', ['%'.$search.'%']));
             });
         }
+        if (isset($validated['min_price_minor'])) {
+            $query->where('price_minor', '>=', $validated['min_price_minor']);
+        }
+        if (isset($validated['max_price_minor'])) {
+            $query->where('price_minor', '<=', $validated['max_price_minor']);
+        }
+        if (($validated['availability'] ?? null) === 'in_stock') {
+            $query->whereHas('variants', fn ($variants) => $variants->where('stock_quantity', '>', 0));
+        }
 
-        $products = $query->orderByDesc('reviewed_at')->orderByDesc('id')->paginate(24);
+        $sort = $validated['sort'] ?? 'newest';
+        if ($sort === 'price_asc') {
+            $query->orderBy('price_minor')->orderByDesc('reviewed_at')->orderByDesc('id');
+        } elseif ($sort === 'price_desc') {
+            $query->orderByDesc('price_minor')->orderByDesc('reviewed_at')->orderByDesc('id');
+        } else {
+            $query->orderByDesc('reviewed_at')->orderByDesc('id');
+        }
+        $products = $query->paginate(24);
 
         return response()->json([
             'data' => [

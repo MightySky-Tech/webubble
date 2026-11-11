@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Alert, Button, TextField } from "@webubble/ui";
 
@@ -205,6 +206,10 @@ export default function CataloguePage() {
           <p>Try a first assortment, edit anything that feels off, then review it on the storefront.</p>
         </div>
         <nav aria-label="Admin navigation">
+          <Link className="wb-admin-brand" href="/" aria-label="Webubble admin home">
+            <Image src="/webubble_logo.jpg" alt="" width={32} height={32} />
+            <span>Webubble</span>
+          </Link>
           <Link href="/">Seller applications</Link>
           <a href={`${storefrontUrl}/#catalogue`}>Open storefront preview</a>
         </nav>

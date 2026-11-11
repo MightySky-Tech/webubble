@@ -412,6 +412,20 @@ paths:
           name: q
           schema: { type: string, minLength: 1, maxLength: 80 }
         - in: query
+          name: min_price_minor
+          description: Inclusive minimum price in NGN kobo.
+          schema: { type: integer, minimum: 0, maximum: 100000000 }
+        - in: query
+          name: max_price_minor
+          description: Inclusive maximum price in NGN kobo.
+          schema: { type: integer, minimum: 0, maximum: 100000000 }
+        - in: query
+          name: availability
+          schema: { type: string, enum: [in_stock] }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [newest, price_asc, price_desc], default: newest }
+        - in: query
           name: page
           schema: { type: integer, minimum: 1 }
       responses:

@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Webubble Admin",
   description: "Webubble operations portal.",
+  icons: {
+    icon: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "640x640" }],
+  },
 };
 
 export default function RootLayout({

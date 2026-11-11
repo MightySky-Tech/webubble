@@ -13,18 +13,37 @@ import {
   productError,
 } from "@webubble/api-client/products";
 
+type DiscoveryFilters = {
+  category: string;
+  minPrice: string;
+  maxPrice: string;
+  availability: string;
+  sort: string;
+};
+
+const emptyFilters: DiscoveryFilters = {
+  category: "",
+  minPrice: "",
+  maxPrice: "",
+  availability: "",
+  sort: "newest",
+};
+
 export default function ProductsPage() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [products, setProducts] = useState<ProductListing[]>([]);
-  const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
+  const [filters, setFilters] = useState<DiscoveryFilters>(emptyFilters);
+  const [appliedFilters, setAppliedFilters] = useState<DiscoveryFilters>(emptyFilters);
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [productsLoading, setProductsLoading] = useState(true);
   const [categoryError, setCategoryError] = useState("");
   const [error, setError] = useState("");
   const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
 
   useEffect(() => {
     let active = true;
@@ -55,8 +74,17 @@ export default function ProductsPage() {
   useEffect(() => {
     let active = true;
     const params = new URLSearchParams();
-    if (category) params.set("category", category);
+    if (appliedFilters.category) params.set("category", appliedFilters.category);
     if (appliedSearch) params.set("q", appliedSearch);
+    if (appliedFilters.minPrice) {
+      params.set("min_price_minor", String(Math.round(Number(appliedFilters.minPrice) * 100)));
+    }
+    if (appliedFilters.maxPrice) {
+      params.set("max_price_minor", String(Math.round(Number(appliedFilters.maxPrice) * 100)));
+    }
+    if (appliedFilters.availability) params.set("availability", appliedFilters.availability);
+    if (appliedFilters.sort !== "newest") params.set("sort", appliedFilters.sort);
+    params.set("page", String(page));
     setProductsLoading(true);
     setError("");
 
@@ -69,13 +97,16 @@ export default function ProductsPage() {
           !isRecord(payload) || !isRecord(payload.data)
           || !Array.isArray(payload.data.products)
           || !payload.data.products.every(isProductListing)
-          || !isRecord(payload.meta) || typeof payload.meta.total !== "number"
+          || !isRecord(payload.meta)
+          || typeof payload.meta.total !== "number"
+          || typeof payload.meta.last_page !== "number"
         ) {
           throw new Error("The server returned an invalid live product catalogue.");
         }
         if (active) {
           setProducts(payload.data.products);
           setTotal(payload.meta.total);
+          setLastPage(payload.meta.last_page);
         }
       })
       .catch((reason: unknown) => {
@@ -87,18 +118,28 @@ export default function ProductsPage() {
     return () => {
       active = false;
     };
-  }, [appliedSearch, category]);
+  }, [appliedFilters, appliedSearch, page]);
 
-  function applySearch(event: FormEvent<HTMLFormElement>): void {
+  function applyFilters(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     setAppliedSearch(search.trim());
+    setAppliedFilters(filters);
+    setPage(1);
+  }
+
+  function clearFilters(): void {
+    setSearch("");
+    setAppliedSearch("");
+    setFilters(emptyFilters);
+    setAppliedFilters(emptyFilters);
+    setPage(1);
   }
 
   return (
     <main className="wb-storefront wb-marketplace-page">
       <header className="wb-site-header">
         <Link className="wb-wordmark" href="/" aria-label="Webubble home">
-          <span className="wb-wordmark__mark" aria-hidden="true">w</span>
+          <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
         <button
@@ -128,7 +169,7 @@ export default function ProductsPage() {
         <p>These are real seller listings approved for discovery. Preview concepts are kept separate and are not for sale.</p>
       </section>
 
-      <form className="wb-shop-filters" onSubmit={applySearch}>
+      <form className="wb-shop-filters" onSubmit={applyFilters}>
         <label className="wb-discovery-search">
           <span aria-hidden="true">⌕</span>
           <span className="wb-visually-hidden">Search live products</span>
@@ -140,14 +181,66 @@ export default function ProductsPage() {
             onChange={(event) => setSearch(event.target.value)}
           />
         </label>
-        <label className="wb-shop-category">
-          <span className="wb-visually-hidden">Filter by category</span>
-          <select value={category} onChange={(event) => setCategory(event.target.value)} disabled={categoriesLoading}>
+        <label className="wb-shop-filter-field">
+          <span>Category</span>
+          <select
+            value={filters.category}
+            onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}
+            disabled={categoriesLoading}
+          >
             <option value="">All categories</option>
             {categories.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
           </select>
         </label>
-        <button className="wb-primary-link wb-shop-search-button" type="submit">Search</button>
+        <label className="wb-shop-filter-field">
+          <span>Availability</span>
+          <select
+            value={filters.availability}
+            onChange={(event) => setFilters((current) => ({ ...current, availability: event.target.value }))}
+          >
+            <option value="">Any availability</option>
+            <option value="in_stock">In stock</option>
+          </select>
+        </label>
+        <label className="wb-shop-filter-field">
+          <span>Sort by</span>
+          <select
+            value={filters.sort}
+            onChange={(event) => setFilters((current) => ({ ...current, sort: event.target.value }))}
+          >
+            <option value="newest">Recently approved</option>
+            <option value="price_asc">Price: low to high</option>
+            <option value="price_desc">Price: high to low</option>
+          </select>
+        </label>
+        <label className="wb-shop-filter-field">
+          <span>Minimum price (₦)</span>
+          <input
+            type="number"
+            min="0"
+            max="1000000"
+            step="1"
+            inputMode="numeric"
+            value={filters.minPrice}
+            onChange={(event) => setFilters((current) => ({ ...current, minPrice: event.target.value }))}
+          />
+        </label>
+        <label className="wb-shop-filter-field">
+          <span>Maximum price (₦)</span>
+          <input
+            type="number"
+            min="0"
+            max="1000000"
+            step="1"
+            inputMode="numeric"
+            value={filters.maxPrice}
+            onChange={(event) => setFilters((current) => ({ ...current, maxPrice: event.target.value }))}
+          />
+        </label>
+        <div className="wb-shop-filter-actions">
+          <button className="wb-primary-link wb-shop-search-button" type="submit">Apply filters</button>
+          <button className="wb-shop-clear-button" type="button" onClick={clearFilters}>Clear</button>
+        </div>
       </form>
 
       {categoryError && <p className="wb-catalogue-error" role="alert">{categoryError}</p>}
@@ -209,6 +302,17 @@ export default function ProductsPage() {
             </article>
           ))}
         </div>
+      )}
+      {!productsLoading && !error && lastPage > 1 && (
+        <nav className="wb-product-pagination" aria-label="Product results pages">
+          <button type="button" disabled={page <= 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>
+            Previous
+          </button>
+          <span aria-live="polite">Page {page} of {lastPage}</span>
+          <button type="button" disabled={page >= lastPage} onClick={() => setPage((current) => Math.min(lastPage, current + 1))}>
+            Next
+          </button>
+        </nav>
       )}
     </main>
   );
