@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class ProductCatalogueTest extends TestCase
@@ -70,10 +71,11 @@ class ProductCatalogueTest extends TestCase
         $this->asUser($admin)
             ->getJson('/api/v1/admin/products')
             ->assertForbidden();
-        $this->asUser($admin, ['admin:verified'])
+        $adminProducts = $this->asUser($admin, ['admin:verified'])
             ->getJson('/api/v1/admin/products')
-            ->assertOk()
-            ->assertJsonPath('data.products.0.id', $productId)
+            ->assertOk();
+        $this->assertPrivateNoStore($adminProducts);
+        $adminProducts->assertJsonPath('data.products.0.id', $productId)
             ->assertJsonPath('data.products.0.seller.email', $seller->email);
 
         $this->asUser($admin, ['admin:verified'])
@@ -111,6 +113,121 @@ class ProductCatalogueTest extends TestCase
         $this->getJson('/api/v1/catalogue/products')
             ->assertOk()
             ->assertJsonCount(0, 'data.products');
+    }
+
+    public function test_variant_inventory_is_atomic_scoped_audited_and_publicly_redacted(): void
+    {
+        Storage::fake('local');
+        $category = $this->category();
+        [$seller, $profile] = $this->approvedSeller();
+        [$otherSeller] = $this->approvedSeller();
+
+        $created = $this->asUser($seller)->post('/api/v1/seller/products', [
+            'category_id' => $category->id,
+            'name' => 'Fresh orange basket',
+            'description' => 'Seasonal oranges selected by a local grower.',
+            'price_minor' => 325000,
+            'attributes' => '{}',
+            'variants' => json_encode([
+                ['label' => '1 kg', 'sku' => 'ORANGE-1KG'],
+                ['label' => '2 kg', 'sku' => 'ORANGE-2KG'],
+            ]),
+            'images' => [$this->fakeImage('oranges.png')],
+        ])->assertCreated()
+            ->assertJsonCount(2, 'data.product.inventory_variants');
+
+        $productId = $created->json('data.product.id');
+        $variantId = $created->json('data.product.inventory_variants.0.id');
+        $this->asUser($seller)
+            ->postJson("/api/v1/seller/products/{$productId}/submit")
+            ->assertAccepted();
+
+        $admin = $this->userWithRole(Role::ADMIN);
+        $this->asUser($admin, ['admin:verified'])
+            ->postJson("/api/v1/admin/products/{$productId}/review", ['status' => Product::STATUS_APPROVED])
+            ->assertOk();
+
+        $inventoryUpdate = $this->asUser($seller)
+            ->patchJson("/api/v1/seller/products/{$productId}/variants/{$variantId}/inventory", [
+                'expected_stock_quantity' => 0,
+                'stock_quantity' => 8,
+                'expected_low_stock_threshold' => 5,
+                'low_stock_threshold' => 3,
+                'reason' => 'Restocked from supplier',
+            ]);
+        $inventoryUpdate->assertOk();
+        $this->assertPrivateNoStore($inventoryUpdate);
+        $inventoryUpdate
+            ->assertJsonPath('data.variant.stock_quantity', 8)
+            ->assertJsonPath('data.variant.low_stock_threshold', 3)
+            ->assertJsonPath('data.variant.is_low_stock', false);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $productId,
+            'status' => Product::STATUS_APPROVED,
+        ]);
+        $detail = $this->getJson("/api/v1/catalogue/products/{$productId}")
+            ->assertOk()
+            ->assertJsonPath('data.product.variants.0.label', '1 kg')
+            ->assertJsonPath('data.product.variants.0.is_available', true);
+        $this->assertArrayNotHasKey('stock_quantity', $detail->json('data.product.variants.0'));
+        $this->assertArrayNotHasKey('sku', $detail->json('data.product.variants.0'));
+
+        $this->asUser($seller)
+            ->patchJson("/api/v1/seller/products/{$productId}/variants/{$variantId}/inventory", [
+                'expected_stock_quantity' => 0,
+                'stock_quantity' => 12,
+                'expected_low_stock_threshold' => 5,
+                'low_stock_threshold' => 5,
+                'reason' => 'Stale adjustment',
+            ])
+            ->assertStatus(409);
+
+        $this->asUser($otherSeller)
+            ->getJson("/api/v1/seller/products/{$productId}/inventory-adjustments")
+            ->assertNotFound();
+        $this->asUser($otherSeller)
+            ->patchJson("/api/v1/seller/products/{$productId}/variants/{$variantId}/inventory", [
+                'expected_stock_quantity' => 8,
+                'stock_quantity' => 12,
+                'expected_low_stock_threshold' => 3,
+                'low_stock_threshold' => 3,
+                'reason' => 'Unauthorized adjustment',
+            ])
+            ->assertNotFound();
+
+        $inventoryHistory = $this->asUser($seller)
+            ->getJson("/api/v1/seller/products/{$productId}/inventory-adjustments")
+            ->assertOk();
+        $this->assertPrivateNoStore($inventoryHistory);
+        $inventoryHistory
+            ->assertJsonCount(1, 'data.adjustments')
+            ->assertJsonPath('data.adjustments.0.variant_label', '1 kg')
+            ->assertJsonPath('data.adjustments.0.previous_stock_quantity', 0)
+            ->assertJsonPath('data.adjustments.0.new_stock_quantity', 8)
+            ->assertJsonPath('data.adjustments.0.reason', 'Restocked from supplier')
+            ->assertJsonPath('data.adjustments.0.actor.email', $seller->email);
+
+        $this->asUser($seller)
+            ->putJson("/api/v1/seller/products/{$productId}", [
+                'category_id' => $category->id,
+                'name' => 'Fresh orange basket',
+                'description' => 'Seasonal oranges selected by a local grower.',
+                'price_minor' => 325000,
+                'attributes' => [],
+                'variants' => [['label' => 'Small basket', 'sku' => 'ORANGE-SM']],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['variants']);
+        $this->assertDatabaseHas('products', [
+            'id' => $productId,
+            'status' => Product::STATUS_APPROVED,
+        ]);
+        $this->assertDatabaseHas('product_variants', [
+            'id' => $variantId,
+            'label' => '1 kg',
+            'stock_quantity' => 8,
+        ]);
     }
 
     public function test_seller_can_only_manage_owned_products_and_active_categories(): void
@@ -162,6 +279,42 @@ class ProductCatalogueTest extends TestCase
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
 
+    public function test_seller_can_swap_variant_labels_and_skus_in_one_edit(): void
+    {
+        $category = $this->category();
+        [$owner, $profile] = $this->approvedSeller();
+        $product = Product::query()->create([
+            'seller_profile_id' => $profile->id,
+            'product_category_id' => $category->id,
+            'name' => 'Handwoven market bag',
+            'description' => 'A sturdy handwoven bag made for everyday market shopping.',
+            'attributes' => [],
+            'price_minor' => 1250000,
+            'currency' => 'NGN',
+            'status' => Product::STATUS_DRAFT,
+        ]);
+        $small = $product->variants()->create(['label' => 'Small', 'sku' => 'BAG-S']);
+        $large = $product->variants()->create(['label' => 'Large', 'sku' => 'BAG-L']);
+
+        $this->asUser($owner)
+            ->putJson("/api/v1/seller/products/{$product->id}", [
+                'category_id' => $category->id,
+                'name' => 'Handwoven market bag',
+                'description' => 'A sturdy handwoven bag made for everyday market shopping.',
+                'price_minor' => 1250000,
+                'attributes' => [],
+                'variants' => [
+                    ['id' => $small->id, 'label' => 'Large', 'sku' => 'BAG-L'],
+                    ['id' => $large->id, 'label' => 'Small', 'sku' => 'BAG-S'],
+                ],
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.product.inventory_variants.0.label', 'Large')
+            ->assertJsonPath('data.product.inventory_variants.0.sku', 'BAG-L')
+            ->assertJsonPath('data.product.inventory_variants.1.label', 'Small')
+            ->assertJsonPath('data.product.inventory_variants.1.sku', 'BAG-S');
+    }
+
     public function test_category_activation_is_admin_only_and_is_audited_by_product_moderation(): void
     {
         $admin = $this->userWithRole(Role::ADMIN);
@@ -195,6 +348,13 @@ class ProductCatalogueTest extends TestCase
     private function category(): ProductCategory
     {
         return ProductCategory::query()->where('is_active', true)->firstOrFail();
+    }
+
+    private function assertPrivateNoStore(TestResponse $response): void
+    {
+        $directives = array_map('trim', explode(',', strtolower($response->headers->get('Cache-Control', ''))));
+        $this->assertContains('private', $directives);
+        $this->assertContains('no-store', $directives);
     }
 
     private function fakeImage(string $name): UploadedFile

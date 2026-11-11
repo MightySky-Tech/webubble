@@ -27,7 +27,7 @@ class CatalogueProductController extends Controller
         ]);
 
         $query = Product::query()
-            ->with(['category', 'media', 'sellerProfile'])
+            ->with(['category', 'media', 'sellerProfile', 'variants'])
             ->where('status', Product::STATUS_APPROVED)
             ->whereHas('category', fn ($category) => $category->where('is_active', true))
             ->whereHas('sellerProfile', fn ($seller) => $seller->where('status', 'approved'));
@@ -57,6 +57,22 @@ class CatalogueProductController extends Controller
                 'last_page' => $products->lastPage(),
                 'per_page' => $products->perPage(),
                 'total' => $products->total(),
+            ],
+        ]);
+    }
+
+    public function show(Product $product): JsonResponse
+    {
+        abort_unless(
+            $product->status === Product::STATUS_APPROVED
+            && $product->category()->where('is_active', true)->exists()
+            && $product->sellerProfile()->where('status', 'approved')->exists(),
+            404,
+        );
+
+        return response()->json([
+            'data' => [
+                'product' => ProductPresenter::listing($product->load(['category', 'media', 'sellerProfile', 'variants'])),
             ],
         ]);
     }

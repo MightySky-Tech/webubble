@@ -15,8 +15,9 @@ async function handle(request: NextRequest): Promise<NextResponse> {
   const path = request.nextUrl.pathname.split("/").slice(3).filter(Boolean).join("/");
   const isCategories = path === "categories";
   const isProducts = path === "products";
+  const isProductDetail = /^products\/\d+$/.test(path);
   const isProductMedia = /^products\/\d+\/media\/\d+$/.test(path);
-  if (!isCategories && !isProducts && !isProductMedia) {
+  if (!isCategories && !isProducts && !isProductDetail && !isProductMedia) {
     return NextResponse.json({ message: "Catalogue route not found." }, { status: 404 });
   }
 

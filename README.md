@@ -111,7 +111,23 @@ Sellers submit drafts for moderation. An MFA-verified administrator reviews list
 New categories are inactive until approved in the same admin screen. Only listings from
 approved sellers in active categories appear in the live browse page at
 `http://localhost:3000/products`; the fictional concept catalogue remains separate.
-This slice does not yet include variants, inventory, cart or checkout.
+See the WB-012 section below for variant and inventory behavior. Cart, reservations and
+checkout are not part of this listing slice.
+
+## Product variants and inventory (WB-012; SELL-UI-03, SELL-UI-05, BUY-UI-04)
+
+Each listing has one or more seller-defined options (for example, size or package weight)
+and optional SKUs. All options share the product price; stock and a configurable low-stock
+threshold are tracked independently for each option. New options start at zero stock, and
+products without custom options use a `Standard` option. Sellers can update stock without
+unpublishing an approved listing; inventory changes are locked atomically, guarded against
+stale edits, and recorded with the actor, reason, previous count and new count. The seller
+portal shows the latest 50 changes. Setting a threshold to zero disables its low-stock
+indicator.
+
+Buyers can view option names and availability on the product detail page. Exact stock
+counts and SKUs remain private to the seller and admin. No cart, stock reservation,
+payment or checkout is included here; those behaviors belong to WB-015.
 
 ## Catalogue concept review
 

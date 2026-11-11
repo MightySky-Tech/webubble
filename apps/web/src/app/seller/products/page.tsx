@@ -5,14 +5,25 @@ import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@webubble/ui";
 import {
+  InventoryAdjustment,
   isProductCategory,
+  isInventoryAdjustment,
   isRecord,
+  isSellerProductVariant,
   isSellerProduct,
   productError,
   formatProductPrice,
   ProductCategory,
   SellerProduct,
+  SellerProductVariant,
 } from "@webubble/api-client/products";
+
+type VariantDraft = {
+  id?: number;
+  label: string;
+  sku: string;
+  stock_quantity?: number;
+};
 
 type ProductDraft = {
   categoryId: string;
@@ -20,6 +31,19 @@ type ProductDraft = {
   description: string;
   price: string;
   attributes: string;
+  variants: VariantDraft[];
+};
+
+type InventoryDraft = {
+  stockQuantity: string;
+  lowStockThreshold: string;
+  reason: string;
+};
+
+type InventoryHistoryState = {
+  loading: boolean;
+  adjustments?: InventoryAdjustment[];
+  error?: string;
 };
 
 const emptyDraft: ProductDraft = {
@@ -28,6 +52,7 @@ const emptyDraft: ProductDraft = {
   description: "",
   price: "",
   attributes: "",
+  variants: [{ label: "Standard", sku: "" }],
 };
 
 function parseAttributes(text: string): Record<string, string> {
@@ -62,6 +87,9 @@ export default function SellerProductsPage() {
   const [sellerAccessDenied, setSellerAccessDenied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [inventoryBusyVariantId, setInventoryBusyVariantId] = useState<number | null>(null);
+  const [inventoryDrafts, setInventoryDrafts] = useState<Record<number, InventoryDraft>>({});
+  const [inventoryHistory, setInventoryHistory] = useState<Record<number, InventoryHistoryState>>({});
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -107,6 +135,37 @@ export default function SellerProductsPage() {
     setCategories(categoryPayload.data.categories.filter(isProductCategory));
   }
 
+  async function loadInventoryHistory(productId: number): Promise<void> {
+    const current = inventoryHistory[productId];
+    if (current?.loading || current?.adjustments) return;
+    setInventoryHistory((previous) => ({ ...previous, [productId]: { loading: true } }));
+    try {
+      const response = await fetch(`/api/seller/products/${productId}/inventory-adjustments`, { cache: "no-store" });
+      const payload: unknown = await response.json();
+      if (!response.ok) throw new Error(productError(payload, "Unable to load inventory history."));
+      const data = isRecord(payload) ? payload.data : null;
+      const adjustments = isRecord(data) ? data.adjustments : null;
+      if (
+        !Array.isArray(adjustments)
+        || !adjustments.every(isInventoryAdjustment)
+      ) {
+        throw new Error("The server returned an invalid inventory history.");
+      }
+      setInventoryHistory((previous) => ({
+        ...previous,
+        [productId]: { loading: false, adjustments },
+      }));
+    } catch (reason) {
+      setInventoryHistory((previous) => ({
+        ...previous,
+        [productId]: {
+          loading: false,
+          error: reason instanceof Error ? reason.message : "Unable to load inventory history.",
+        },
+      }));
+    }
+  }
+
   useEffect(() => {
     let active = true;
     loadData()
@@ -135,6 +194,12 @@ export default function SellerProductsPage() {
       description: product.description,
       price: (product.price_minor / 100).toFixed(2),
       attributes: Object.entries(product.attributes).map(([name, value]) => `${name}: ${value}`).join("\n"),
+      variants: product.inventory_variants.map((variant) => ({
+        id: variant.id,
+        label: variant.label,
+        sku: variant.sku ?? "",
+        stock_quantity: variant.stock_quantity,
+      })),
     });
     setImages([]);
     if (imageInputRef.current) imageInputRef.current.value = "";
@@ -144,10 +209,37 @@ export default function SellerProductsPage() {
 
   function resetForm(): void {
     setEditingId(null);
-    setDraft({ ...emptyDraft, categoryId: categories[0] ? String(categories[0].id) : "" });
+    setDraft({
+      ...emptyDraft,
+      categoryId: categories[0] ? String(categories[0].id) : "",
+      variants: [...emptyDraft.variants],
+    });
     setImages([]);
     if (imageInputRef.current) imageInputRef.current.value = "";
     setNotice("");
+  }
+
+  function updateVariant(index: number, patch: Partial<VariantDraft>): void {
+    setDraft((current) => ({
+      ...current,
+      variants: current.variants.map((variant, itemIndex) => (
+        itemIndex === index ? { ...variant, ...patch } : variant
+      )),
+    }));
+  }
+
+  function addVariant(): void {
+    setDraft((current) => ({
+      ...current,
+      variants: [...current.variants, { label: "", sku: "" }],
+    }));
+  }
+
+  function removeVariant(index: number): void {
+    setDraft((current) => ({
+      ...current,
+      variants: current.variants.filter((_, itemIndex) => itemIndex !== index),
+    }));
   }
 
   async function saveProduct(event: FormEvent<HTMLFormElement>): Promise<void> {
@@ -167,6 +259,11 @@ export default function SellerProductsPage() {
       form.set("description", draft.description.trim());
       form.set("price_minor", String(priceMinor));
       form.set("attributes", JSON.stringify(parseAttributes(draft.attributes)));
+      form.set("variants", JSON.stringify(draft.variants.map(({ id, label, sku }) => ({
+        ...(id ? { id } : {}),
+        label: label.trim(),
+        sku: sku.trim() || null,
+      }))));
       for (const image of images) form.append("images[]", image);
 
       const response = await fetch(
@@ -188,6 +285,79 @@ export default function SellerProductsPage() {
       setError(reason instanceof Error ? reason.message : "Unable to save this product.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function saveInventory(
+    event: FormEvent<HTMLFormElement>,
+    product: SellerProduct,
+    variant: SellerProductVariant,
+  ): Promise<void> {
+    event.preventDefault();
+    const draftValues = inventoryDrafts[variant.id] ?? {
+      stockQuantity: String(variant.stock_quantity),
+      lowStockThreshold: String(variant.low_stock_threshold),
+      reason: "",
+    };
+    const stockQuantity = Number(draftValues.stockQuantity);
+    const lowStockThreshold = Number(draftValues.lowStockThreshold);
+    if (!Number.isSafeInteger(stockQuantity) || stockQuantity < 0 || stockQuantity > 1_000_000) {
+      setError("Enter a stock count between 0 and 1,000,000.");
+      return;
+    }
+    if (!Number.isSafeInteger(lowStockThreshold) || lowStockThreshold < 0 || lowStockThreshold > 1_000_000) {
+      setError("Enter a low-stock threshold between 0 and 1,000,000.");
+      return;
+    }
+    if (draftValues.reason.trim().length < 3) {
+      setError("Explain why this inventory is changing.");
+      return;
+    }
+
+    setInventoryBusyVariantId(variant.id);
+    setError("");
+    setNotice("");
+    try {
+      const response = await fetch(
+        `/api/seller/products/${product.id}/variants/${variant.id}/inventory`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            expected_stock_quantity: variant.stock_quantity,
+            stock_quantity: stockQuantity,
+            expected_low_stock_threshold: variant.low_stock_threshold,
+            low_stock_threshold: lowStockThreshold,
+            reason: draftValues.reason.trim(),
+          }),
+          cache: "no-store",
+        },
+      );
+      const payload: unknown = await response.json();
+      if (!response.ok) {
+        const message = productError(payload, "Unable to update inventory.");
+        if (response.status === 409) await loadData();
+        throw new Error(message);
+      }
+      if (!isRecord(payload) || !isRecord(payload.data) || !isSellerProductVariant(payload.data.variant)) {
+        throw new Error("The server returned an invalid inventory response.");
+      }
+      setInventoryDrafts((previous) => {
+        const next = { ...previous };
+        delete next[variant.id];
+        return next;
+      });
+      setNotice(`${variant.label} inventory updated.`);
+      await loadData();
+      setInventoryHistory((previous) => {
+        const next = { ...previous };
+        delete next[product.id];
+        return next;
+      });
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Unable to update inventory.");
+    } finally {
+      setInventoryBusyVariantId(null);
     }
   }
 
@@ -332,6 +502,44 @@ export default function SellerProductsPage() {
                 onChange={(event) => setDraft((current) => ({ ...current, attributes: event.target.value }))}
               />
             </label>
+            <fieldset className="wb-product-variant-editor">
+              <legend>Variants</legend>
+              <p>Each option has its own stock count. The product price is shared by all options.</p>
+              {draft.variants.map((variant, index) => (
+                <div className="wb-product-variant-editor__row" key={variant.id ?? `new-${index}`}>
+                  <label>
+                    Option name
+                    <input
+                      required
+                      maxLength={120}
+                      placeholder="e.g. 1 kg, Medium / Blue"
+                      value={variant.label}
+                      onChange={(event) => updateVariant(index, { label: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    SKU (optional)
+                    <input
+                      maxLength={80}
+                      value={variant.sku}
+                      onChange={(event) => updateVariant(index, { sku: event.target.value })}
+                    />
+                  </label>
+                  {variant.stock_quantity !== undefined && variant.stock_quantity > 0 && (
+                    <p className="wb-product-help">Set this option&apos;s stock to zero before removing it.</p>
+                  )}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={draft.variants.length === 1 || (variant.stock_quantity ?? 0) > 0}
+                    onClick={() => removeVariant(index)}
+                  >
+                    Remove option
+                  </Button>
+                </div>
+              ))}
+              <Button type="button" variant="secondary" onClick={addVariant}>Add another option</Button>
+            </fieldset>
             <label>
               Photos (up to 5; JPG, PNG or WebP; 5 MB each)
               <input
@@ -363,8 +571,10 @@ export default function SellerProductsPage() {
             <p className="wb-product-empty">Your store is ready for its first product. Saved drafts stay private until approved.</p>
           ) : (
             <div className="wb-product-listings">
-              {products.map((product) => (
-                <article className="wb-product-listing" key={product.id}>
+              {products.map((product) => {
+                const history = inventoryHistory[product.id];
+                return (
+                  <article className="wb-product-listing" key={product.id}>
                   {product.media[0] && (
                     <Image
                       className="wb-product-listing__image"
@@ -385,6 +595,114 @@ export default function SellerProductsPage() {
                     </div>
                     <p className="wb-product-listing__price">{formatProductPrice(product.price_minor)}</p>
                     {product.review_notes && <p className="wb-product-review-note">{product.review_notes}</p>}
+                    <section className="wb-inventory-panel" aria-label={`Inventory for ${product.name}`}>
+                      <h4>Stock and low-stock alerts</h4>
+                      {product.inventory_variants.map((variant) => {
+                        const values = inventoryDrafts[variant.id] ?? {
+                          stockQuantity: String(variant.stock_quantity),
+                          lowStockThreshold: String(variant.low_stock_threshold),
+                          reason: "",
+                        };
+
+                        return (
+                          <form
+                            className="wb-inventory-variant"
+                            key={variant.id}
+                            onSubmit={(event) => saveInventory(event, product, variant)}
+                          >
+                            <div>
+                              <strong>{variant.label}</strong>
+                              {variant.sku && <span>SKU {variant.sku}</span>}
+                              <span>
+                                {variant.stock_quantity} in stock
+                                {variant.is_low_stock ? " · Low stock" : ""}
+                              </span>
+                            </div>
+                            <label>
+                              Stock on hand
+                              <input
+                                type="number"
+                                min="0"
+                                max="1000000"
+                                step="1"
+                                required
+                                value={values.stockQuantity}
+                                onChange={(event) => setInventoryDrafts((previous) => ({
+                                  ...previous,
+                                  [variant.id]: { ...values, stockQuantity: event.target.value },
+                                }))}
+                              />
+                            </label>
+                            <label>
+                              Low-stock alert at
+                              <input
+                                type="number"
+                                min="0"
+                                max="1000000"
+                                step="1"
+                                required
+                                value={values.lowStockThreshold}
+                                onChange={(event) => setInventoryDrafts((previous) => ({
+                                  ...previous,
+                                  [variant.id]: { ...values, lowStockThreshold: event.target.value },
+                                }))}
+                              />
+                            </label>
+                            <label>
+                              Reason for change
+                              <input
+                                required
+                                minLength={3}
+                                maxLength={200}
+                                placeholder="e.g. Restock or count correction"
+                                value={values.reason}
+                                onChange={(event) => setInventoryDrafts((previous) => ({
+                                  ...previous,
+                                  [variant.id]: { ...values, reason: event.target.value },
+                                }))}
+                              />
+                            </label>
+                            <Button type="submit" variant="secondary" loading={inventoryBusyVariantId === variant.id}>
+                              Update stock
+                            </Button>
+                          </form>
+                        );
+                      })}
+                      <details
+                        className="wb-inventory-history"
+                        onToggle={(event) => {
+                          if (event.currentTarget.open) void loadInventoryHistory(product.id);
+                        }}
+                      >
+                        <summary>Inventory change history</summary>
+                        {history?.loading && <p>Loading inventory history…</p>}
+                        {history?.error && <p role="alert">{history.error}</p>}
+                        {history?.adjustments?.length === 0 && (
+                          <p>No inventory adjustments have been recorded.</p>
+                        )}
+                        {history?.adjustments && (
+                          <ol>
+                            {history.adjustments.map((adjustment) => (
+                              <li key={adjustment.id}>
+                                <strong>{adjustment.variant_label}</strong>
+                                <span>
+                                  {adjustment.previous_stock_quantity} → {adjustment.new_stock_quantity} in stock
+                                  {" · "}threshold {adjustment.previous_low_stock_threshold} → {adjustment.new_low_stock_threshold}
+                                </span>
+                                <span>By {adjustment.actor?.email ?? "Former account"}</span>
+                                <time dateTime={adjustment.created_at}>
+                                  {new Intl.DateTimeFormat("en-NG", {
+                                    dateStyle: "medium",
+                                    timeStyle: "short",
+                                  }).format(new Date(adjustment.created_at))}
+                                </time>
+                                <p>{adjustment.reason}</p>
+                              </li>
+                            ))}
+                          </ol>
+                        )}
+                      </details>
+                    </section>
                     <div className="wb-product-actions">
                       {product.status !== "pending" && product.status !== "archived" && (
                         <>
@@ -404,8 +722,9 @@ export default function SellerProductsPage() {
                       )}
                     </div>
                   </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>

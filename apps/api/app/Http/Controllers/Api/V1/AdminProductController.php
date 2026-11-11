@@ -22,7 +22,7 @@ class AdminProductController extends Controller
         ]);
         $status = $validated['status'] ?? Product::STATUS_PENDING;
         $products = Product::query()
-            ->with(['category', 'media', 'sellerProfile.user'])
+            ->with(['category', 'media', 'sellerProfile.user', 'variants'])
             ->where('status', $status)
             ->orderBy('submitted_at')
             ->orderBy('id')
@@ -40,7 +40,7 @@ class AdminProductController extends Controller
                 'per_page' => $products->perPage(),
                 'total' => $products->total(),
             ],
-        ]);
+        ])->header('Cache-Control', 'private, no-store');
     }
 
     public function review(Request $request, Product $product): JsonResponse
@@ -74,10 +74,11 @@ class AdminProductController extends Controller
                 'note' => $validated['note'] ?? null,
             ]);
 
-            return $lockedProduct->fresh(['category', 'media', 'sellerProfile.user']);
+            return $lockedProduct->fresh(['category', 'media', 'sellerProfile.user', 'variants']);
         });
 
-        return response()->json(['data' => ['product' => ProductPresenter::admin($product)]]);
+        return response()->json(['data' => ['product' => ProductPresenter::admin($product)]])
+            ->header('Cache-Control', 'private, no-store');
     }
 
     public function media(Request $request, Product $product, ProductMedia $productMedia): BinaryFileResponse

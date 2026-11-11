@@ -161,6 +161,38 @@ export interface paths {
         get?: never;
         put: operations["updateSellerProduct"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/seller/products/{product}/variants/{variant}/inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateSellerVariantInventory"];
+        trace?: never;
+    };
+    "/seller/products/{product}/inventory-adjustments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listSellerInventoryAdjustments"];
+        put?: never;
+        post?: never;
         delete: operations["removeSellerProduct"];
         options?: never;
         head?: never;
@@ -223,6 +255,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["listPublishedProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalogue/products/{product}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPublishedProduct"];
         put?: never;
         post?: never;
         delete?: never;
@@ -522,6 +570,40 @@ export interface components {
             /** @enum {string} */
             mime_type: "image/jpeg" | "image/png" | "image/webp";
         };
+        ProductVariant: {
+            id: number;
+            label: string;
+            is_available: boolean;
+        };
+        SellerProductVariant: {
+            id: number;
+            label: string;
+            sku: string | null;
+            stock_quantity: number;
+            low_stock_threshold: number;
+            is_low_stock: boolean;
+        };
+        InventoryAdjustment: {
+            id: number;
+            variant_label: string;
+            previous_stock_quantity: number;
+            new_stock_quantity: number;
+            previous_low_stock_threshold: number;
+            new_low_stock_threshold: number;
+            reason: string;
+            actor: {
+                name: string;
+                /** Format: email */
+                email: string;
+            } | null;
+            /** Format: date-time */
+            created_at: string;
+        };
+        InventoryAdjustmentList: {
+            data: {
+                adjustments: components["schemas"]["InventoryAdjustment"][];
+            };
+        };
         ProductListing: {
             id: number;
             category: components["schemas"]["ProductCategory"];
@@ -536,6 +618,7 @@ export interface components {
             currency: "NGN";
             seller_name: string;
             seller_cac_verified: boolean;
+            variants: components["schemas"]["ProductVariant"][];
             media: components["schemas"]["ProductMedia"][];
         };
         SellerProduct: components["schemas"]["ProductListing"] & {
@@ -546,6 +629,7 @@ export interface components {
             submitted_at: string | null;
             /** Format: date-time */
             reviewed_at: string | null;
+            inventory_variants: components["schemas"]["SellerProductVariant"][];
         };
         AdminProduct: components["schemas"]["SellerProduct"] & {
             seller: {
@@ -589,7 +673,16 @@ export interface components {
             price_minor: number;
             /** @description JSON object of product attribute names and text values. */
             attributes: string;
+            /** @description JSON list of variant labels and optional SKUs. */
+            variants?: string;
             images?: string[];
+        };
+        InventoryInput: {
+            expected_stock_quantity: number;
+            stock_quantity: number;
+            expected_low_stock_threshold: number;
+            low_stock_threshold: number;
+            reason: string;
         };
         ProductReviewInput: {
             /** @enum {string} */
@@ -1034,6 +1127,91 @@ export interface operations {
             422: components["responses"]["ValidationError"];
         };
     };
+    updateSellerVariantInventory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                variant: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InventoryInput"];
+            };
+        };
+        responses: {
+            /** @description The inventory count and threshold were updated atomically and audited. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing or variant does not belong to this seller. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Inventory changed since it was loaded or the listing is archived. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    listSellerInventoryAdjustments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The latest inventory changes and the account that made each change. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryAdjustmentList"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing does not belong to this seller. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     removeSellerProduct: {
         parameters: {
             query?: never;
@@ -1201,6 +1379,39 @@ export interface operations {
                 };
             };
             422: components["responses"]["ValidationError"];
+        };
+    };
+    getPublishedProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public details and available options for an approved listing. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            product: components["schemas"]["ProductListing"];
+                        };
+                    };
+                };
+            };
+            /** @description The listing is not published. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
     getPublishedProductMedia: {

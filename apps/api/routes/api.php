@@ -55,6 +55,8 @@ Route::get('/catalogue/categories', [ProductCategoryController::class, 'index'])
     ->name('catalogue.categories');
 Route::get('/catalogue/products', [CatalogueProductController::class, 'index'])
     ->name('catalogue.products');
+Route::get('/catalogue/products/{product}', [CatalogueProductController::class, 'show'])
+    ->name('catalogue.products.show');
 Route::get('/catalogue/products/{product}/media/{productMedia}', [CatalogueProductController::class, 'media'])
     ->name('catalogue.products.media');
 
@@ -66,6 +68,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('seller/products')->name('seller.products.')->group(function () {
         Route::get('/', [SellerProductController::class, 'index'])->name('index');
         Route::post('/', [SellerProductController::class, 'store'])->name('store');
+        Route::get('/{product}/inventory-adjustments', [SellerProductController::class, 'inventoryAdjustments'])
+            ->name('inventory-adjustments.index');
+        Route::patch('/{product}/variants/{variant}/inventory', [SellerProductController::class, 'adjustInventory'])
+            ->name('variants.inventory.update');
         Route::get('/{product}/media/{productMedia}', [SellerProductController::class, 'media'])->name('media');
         Route::post('/{product}/submit', [SellerProductController::class, 'submit'])->name('submit');
         Route::put('/{product}', [SellerProductController::class, 'update'])->name('update');

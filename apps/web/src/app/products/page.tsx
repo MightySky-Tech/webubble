@@ -185,7 +185,7 @@ export default function ProductsPage() {
               )}
               <div className="wb-live-product-card__details">
                 <p className="wb-product-eyebrow">{product.category.name}</p>
-                <h2>{product.name}</h2>
+                <h2><Link href={`/products/${product.id}`}>{product.name}</Link></h2>
                 <p className="wb-live-product-card__description">{product.description}</p>
                 {Object.keys(product.attributes).length > 0 && (
                   <dl>
@@ -199,6 +199,11 @@ export default function ProductsPage() {
                   {product.seller_cac_verified && <span className="wb-cac-badge">CAC verified</span>}
                 </p>
                 <p className="wb-live-product-card__price">{formatProductPrice(product.price_minor)}</p>
+                <p className="wb-live-product-card__note">
+                  {product.variants.length} {product.variants.length === 1 ? "option" : "options"}
+                  {" · "}{product.variants.filter((variant) => variant.is_available).length} available
+                </p>
+                <Link className="wb-text-link" href={`/products/${product.id}`}>View options <span aria-hidden="true">→</span></Link>
                 <p className="wb-live-product-card__note">Checkout is not available yet. No purchase will be taken here.</p>
               </div>
             </article>

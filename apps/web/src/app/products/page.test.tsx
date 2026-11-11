@@ -19,6 +19,7 @@ const product = {
   currency: "NGN",
   seller_name: "Local seller",
   seller_cac_verified: true,
+  variants: [{ id: 100, label: "Standard", is_available: true }],
   media: [],
 };
 

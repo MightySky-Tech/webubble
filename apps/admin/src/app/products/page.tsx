@@ -236,6 +236,19 @@ export default function ProductModerationPage() {
                         ))}
                       </dl>
                     )}
+                    {product.inventory_variants.length > 0 && (
+                      <dl className="wb-product-admin__attributes">
+                        {product.inventory_variants.map((variant) => (
+                          <div key={variant.id}>
+                            <dt>{variant.label}</dt>
+                            <dd>
+                              {variant.stock_quantity} in stock · low-stock alert at {variant.low_stock_threshold}
+                              {variant.sku ? ` · SKU ${variant.sku}` : ""}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
                     <TextField
                       label={`Review note for ${product.name}`}
                       value={notes[product.id] ?? ""}

@@ -10,11 +10,16 @@ async function handle(request: NextRequest): Promise<NextResponse> {
   const isProductList = path === "products" && ["GET", "POST"].includes(request.method);
   const isProductUpdate = /^products\/\d+$/.test(path) && ["PUT", "DELETE"].includes(request.method);
   const isProductSubmit = /^products\/\d+\/submit$/.test(path) && request.method === "POST";
+  const isInventoryHistory = /^products\/\d+\/inventory-adjustments$/.test(path) && request.method === "GET";
+  const isInventoryUpdate = /^products\/\d+\/variants\/\d+\/inventory$/.test(path) && request.method === "PATCH";
   const isProductMedia = /^products\/\d+\/media\/\d+$/.test(path) && request.method === "GET";
   const isFormRequest = isOnboarding
     || (request.method === "POST" && isProductList)
     || (request.method === "PUT" && isProductUpdate);
-  if (!isMe && !isOnboarding && !isProductList && !isProductUpdate && !isProductSubmit && !isProductMedia) {
+  if (
+    !isMe && !isOnboarding && !isProductList && !isProductUpdate
+    && !isProductSubmit && !isInventoryHistory && !isInventoryUpdate && !isProductMedia
+  ) {
     return NextResponse.json({ message: "Seller route not found." }, { status: 404 });
   }
 
@@ -39,6 +44,17 @@ async function handle(request: NextRequest): Promise<NextResponse> {
       throw error;
     }
   }
+  let jsonBody: string | undefined;
+  if (isInventoryUpdate) {
+    try {
+      jsonBody = JSON.stringify(await request.json());
+    } catch (error) {
+      if (error instanceof SyntaxError || error instanceof TypeError) {
+        return NextResponse.json({ message: "Request body must be valid JSON." }, { status: 400 });
+      }
+      throw error;
+    }
+  }
 
   let upstream: Response;
   try {
@@ -47,8 +63,9 @@ async function handle(request: NextRequest): Promise<NextResponse> {
       headers: {
         Accept: isProductMedia ? "image/*" : "application/json",
         Authorization: `Bearer ${token}`,
+        ...(isInventoryUpdate ? { "Content-Type": "application/json" } : {}),
       },
-      body,
+      body: isInventoryUpdate ? jsonBody : body,
       cache: "no-store",
     });
   } catch (error) {
@@ -71,7 +88,12 @@ async function handle(request: NextRequest): Promise<NextResponse> {
       },
     });
   }
-  if (upstream.status === 204) return new NextResponse(null, { status: 204 });
+  if (upstream.status === 204) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: { "Cache-Control": "private, no-store" },
+    });
+  }
 
   const text = await upstream.text();
   let payload: unknown;
@@ -87,10 +109,14 @@ async function handle(request: NextRequest): Promise<NextResponse> {
     throw error;
   }
 
-  return NextResponse.json(payload, { status: upstream.status });
+  return NextResponse.json(payload, {
+    status: upstream.status,
+    headers: { "Cache-Control": "private, no-store" },
+  });
 }
 
 export const GET = handle;
 export const POST = handle;
 export const PUT = handle;
+export const PATCH = handle;
 export const DELETE = handle;

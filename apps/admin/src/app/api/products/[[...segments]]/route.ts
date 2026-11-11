@@ -92,7 +92,10 @@ async function handle(request: NextRequest): Promise<NextResponse> {
     throw error;
   }
 
-  return NextResponse.json(payload, { status: upstream.status });
+  return NextResponse.json(payload, {
+    status: upstream.status,
+    headers: { "Cache-Control": "private, no-store" },
+  });
 }
 
 export const GET = handle;
