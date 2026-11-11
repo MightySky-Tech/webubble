@@ -135,6 +135,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/seller/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listSellerProducts"];
+        put?: never;
+        post: operations["createSellerProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/seller/products/{product}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["updateSellerProduct"];
+        post?: never;
+        delete: operations["removeSellerProduct"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/seller/products/{product}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitSellerProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/seller/products/{product}/media/{productMedia}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getSellerProductMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalogue/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listProductCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalogue/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listPublishedProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalogue/products/{product}/media/{productMedia}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPublishedProductMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/seller-applications": {
         parameters: {
             query?: never;
@@ -181,6 +293,86 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/admin/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listProductsForModeration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/products/{product}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["reviewProductListing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/products/{product}/media/{productMedia}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getProductMediaForModeration"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/product-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listProductCategoriesForAdmin"];
+        put?: never;
+        post: operations["createProductCategory"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/product-categories/{productCategory}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateProductCategoryApproval"];
         trace?: never;
     };
     "/admin/mfa/setup": {
@@ -313,6 +505,96 @@ export interface components {
             data: {
                 catalogue: components["schemas"]["CataloguePreviewCard"][];
             };
+        };
+        ProductCategory: {
+            id: number;
+            name: string;
+            slug: string;
+            is_active: boolean;
+        };
+        ProductCategoryList: {
+            data: {
+                categories: components["schemas"]["ProductCategory"][];
+            };
+        };
+        ProductMedia: {
+            id: number;
+            /** @enum {string} */
+            mime_type: "image/jpeg" | "image/png" | "image/webp";
+        };
+        ProductListing: {
+            id: number;
+            category: components["schemas"]["ProductCategory"];
+            name: string;
+            description: string;
+            attributes: {
+                [key: string]: string;
+            };
+            /** @description Live price in kobo. */
+            price_minor: number;
+            /** @constant */
+            currency: "NGN";
+            seller_name: string;
+            seller_cac_verified: boolean;
+            media: components["schemas"]["ProductMedia"][];
+        };
+        SellerProduct: components["schemas"]["ProductListing"] & {
+            /** @enum {string} */
+            status: "draft" | "pending" | "approved" | "rejected" | "needs_more_info" | "archived";
+            review_notes: string | null;
+            /** Format: date-time */
+            submitted_at: string | null;
+            /** Format: date-time */
+            reviewed_at: string | null;
+        };
+        AdminProduct: components["schemas"]["SellerProduct"] & {
+            seller: {
+                id: number;
+                name: string;
+                /** Format: email */
+                email: string;
+            };
+        };
+        ProductList: {
+            data: {
+                products: components["schemas"]["ProductListing"][];
+            };
+            meta: {
+                current_page: number;
+                last_page: number;
+                per_page: number;
+                total: number;
+            };
+        };
+        SellerProductList: {
+            data: {
+                products: components["schemas"]["SellerProduct"][];
+            };
+        };
+        AdminProductList: {
+            data: {
+                products: components["schemas"]["AdminProduct"][];
+            };
+            meta: {
+                current_page: number;
+                last_page: number;
+                per_page: number;
+                total: number;
+            };
+        };
+        ProductInput: {
+            category_id: number;
+            name: string;
+            description: string;
+            price_minor: number;
+            /** @description JSON object of product attribute names and text values. */
+            attributes: string;
+            images?: string[];
+        };
+        ProductReviewInput: {
+            /** @enum {string} */
+            status: "approved" | "rejected" | "needs_more_info";
+            note?: string;
         };
         SellerProfile: {
             id: number;
@@ -640,6 +922,319 @@ export interface operations {
             422: components["responses"]["ValidationError"];
         };
     };
+    listSellerProducts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Listings owned by the authenticated, approved seller. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SellerProductList"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createSellerProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ProductInput"];
+            };
+        };
+        responses: {
+            /** @description A draft listing and its private photos were created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            product: components["schemas"]["SellerProduct"];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    updateSellerProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ProductInput"];
+            };
+        };
+        responses: {
+            /** @description The seller's draft listing was updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing does not belong to this seller. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description A pending or archived listing cannot be edited. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    removeSellerProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The draft was removed or the published listing was archived. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing does not belong to this seller. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description A listing awaiting moderation cannot be removed. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    submitSellerProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The listing was submitted for administrator moderation. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description An approved seller account is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing does not belong to this seller. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing is not in a submittable state. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description An active category and at least one photo are required. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getSellerProductMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                productMedia: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Private listing photo, visible only to its seller. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description The listing or photo was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listProductCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Categories approved for seller listings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductCategoryList"];
+                };
+            };
+        };
+    };
+    listPublishedProducts: {
+        parameters: {
+            query?: {
+                category?: string;
+                q?: string;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Approved listings from approved sellers only. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductList"];
+                };
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    getPublishedProductMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                productMedia: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public photo for an approved listing. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                };
+            };
+            /** @description The listing is not published or the photo was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     listSellerApplications: {
         parameters: {
             query?: never;
@@ -762,6 +1357,212 @@ export interface operations {
                 };
                 content?: never;
             };
+        };
+    };
+    listProductsForModeration: {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected" | "needs_more_info";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Product listings of the selected moderation status. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProductList"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    reviewProductListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductReviewInput"];
+            };
+        };
+        responses: {
+            /** @description Product moderation decision recorded in the audit history. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing is no longer awaiting moderation. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    getProductMediaForModeration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                productMedia: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Private listing photo visible to a verified administrator. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The listing or photo was not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listProductCategoriesForAdmin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All categories, including categories awaiting approval. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductCategoryList"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createProductCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                };
+            };
+        };
+        responses: {
+            /** @description A new inactive product category was created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
+        };
+    };
+    updateProductCategoryApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productCategory: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    is_active: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Category availability was changed. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthenticated"];
+            /** @description Verified administrator access with completed MFA is required. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationError"];
         };
     };
     getAdminMfaSetup: {

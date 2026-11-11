@@ -54,6 +54,8 @@ export default function AccountPage() {
     return <main className="wb-account-loading" aria-live="polite">Getting your Webubble ready…</main>;
   }
 
+  const canManageProducts = user?.roles.some((role) => role === "seller" || role === "vendor") ?? false;
+
   return (
     <main className="wb-account-page">
       <header className="wb-site-header wb-site-header--account">
@@ -130,11 +132,13 @@ export default function AccountPage() {
           <section className="wb-account-panel wb-account-panel--seller" aria-labelledby="seller-title">
             <div>
               <p className="wb-kicker">GOT SOMETHING TO SELL?</p>
-              <h2 id="seller-title">Bring your shop to Webubble.</h2>
-              <p>Registered business or informal seller? There’s a place for your business here.</p>
+              <h2 id="seller-title">{canManageProducts ? "Your storefront is ready." : "Bring your shop to Webubble."}</h2>
+              <p>{canManageProducts
+                ? "Add products and manage the listings for your approved seller account."
+                : "Registered business or informal seller? There’s a place for your business here."}</p>
             </div>
-            <Link className="wb-seller-link" href="/seller/onboarding">
-              Become a seller <span aria-hidden="true">→</span>
+            <Link className="wb-seller-link" href={canManageProducts ? "/seller/products" : "/seller/onboarding"}>
+              {canManageProducts ? "Manage products" : "Become a seller"} <span aria-hidden="true">→</span>
             </Link>
             <span className="wb-account-panel__spark" aria-hidden="true">✳</span>
           </section>

@@ -97,6 +97,22 @@ replayed within a time step. Only users already assigned the admin role can view
 applications or download private CAC evidence. Review decisions are audited; rejection
 and information requests require a reviewer note.
 
+## Seller product listings (WB-011; SELL-UI-03, BUY-UI-02)
+
+Approved sellers and vendors can create and edit product drafts at
+`http://localhost:3000/seller/products`. Listings support an approved product category,
+name, description, NGN price, text attributes and up to five JPG/PNG/WebP photos (5 MB
+each). Photos are stored on Laravel's private local disk; a seller can see their own
+draft photos, while administrators can review pending photos after MFA. Before photos
+are used on staging, configure persistent private storage for the API deployment.
+
+Sellers submit drafts for moderation. An MFA-verified administrator reviews listings at
+`http://localhost:3001/products` and can approve, request changes or reject with a note.
+New categories are inactive until approved in the same admin screen. Only listings from
+approved sellers in active categories appear in the live browse page at
+`http://localhost:3000/products`; the fictional concept catalogue remains separate.
+This slice does not yet include variants, inventory, cart or checkout.
+
 ## Catalogue concept review
 
 The storefront starts with 36 example catalogue cards across six proposed shopping

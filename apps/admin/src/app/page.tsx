@@ -140,6 +140,7 @@ export default function Home() {
   return (
     <main>
       <nav className="wb-admin-nav" aria-label="Admin tools">
+        <a href="/products">Moderate live products</a>
         <a href="/catalogue">Review catalogue concepts</a>
       </nav>
       <h1>Seller applications</h1>

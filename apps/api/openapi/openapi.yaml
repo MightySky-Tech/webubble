@@ -206,6 +206,191 @@ paths:
           description: The application cannot be changed in its current state.
         "422":
           $ref: "#/components/responses/ValidationError"
+  /seller/products:
+    get:
+      operationId: listSellerProducts
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Listings owned by the authenticated, approved seller.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SellerProductList" }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An approved seller account is required.
+    post:
+      operationId: createSellerProduct
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/ProductInput" }
+      responses:
+        "201":
+          description: A draft listing and its private photos were created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      product: { $ref: "#/components/schemas/SellerProduct" }
+                    required: [product]
+                required: [data]
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An approved seller account is required.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /seller/products/{product}:
+    put:
+      operationId: updateSellerProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: { $ref: "#/components/schemas/ProductInput" }
+      responses:
+        "200":
+          description: The seller's draft listing was updated.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An approved seller account is required.
+        "404":
+          description: The listing does not belong to this seller.
+        "409":
+          description: A pending or archived listing cannot be edited.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+    delete:
+      operationId: removeSellerProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "204":
+          description: The draft was removed or the published listing was archived.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An approved seller account is required.
+        "404":
+          description: The listing does not belong to this seller.
+        "409":
+          description: A listing awaiting moderation cannot be removed.
+  /seller/products/{product}/submit:
+    post:
+      operationId: submitSellerProduct
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "202":
+          description: The listing was submitted for administrator moderation.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: An approved seller account is required.
+        "404":
+          description: The listing does not belong to this seller.
+        "409":
+          description: The listing is not in a submittable state.
+        "422":
+          description: An active category and at least one photo are required.
+  /seller/products/{product}/media/{productMedia}:
+    get:
+      operationId: getSellerProductMedia
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: path
+          name: productMedia
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Private listing photo, visible only to its seller.
+          content:
+            image/jpeg: { schema: { type: string, format: binary } }
+            image/png: { schema: { type: string, format: binary } }
+            image/webp: { schema: { type: string, format: binary } }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "404":
+          description: The listing or photo was not found.
+  /catalogue/categories:
+    get:
+      operationId: listProductCategories
+      responses:
+        "200":
+          description: Categories approved for seller listings.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProductCategoryList" }
+  /catalogue/products:
+    get:
+      operationId: listPublishedProducts
+      parameters:
+        - in: query
+          name: category
+          schema: { type: string, maxLength: 100 }
+        - in: query
+          name: q
+          schema: { type: string, minLength: 1, maxLength: 80 }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Approved listings from approved sellers only.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProductList" }
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /catalogue/products/{product}/media/{productMedia}:
+    get:
+      operationId: getPublishedProductMedia
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: path
+          name: productMedia
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Public photo for an approved listing.
+          content:
+            image/jpeg: { schema: { type: string, format: binary } }
+            image/png: { schema: { type: string, format: binary } }
+            image/webp: { schema: { type: string, format: binary } }
+        "404":
+          description: The listing is not published or the photo was not found.
   /admin/seller-applications:
     get:
       operationId: listSellerApplications
@@ -293,6 +478,137 @@ paths:
           description: Administrator access is required.
         "404":
           description: Evidence was not found.
+  /admin/products:
+    get:
+      operationId: listProductsForModeration
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [pending, approved, rejected, needs_more_info] }
+      responses:
+        "200":
+          description: Product listings of the selected moderation status.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdminProductList" }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+  /admin/products/{product}/review:
+    post:
+      operationId: reviewProductListing
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductReviewInput" }
+      responses:
+        "200":
+          description: Product moderation decision recorded in the audit history.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "409":
+          description: The listing is no longer awaiting moderation.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/products/{product}/media/{productMedia}:
+    get:
+      operationId: getProductMediaForModeration
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: path
+          name: productMedia
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Private listing photo visible to a verified administrator.
+          content:
+            image/jpeg: { schema: { type: string, format: binary } }
+            image/png: { schema: { type: string, format: binary } }
+            image/webp: { schema: { type: string, format: binary } }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "404":
+          description: The listing or photo was not found.
+  /admin/product-categories:
+    get:
+      operationId: listProductCategoriesForAdmin
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: All categories, including categories awaiting approval.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ProductCategoryList" }
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+    post:
+      operationId: createProductCategory
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, minLength: 2, maxLength: 80 }
+              required: [name]
+      responses:
+        "201":
+          description: A new inactive product category was created.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "422":
+          $ref: "#/components/responses/ValidationError"
+  /admin/product-categories/{productCategory}:
+    patch:
+      operationId: updateProductCategoryApproval
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: productCategory
+          required: true
+          schema: { type: integer, minimum: 1 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_active: { type: boolean }
+              required: [is_active]
+      responses:
+        "200":
+          description: Category availability was changed.
+        "401":
+          $ref: "#/components/responses/Unauthenticated"
+        "403":
+          description: Verified administrator access with completed MFA is required.
+        "422":
+          $ref: "#/components/responses/ValidationError"
   /admin/mfa/setup:
     get:
       operationId: getAdminMfaSetup
@@ -508,6 +824,142 @@ components:
               items: { $ref: "#/components/schemas/CataloguePreviewCard" }
           required: [catalogue]
       required: [data]
+    ProductCategory:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        name: { type: string, maxLength: 80 }
+        slug: { type: string, maxLength: 100 }
+        is_active: { type: boolean }
+      required: [id, name, slug, is_active]
+    ProductCategoryList:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            categories:
+              type: array
+              items: { $ref: "#/components/schemas/ProductCategory" }
+          required: [categories]
+      required: [data]
+    ProductMedia:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        mime_type: { type: string, enum: [image/jpeg, image/png, image/webp] }
+      required: [id, mime_type]
+    ProductListing:
+      type: object
+      properties:
+        id: { type: integer, minimum: 1 }
+        category: { $ref: "#/components/schemas/ProductCategory" }
+        name: { type: string, maxLength: 120 }
+        description: { type: string, maxLength: 2000 }
+        attributes:
+          type: object
+          additionalProperties: { type: string, maxLength: 160 }
+        price_minor: { type: integer, minimum: 1, maximum: 100000000000, description: Live price in kobo. }
+        currency: { type: string, const: NGN }
+        seller_name: { type: string, maxLength: 100 }
+        seller_cac_verified: { type: boolean }
+        media:
+          type: array
+          maxItems: 5
+          items: { $ref: "#/components/schemas/ProductMedia" }
+      required: [id, category, name, description, attributes, price_minor, currency, seller_name, seller_cac_verified, media]
+    SellerProduct:
+      allOf:
+        - $ref: "#/components/schemas/ProductListing"
+        - type: object
+          properties:
+            status: { type: string, enum: [draft, pending, approved, rejected, needs_more_info, archived] }
+            review_notes: { type: [string, "null"] }
+            submitted_at: { type: [string, "null"], format: date-time }
+            reviewed_at: { type: [string, "null"], format: date-time }
+          required: [status, review_notes, submitted_at, reviewed_at]
+    AdminProduct:
+      allOf:
+        - $ref: "#/components/schemas/SellerProduct"
+        - type: object
+          properties:
+            seller:
+              type: object
+              properties:
+                id: { type: integer, minimum: 1 }
+                name: { type: string, maxLength: 100 }
+                email: { type: string, format: email }
+              required: [id, name, email]
+          required: [seller]
+    ProductList:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            products:
+              type: array
+              items: { $ref: "#/components/schemas/ProductListing" }
+          required: [products]
+        meta:
+          type: object
+          properties:
+            current_page: { type: integer }
+            last_page: { type: integer }
+            per_page: { type: integer }
+            total: { type: integer }
+          required: [current_page, last_page, per_page, total]
+      required: [data, meta]
+    SellerProductList:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            products:
+              type: array
+              items: { $ref: "#/components/schemas/SellerProduct" }
+          required: [products]
+      required: [data]
+    AdminProductList:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            products:
+              type: array
+              items: { $ref: "#/components/schemas/AdminProduct" }
+          required: [products]
+        meta:
+          type: object
+          properties:
+            current_page: { type: integer }
+            last_page: { type: integer }
+            per_page: { type: integer }
+            total: { type: integer }
+          required: [current_page, last_page, per_page, total]
+      required: [data, meta]
+    ProductInput:
+      type: object
+      properties:
+        category_id: { type: integer, minimum: 1 }
+        name: { type: string, minLength: 3, maxLength: 120 }
+        description: { type: string, minLength: 10, maxLength: 2000 }
+        price_minor: { type: integer, minimum: 1, maximum: 100000000000 }
+        attributes: { type: string, description: JSON object of product attribute names and text values. }
+        images:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items: { type: string, format: binary }
+      required: [category_id, name, description, price_minor, attributes]
+    ProductReviewInput:
+      type: object
+      properties:
+        status: { type: string, enum: [approved, rejected, needs_more_info] }
+        note: { type: string, minLength: 3, maxLength: 1000 }
+      required: [status]
     SellerProfile:
       type: object
       properties:

@@ -2,15 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 
 const accessCookie = "webubble_access_token";
 const apiOrigin = process.env.WEBUBBLE_API_URL ?? "http://localhost:8100";
-const routes: Record<string, { method: string; apiPath: string }> = {
-  me: { method: "GET", apiPath: "/api/v1/seller/me" },
-  onboarding: { method: "POST", apiPath: "/api/v1/seller/onboarding" },
-};
 
 async function handle(request: NextRequest): Promise<NextResponse> {
   const path = request.nextUrl.pathname.split("/").slice(3).join("/");
-  const route = routes[path];
-  if (!route || route.method !== request.method) {
+  const isMe = path === "me" && request.method === "GET";
+  const isOnboarding = path === "onboarding" && request.method === "POST";
+  const isProductList = path === "products" && ["GET", "POST"].includes(request.method);
+  const isProductUpdate = /^products\/\d+$/.test(path) && ["PUT", "DELETE"].includes(request.method);
+  const isProductSubmit = /^products\/\d+\/submit$/.test(path) && request.method === "POST";
+  const isProductMedia = /^products\/\d+\/media\/\d+$/.test(path) && request.method === "GET";
+  const isFormRequest = isOnboarding
+    || (request.method === "POST" && isProductList)
+    || (request.method === "PUT" && isProductUpdate);
+  if (!isMe && !isOnboarding && !isProductList && !isProductUpdate && !isProductSubmit && !isProductMedia) {
     return NextResponse.json({ message: "Seller route not found." }, { status: 404 });
   }
 
@@ -25,7 +29,7 @@ async function handle(request: NextRequest): Promise<NextResponse> {
   }
 
   let body: FormData | undefined;
-  if (request.method === "POST") {
+  if (isFormRequest) {
     try {
       body = await request.formData();
     } catch (error) {
@@ -38,10 +42,10 @@ async function handle(request: NextRequest): Promise<NextResponse> {
 
   let upstream: Response;
   try {
-    upstream = await fetch(new URL(route.apiPath, apiOrigin), {
-      method: route.method,
+    upstream = await fetch(new URL(`/api/v1/seller/${path}`, apiOrigin), {
+      method: request.method,
       headers: {
-        Accept: "application/json",
+        Accept: isProductMedia ? "image/*" : "application/json",
         Authorization: `Bearer ${token}`,
       },
       body,
@@ -56,6 +60,18 @@ async function handle(request: NextRequest): Promise<NextResponse> {
     }
     throw error;
   }
+
+  if (isProductMedia && upstream.ok) {
+    return new NextResponse(upstream.body, {
+      status: upstream.status,
+      headers: {
+        "Content-Type": upstream.headers.get("content-type") ?? "application/octet-stream",
+        "Cache-Control": "private, no-store",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
+  }
+  if (upstream.status === 204) return new NextResponse(null, { status: 204 });
 
   const text = await upstream.text();
   let payload: unknown;
@@ -76,3 +92,5 @@ async function handle(request: NextRequest): Promise<NextResponse> {
 
 export const GET = handle;
 export const POST = handle;
+export const PUT = handle;
+export const DELETE = handle;

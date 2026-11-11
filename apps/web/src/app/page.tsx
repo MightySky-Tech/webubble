@@ -121,7 +121,7 @@ export default function Home() {
           className={`wb-site-nav${mobileNavigationOpen ? " wb-site-nav--open" : ""}`}
           aria-label="Main navigation"
         >
-          <a href="#shop" onClick={() => setMobileNavigationOpen(false)}>Explore</a>
+          <Link href="/products" onClick={() => setMobileNavigationOpen(false)}>Explore live listings</Link>
           <a href="#how-it-works" onClick={() => setMobileNavigationOpen(false)}>How it works</a>
           <Link href="/seller/onboarding" onClick={() => setMobileNavigationOpen(false)}>Sell on Webubble</Link>
         </nav>
@@ -136,7 +136,7 @@ export default function Home() {
             Meet the local sellers, market finds and everyday essentials that make your
             neighbourhood feel like yours.
           </p>
-          <a className="wb-primary-link" href="#shop">Explore the marketplace <span aria-hidden="true">↓</span></a>
+          <Link className="wb-primary-link" href="/products">Browse live products <span aria-hidden="true">↓</span></Link>
           <div className="wb-hero__note">
             <span className="wb-hero__note-icon" aria-hidden="true">⌖</span>
             <span>Built for the way your community shops.</span>
