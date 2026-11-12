@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { components } from "@webubble/api-client";
+import GlobalProductSearch from "./GlobalProductSearch";
 
 type CataloguePreviewCard = components["schemas"]["CataloguePreviewCard"];
 
@@ -107,6 +108,7 @@ export default function Home() {
           <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
+        <GlobalProductSearch />
         <button
           className="wb-mobile-nav-toggle"
           type="button"

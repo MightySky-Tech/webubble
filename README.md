@@ -111,10 +111,12 @@ Sellers submit drafts for moderation. An MFA-verified administrator reviews list
 New categories are inactive until approved in the same admin screen. Only listings from
 approved sellers in active categories appear in the live browse page at
 `http://localhost:3000/products`; the fictional concept catalogue remains separate.
-The live browse page supports product/category/seller search, category and availability
-filters, minimum/maximum price, price sorting and pagination. See the WB-012 section
-below for variant and inventory behavior. Cart, reservations and checkout are not part
-of this listing slice.
+The storefront header has a global search field on home, browse, product detail and
+account pages. Submitting a search opens the live catalogue with the query preserved;
+results match product, category and seller names. The browse page also supports category
+and availability filters, minimum/maximum price, price sorting and pagination. See the
+WB-012 section below for variant and inventory behavior. Cart, reservations and checkout
+are not part of this listing slice.
 
 ## Product variants and inventory (WB-012; SELL-UI-03, SELL-UI-05, BUY-UI-04)
 

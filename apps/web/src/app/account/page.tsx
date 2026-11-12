@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Alert, Button } from "@webubble/ui";
 import { AuthUser, getCurrentUser, logout } from "@/lib/auth";
+import GlobalProductSearch from "../GlobalProductSearch";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -64,6 +65,7 @@ export default function AccountPage() {
           <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
+        <GlobalProductSearch />
         <button
           className="wb-mobile-nav-toggle"
           type="button"

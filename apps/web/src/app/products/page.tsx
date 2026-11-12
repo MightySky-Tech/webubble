@@ -12,6 +12,7 @@ import {
   ProductListing,
   productError,
 } from "@webubble/api-client/products";
+import GlobalProductSearch from "../GlobalProductSearch";
 
 type DiscoveryFilters = {
   category: string;
@@ -32,8 +33,8 @@ const emptyFilters: DiscoveryFilters = {
 export default function ProductsPage() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [products, setProducts] = useState<ProductListing[]>([]);
-  const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
+  const [searchReady, setSearchReady] = useState(false);
   const [filters, setFilters] = useState<DiscoveryFilters>(emptyFilters);
   const [appliedFilters, setAppliedFilters] = useState<DiscoveryFilters>(emptyFilters);
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
@@ -44,6 +45,11 @@ export default function ProductsPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
+
+  useEffect(() => {
+    setAppliedSearch(new URLSearchParams(window.location.search).get("q")?.trim().slice(0, 80) ?? "");
+    setSearchReady(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -73,6 +79,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     let active = true;
+    if (!searchReady) return;
     const params = new URLSearchParams();
     if (appliedFilters.category) params.set("category", appliedFilters.category);
     if (appliedSearch) params.set("q", appliedSearch);
@@ -118,18 +125,15 @@ export default function ProductsPage() {
     return () => {
       active = false;
     };
-  }, [appliedFilters, appliedSearch, page]);
+  }, [appliedFilters, appliedSearch, page, searchReady]);
 
   function applyFilters(event: FormEvent<HTMLFormElement>): void {
     event.preventDefault();
-    setAppliedSearch(search.trim());
     setAppliedFilters(filters);
     setPage(1);
   }
 
   function clearFilters(): void {
-    setSearch("");
-    setAppliedSearch("");
     setFilters(emptyFilters);
     setAppliedFilters(emptyFilters);
     setPage(1);
@@ -142,6 +146,7 @@ export default function ProductsPage() {
           <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
+        <GlobalProductSearch />
         <button
           className="wb-mobile-nav-toggle"
           type="button"
@@ -170,17 +175,6 @@ export default function ProductsPage() {
       </section>
 
       <form className="wb-shop-filters" onSubmit={applyFilters}>
-        <label className="wb-discovery-search">
-          <span aria-hidden="true">⌕</span>
-          <span className="wb-visually-hidden">Search live products</span>
-          <input
-            type="search"
-            maxLength={80}
-            placeholder="Search products..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-        </label>
         <label className="wb-shop-filter-field">
           <span>Category</span>
           <select
@@ -239,7 +233,7 @@ export default function ProductsPage() {
         </label>
         <div className="wb-shop-filter-actions">
           <button className="wb-primary-link wb-shop-search-button" type="submit">Apply filters</button>
-          <button className="wb-shop-clear-button" type="button" onClick={clearFilters}>Clear</button>
+          <button className="wb-shop-clear-button" type="button" onClick={clearFilters}>Clear filters</button>
         </div>
       </form>
 

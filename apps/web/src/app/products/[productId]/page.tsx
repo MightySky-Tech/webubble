@@ -11,6 +11,7 @@ import {
   ProductListing,
   productError,
 } from "@webubble/api-client/products";
+import GlobalProductSearch from "../../GlobalProductSearch";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -75,6 +76,7 @@ export default function ProductDetailsPage() {
           <Image className="wb-wordmark__image" src="/webubble_logo.jpg" alt="" width={32} height={32} priority />
           webubble
         </Link>
+        <GlobalProductSearch />
         <Link className="wb-text-link" href="/products">← All products</Link>
       </header>
       <article className="wb-product-detail__layout">

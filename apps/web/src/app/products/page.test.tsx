@@ -25,6 +25,7 @@ const product = {
 
 afterEach(() => {
   cleanup();
+  window.history.replaceState({}, "", "/");
   vi.unstubAllGlobals();
 });
 
@@ -44,12 +45,14 @@ describe("products page", () => {
     render(<ProductsPage />);
 
     expect(await screen.findByRole("heading", { name: "Fresh orange basket" })).toBeDefined();
+    expect(screen.getByRole("searchbox", { name: "Search products and local shops" })).toBeDefined();
     expect(screen.getByText("CAC verified")).toBeDefined();
     expect(screen.getByText(/checkout is not available yet/i)).toBeDefined();
     await waitFor(() => expect(screen.getByText("1 approved listing")).toBeDefined());
   });
 
   it("applies discovery filters and clears them", async () => {
+    window.history.replaceState({}, "", "/products?q=orange");
     const requests: string[] = [];
     vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL) => {
       const url = String(input);
@@ -66,9 +69,7 @@ describe("products page", () => {
     render(<ProductsPage />);
     await screen.findByRole("heading", { name: "Fresh orange basket" });
 
-    fireEvent.change(screen.getByRole("searchbox", { name: "Search live products" }), {
-      target: { value: "orange" },
-    });
+    expect(screen.getByRole("searchbox", { name: "Search products and local shops" })).toHaveProperty("value", "orange");
     fireEvent.change(screen.getByLabelText("Category"), { target: { value: category.slug } });
     fireEvent.change(screen.getByLabelText("Availability"), { target: { value: "in_stock" } });
     fireEvent.change(screen.getByLabelText("Sort by"), { target: { value: "price_asc" } });
@@ -80,7 +81,10 @@ describe("products page", () => {
       const request = requests
         .filter((url) => url.includes("/api/catalogue/products?"))
         .map((url) => new URL(url, "http://localhost"))
-        .find((url) => url.searchParams.get("q") === "orange");
+        .find((url) =>
+          url.searchParams.get("q") === "orange"
+          && url.searchParams.get("category") === category.slug,
+        );
       expect(request?.searchParams.get("category")).toBe(category.slug);
       expect(request?.searchParams.get("availability")).toBe("in_stock");
       expect(request?.searchParams.get("sort")).toBe("price_asc");
@@ -88,13 +92,13 @@ describe("products page", () => {
       expect(request?.searchParams.get("max_price_minor")).toBe("500000");
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
     await waitFor(() => {
       const request = requests
         .filter((url) => url.includes("/api/catalogue/products?"))
         .map((url) => new URL(url, "http://localhost"))
         .at(-1);
-      expect(request?.searchParams.has("q")).toBe(false);
+      expect(request?.searchParams.get("q")).toBe("orange");
       expect(request?.searchParams.has("category")).toBe(false);
       expect(request?.searchParams.has("availability")).toBe(false);
       expect(request?.searchParams.get("page")).toBe("1");
