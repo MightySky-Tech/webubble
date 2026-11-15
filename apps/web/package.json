@@ -14,7 +14,7 @@
     "@webubble/api-client": "workspace:*",
     "@webubble/ui": "workspace:*",
     "next": "15.5.29",
-    "react": "19.1.0",
+    "react": "19.3.1",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
