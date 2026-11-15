@@ -35,7 +35,7 @@ async function handle(request: NextRequest): Promise<NextResponse> {
   }
 
   const origin = request.headers.get("origin");
-  if (origin && origin !== request.nextUrl.origin) {
+  if (origin && !origin.includes(request.nextUrl.host)) {
     return NextResponse.json({ message: "Cross-origin authentication request rejected." }, { status: 403 });
   }
 

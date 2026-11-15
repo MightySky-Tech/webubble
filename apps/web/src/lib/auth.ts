@@ -134,7 +134,22 @@ export async function logout(): Promise<void> {
 }
 
 export async function getSellerProfile(): Promise<SellerProfile | null> {
-  const payload = await requestJson("seller/me");
+  const response = await fetch("/api/seller/me", {
+    method: "GET",
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+  });
+  const payload = await readJson(response);
+
+  if (!response.ok) {
+    // If 401 (unauthenticated), return null instead of throwing
+    if (response.status === 401) return null;
+    const message = isRecord(payload) && typeof payload.message === "string"
+      ? payload.message
+      : "Unable to load your seller profile.";
+    throw new Error(message);
+  }
+
   if (
     !isRecord(payload)
     || !isRecord(payload.data)
