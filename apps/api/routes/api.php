@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AdminMfaController;
 use App\Http\Controllers\Api\V1\AdminProductController;
+use App\Http\Controllers\Api\V1\AdminSellerController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CataloguePreviewController;
 use App\Http\Controllers\Api\V1\CatalogueProductController;
@@ -55,6 +56,9 @@ Route::get('/catalogue/categories', [ProductCategoryController::class, 'index'])
     ->name('catalogue.categories');
 Route::get('/catalogue/products', [CatalogueProductController::class, 'index'])
     ->name('catalogue.products');
+Route::get('/catalogue/sellers/{sellerProfile}', [CatalogueProductController::class, 'seller'])
+    ->whereNumber('sellerProfile')
+    ->name('catalogue.sellers.show');
 Route::get('/catalogue/products/{product}', [CatalogueProductController::class, 'show'])
     ->name('catalogue.products.show');
 Route::get('/catalogue/products/{product}/media/{productMedia}', [CatalogueProductController::class, 'media'])
@@ -82,6 +86,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [SellerOnboardingController::class, 'applications'])->name('index');
         Route::post('/{sellerProfile}/review', [SellerOnboardingController::class, 'review'])->name('review');
         Route::get('/{sellerProfile}/evidence', [SellerOnboardingController::class, 'evidence'])->name('evidence');
+    });
+
+    Route::prefix('admin/sellers')->name('admin.sellers.')->group(function () {
+        Route::get('/', [AdminSellerController::class, 'index'])->name('index');
+        Route::get('/{seller}', [AdminSellerController::class, 'show'])->whereNumber('seller')->name('show');
+        Route::post('/{seller}/approve', [AdminSellerController::class, 'approve'])->whereNumber('seller')->name('approve');
+        Route::post('/{seller}/reject', [AdminSellerController::class, 'reject'])->whereNumber('seller')->name('reject');
     });
 
     Route::prefix('admin/catalogue/preview')->name('admin.catalogue.preview.')->group(function () {

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import {
   formatProductPrice,
+  isDemoProductListing,
   isProductCategory,
   isProductListing,
   isRecord,
@@ -47,7 +48,12 @@ export default function ProductsPage() {
   const [lastPage, setLastPage] = useState(1);
 
   useEffect(() => {
-    setAppliedSearch(new URLSearchParams(window.location.search).get("q")?.trim().slice(0, 80) ?? "");
+    const searchParams = new URLSearchParams(window.location.search);
+    const search = searchParams.get("q")?.trim().slice(0, 80) ?? "";
+    const category = searchParams.get("category") ?? "";
+    setAppliedSearch(search);
+    setFilters((current) => ({ ...current, category }));
+    setAppliedFilters((current) => ({ ...current, category }));
     setSearchReady(true);
   }, []);
 
@@ -171,7 +177,7 @@ export default function ProductsPage() {
       <section className="wb-shop-heading" aria-labelledby="marketplace-title">
         <p className="wb-kicker">FROM APPROVED LOCAL SELLERS</p>
         <h1 id="marketplace-title">The neighbourhood marketplace.</h1>
-        <p>These are real seller listings approved for discovery. Preview concepts are kept separate and are not for sale.</p>
+        <p>These are seller listings approved by marketplace admins. Buyer ratings will appear when verified-purchase reviews are available; preview concepts are kept separate and are not for sale.</p>
       </section>
 
       <form className="wb-shop-filters" onSubmit={applyFilters}>
@@ -272,6 +278,7 @@ export default function ProductsPage() {
               )}
               <div className="wb-live-product-card__details">
                 <p className="wb-product-eyebrow">{product.category.name}</p>
+                <span className="wb-admin-approved-badge"><span aria-hidden="true">✓</span> Admin approved</span>
                 <h2><Link href={`/products/${product.id}`}>{product.name}</Link></h2>
                 <p className="wb-live-product-card__description">{product.description}</p>
                 {Object.keys(product.attributes).length > 0 && (
@@ -285,6 +292,9 @@ export default function ProductsPage() {
                   Sold by {product.seller_name}
                   {product.seller_cac_verified && <span className="wb-cac-badge">CAC verified</span>}
                 </p>
+                {isDemoProductListing(product) && (
+                  <span className="wb-demo-badge">DEMO ONLY · NOT FOR SALE</span>
+                )}
                 <p className="wb-live-product-card__price">{formatProductPrice(product.price_minor)}</p>
                 <p className="wb-live-product-card__note">
                   {product.variants.length} {product.variants.length === 1 ? "option" : "options"}

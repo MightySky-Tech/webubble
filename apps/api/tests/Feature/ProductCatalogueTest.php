@@ -87,7 +87,24 @@ class ProductCatalogueTest extends TestCase
         $this->getJson('/api/v1/catalogue/products')
             ->assertOk()
             ->assertJsonPath('data.products.0.name', 'Fresh orange basket')
+            ->assertJsonPath('data.products.0.seller_id', $profile->id)
             ->assertJsonPath('data.products.0.seller_name', $profile->trading_name);
+        $storefront = $this->getJson("/api/v1/catalogue/sellers/{$profile->id}")
+            ->assertOk()
+            ->assertJsonPath('data.seller.id', $profile->id)
+            ->assertJsonPath('data.seller.name', $profile->trading_name)
+            ->assertJsonPath('data.seller.cac_verified', false)
+            ->assertJsonPath('data.products.0.id', $productId)
+            ->assertJsonPath('data.products.0.seller_id', $profile->id)
+            ->assertJsonPath('meta.total', 1);
+        $this->assertSame('no-store', $storefront->headers->get('Cache-Control'));
+        $publicSeller = $storefront->json('data.seller');
+        $this->assertArrayNotHasKey('phone', $publicSeller);
+        $this->assertArrayNotHasKey('email', $publicSeller);
+
+        [, $pendingProfile] = $this->approvedSeller();
+        $pendingProfile->update(['status' => SellerProfile::STATUS_PENDING]);
+        $this->getJson("/api/v1/catalogue/sellers/{$pendingProfile->id}")->assertNotFound();
         $publicMediaResponse = $this->get("/api/v1/catalogue/products/{$productId}/media/{$mediaId}")
             ->assertOk()
             ->assertHeader('X-Content-Type-Options', 'nosniff');

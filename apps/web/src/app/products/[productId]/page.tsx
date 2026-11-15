@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   formatProductPrice,
+  isDemoProductListing,
   isProductListing,
   isRecord,
   ProductListing,
@@ -129,6 +130,9 @@ export default function ProductDetailsPage() {
             Sold by {product.seller_name}
             {product.seller_cac_verified && <span className="wb-cac-badge">CAC verified</span>}
           </p>
+          {isDemoProductListing(product) && (
+            <p className="wb-demo-badge" role="note">DEMO ONLY · fictional test data · not for sale</p>
+          )}
           {Object.keys(product.attributes).length > 0 && (
             <dl className="wb-product-detail__attributes">
               {Object.entries(product.attributes).map(([name, value]) => (

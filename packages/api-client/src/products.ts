@@ -75,6 +75,11 @@ export function isProductListing(value: unknown): value is ProductListing {
       && ["image/jpeg", "image/png", "image/webp"].includes(String(media.mime_type)));
 }
 
+export function isDemoProductListing(product: ProductListing): boolean {
+  return product.name.startsWith("DEMO ONLY:")
+    || product.seller_name.startsWith("DEMO ONLY -");
+}
+
 export function isSellerProduct(value: unknown): value is SellerProduct {
   if (!isRecord(value)) return false;
   const item = value;

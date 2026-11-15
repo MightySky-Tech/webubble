@@ -104,4 +104,32 @@ describe("products page", () => {
       expect(request?.searchParams.get("page")).toBe("1");
     });
   });
+
+  it("opens directly to a category selected from a landing-page card", async () => {
+    window.history.replaceState({}, "", "/products?category=fresh-produce");
+    const requests: string[] = [];
+    vi.stubGlobal("fetch", vi.fn((input: RequestInfo | URL) => {
+      const url = String(input);
+      requests.push(url);
+      const data = url.includes("/categories")
+        ? { data: { categories: [category] } }
+        : { data: { products: [product] }, meta: { current_page: 1, last_page: 1, per_page: 24, total: 1 } };
+      return Promise.resolve(new Response(JSON.stringify(data), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }));
+    }));
+
+    render(<ProductsPage />);
+
+    expect(await screen.findByRole("heading", { name: "Fresh orange basket" })).toBeDefined();
+    expect(screen.getByLabelText("Category")).toHaveProperty("value", "fresh-produce");
+    await waitFor(() => {
+      const productRequest = requests
+        .filter((url) => url.includes("/api/catalogue/products?"))
+        .map((url) => new URL(url, "http://localhost"))
+        .find((url) => url.searchParams.get("category") === "fresh-produce");
+      expect(productRequest).toBeDefined();
+    });
+  });
 });

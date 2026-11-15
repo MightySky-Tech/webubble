@@ -28,6 +28,7 @@ class ProductPresenter
             'attributes' => $product->attributes,
             'price_minor' => $product->price_minor,
             'currency' => $product->currency,
+            'seller_id' => $product->sellerProfile->id,
             'seller_name' => $product->sellerProfile->trading_name,
             'seller_cac_verified' => $product->sellerProfile->seller_type === 'registered_business'
                 && $product->sellerProfile->status === 'approved',

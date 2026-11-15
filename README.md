@@ -118,6 +118,17 @@ and availability filters, minimum/maximum price, price sorting and pagination. S
 WB-012 section below for variant and inventory behavior. Cart, reservations and checkout
 are not part of this listing slice.
 
+For local storefront testing, seed a fictional approved seller and three listings with:
+
+```sh
+docker compose exec api php artisan db:seed --class=LocalDemoMarketplaceSeeder
+```
+
+This seeder refuses to run outside `APP_ENV=local`. Its seller identity and approval are
+simulated, and every listing is labeled **DEMO ONLY - NOT FOR SALE**; it creates no real
+seller, verification claim or purchasable offer. It is idempotent and can be run again
+to restore the sample prices and stock.
+
 ## Product variants and inventory (WB-012; SELL-UI-03, SELL-UI-05, BUY-UI-04)
 
 Each listing has one or more seller-defined options (for example, size or package weight)

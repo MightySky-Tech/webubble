@@ -460,6 +460,25 @@ paths:
                 required: [data]
         "404":
           description: The listing is not published.
+  /catalogue/sellers/{sellerProfile}:
+    get:
+      operationId: getPublicSellerStorefront
+      parameters:
+        - in: path
+          name: sellerProfile
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Public seller name, CAC verification state and approved listings. No private contact details.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SellerStorefront" }
+        "404":
+          description: The seller is not approved.
   /catalogue/products/{product}/media/{productMedia}:
     get:
       operationId: getPublishedProductMedia
@@ -1007,6 +1026,7 @@ components:
           additionalProperties: { type: string, maxLength: 160 }
         price_minor: { type: integer, minimum: 1, maximum: 100000000000, description: Live price in kobo. }
         currency: { type: string, const: NGN }
+        seller_id: { type: integer, minimum: 1, description: Public seller storefront identifier. }
         seller_name: { type: string, maxLength: 100 }
         seller_cac_verified: { type: boolean }
         variants:
@@ -1016,7 +1036,33 @@ components:
           type: array
           maxItems: 5
           items: { $ref: "#/components/schemas/ProductMedia" }
-      required: [id, category, name, description, attributes, price_minor, currency, seller_name, seller_cac_verified, variants, media]
+      required: [id, category, name, description, attributes, price_minor, currency, seller_id, seller_name, seller_cac_verified, variants, media]
+    SellerStorefront:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            seller:
+              type: object
+              properties:
+                id: { type: integer, minimum: 1 }
+                name: { type: string, maxLength: 100 }
+                cac_verified: { type: boolean }
+              required: [id, name, cac_verified]
+            products:
+              type: array
+              items: { $ref: "#/components/schemas/ProductListing" }
+          required: [seller, products]
+        meta:
+          type: object
+          properties:
+            current_page: { type: integer }
+            last_page: { type: integer }
+            per_page: { type: integer }
+            total: { type: integer }
+          required: [current_page, last_page, per_page, total]
+      required: [data, meta]
     SellerProduct:
       allOf:
         - $ref: "#/components/schemas/ProductListing"

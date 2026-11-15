@@ -658,3 +658,224 @@ main {
     flex-direction: column;
   }
 }
+
+/* ===== SELLER MANAGEMENT DASHBOARD ===== */
+
+.wb-admin-sellers {
+  display: grid;
+  gap: var(--wb-space-6);
+  padding: var(--wb-space-6);
+  max-width: 100%;
+}
+
+.wb-sellers-header {
+  display: grid;
+  gap: var(--wb-space-2);
+  margin-bottom: var(--wb-space-4);
+}
+
+.wb-sellers-header h1 {
+  font-size: var(--wb-font-size-lg);
+  font-weight: var(--wb-font-weight-bold);
+  color: var(--wb-color-text);
+  margin: 0;
+}
+
+.wb-sellers-header .wb-subtitle {
+  font-size: var(--wb-font-size-sm);
+  color: var(--wb-color-text-secondary);
+  margin: 0;
+}
+
+.wb-sellers-filters {
+  display: flex;
+  gap: var(--wb-space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--wb-space-4);
+}
+
+.wb-filter-btn {
+  padding: var(--wb-space-2) var(--wb-space-4);
+  border: 1px solid var(--wb-color-border);
+  background: transparent;
+  color: var(--wb-color-text);
+  border-radius: var(--wb-radius-sm);
+  cursor: pointer;
+  font-size: var(--wb-font-size-sm);
+  transition: all 0.2s ease;
+}
+
+.wb-filter-btn:hover {
+  border-color: var(--wb-color-primary);
+  background: var(--wb-color-bg-hover);
+}
+
+.wb-filter-btn.active {
+  background: var(--wb-color-primary);
+  color: white;
+  border-color: var(--wb-color-primary);
+}
+
+.wb-sellers-table {
+  overflow-x: auto;
+  border-radius: var(--wb-radius-md);
+  border: 1px solid var(--wb-color-border);
+}
+
+.wb-sellers-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--wb-font-size-sm);
+}
+
+.wb-sellers-table th {
+  background: var(--wb-color-bg-secondary);
+  padding: var(--wb-space-3);
+  text-align: left;
+  font-weight: var(--wb-font-weight-bold);
+  color: var(--wb-color-text);
+  border-bottom: 2px solid var(--wb-color-border);
+}
+
+.wb-sellers-table td {
+  padding: var(--wb-space-3);
+  border-bottom: 1px solid var(--wb-color-border);
+}
+
+.wb-seller-row:hover {
+  background: var(--wb-color-bg-hover);
+}
+
+.wb-seller-name {
+  display: grid;
+  gap: var(--wb-space-1);
+}
+
+.wb-seller-name strong {
+  font-weight: var(--wb-font-weight-bold);
+  color: var(--wb-color-text);
+}
+
+.wb-seller-name small {
+  font-size: var(--wb-font-size-xs);
+  color: var(--wb-color-text-secondary);
+}
+
+.wb-date {
+  color: var(--wb-color-text-secondary);
+  font-size: var(--wb-font-size-xs);
+}
+
+.wb-actions {
+  display: flex;
+  gap: var(--wb-space-2);
+}
+
+.wb-btn {
+  padding: var(--wb-space-2) var(--wb-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--wb-radius-sm);
+  font-size: var(--wb-font-size-xs);
+  font-weight: var(--wb-font-weight-bold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.wb-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wb-btn-approve {
+  background: var(--wb-color-success);
+  color: white;
+  border-color: var(--wb-color-success);
+}
+
+.wb-btn-approve:hover:not(:disabled) {
+  background: var(--wb-color-success-dark);
+  border-color: var(--wb-color-success-dark);
+}
+
+.wb-btn-reject {
+  background: var(--wb-color-error);
+  color: white;
+  border-color: var(--wb-color-error);
+}
+
+.wb-btn-reject:hover:not(:disabled) {
+  background: var(--wb-color-error-dark);
+  border-color: var(--wb-color-error-dark);
+}
+
+.wb-btn-view {
+  background: var(--wb-color-primary);
+  color: white;
+  border-color: var(--wb-color-primary);
+}
+
+.wb-btn-view:hover:not(:disabled) {
+  background: var(--wb-color-primary-dark);
+  border-color: var(--wb-color-primary-dark);
+}
+
+.wb-badge {
+  display: inline-block;
+  padding: var(--wb-space-1) var(--wb-space-2);
+  border-radius: 999px;
+  font-size: var(--wb-font-size-xs);
+  font-weight: var(--wb-font-weight-bold);
+  text-align: center;
+}
+
+.wb-badge-success {
+  background: var(--wb-color-success);
+  color: white;
+}
+
+.wb-badge-error {
+  background: var(--wb-color-error);
+  color: white;
+}
+
+.wb-badge-warning {
+  background: var(--wb-color-warning);
+  color: var(--wb-color-text);
+}
+
+.wb-loading,
+.wb-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--wb-color-text-secondary);
+  text-align: center;
+  font-size: var(--wb-font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .wb-admin-sellers {
+    padding: var(--wb-space-4);
+  }
+
+  .wb-sellers-table {
+    font-size: var(--wb-font-size-xs);
+  }
+
+  .wb-sellers-table th,
+  .wb-sellers-table td {
+    padding: var(--wb-space-2);
+  }
+
+  .wb-btn {
+    padding: var(--wb-space-1) var(--wb-space-2);
+    font-size: var(--wb-font-size-xs);
+  }
+
+  .wb-actions {
+    flex-direction: column;
+    gap: var(--wb-space-1);
+  }
+}

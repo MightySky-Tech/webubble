@@ -17,12 +17,13 @@ async function handle(request: NextRequest): Promise<NextResponse> {
   const isProducts = path === "products";
   const isProductDetail = /^products\/\d+$/.test(path);
   const isProductMedia = /^products\/\d+\/media\/\d+$/.test(path);
-  if (!isCategories && !isProducts && !isProductDetail && !isProductMedia) {
+  const isSellerStorefront = /^sellers\/\d+$/.test(path);
+  if (!isCategories && !isProducts && !isProductDetail && !isProductMedia && !isSellerStorefront) {
     return NextResponse.json({ message: "Catalogue route not found." }, { status: 404 });
   }
 
   const target = new URL(`/api/v1/catalogue/${path}`, apiOrigin);
-  if (isProducts) {
+  if (isProducts || isSellerStorefront) {
     for (const key of [
       "category",
       "q",
@@ -32,6 +33,7 @@ async function handle(request: NextRequest): Promise<NextResponse> {
       "sort",
       "page",
     ]) {
+      if (isSellerStorefront && key !== "page") continue;
       const value = request.nextUrl.searchParams.get(key);
       if (value) target.searchParams.set(key, value);
     }

@@ -45,4 +45,24 @@ describe("product details", () => {
     expect(screen.queryByRole("button", { name: /checkout|buy|cart/i })).toBeNull();
     expect(screen.getByText(/ordering is not available yet/i)).toBeDefined();
   });
+
+  it("labels the local demo seller and listing as fictional and not for sale", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve(new Response(JSON.stringify({
+      data: {
+        product: {
+          ...product,
+          name: "DEMO ONLY: Fresh orange basket",
+          seller_name: "DEMO ONLY - Local test shop",
+        },
+      },
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    }))));
+
+    render(<ProductDetailsPage />);
+
+    expect(await screen.findByText(/demo only · fictional test data · not for sale/i)).toBeDefined();
+    expect(screen.queryByText("CAC verified")).toBeNull();
+  });
 });

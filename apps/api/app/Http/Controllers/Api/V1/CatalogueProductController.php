@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductMedia;
+use App\Models\SellerProfile;
 use App\Support\ProductPresenter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -107,6 +108,39 @@ class CatalogueProductController extends Controller
                 'product' => ProductPresenter::listing($product->load(['category', 'media', 'sellerProfile', 'variants'])),
             ],
         ]);
+    }
+
+    public function seller(SellerProfile $sellerProfile): JsonResponse
+    {
+        abort_unless($sellerProfile->status === SellerProfile::STATUS_APPROVED, 404);
+
+        $products = Product::query()
+            ->with(['category', 'media', 'sellerProfile', 'variants'])
+            ->where('seller_profile_id', $sellerProfile->id)
+            ->where('status', Product::STATUS_APPROVED)
+            ->whereHas('category', fn ($category) => $category->where('is_active', true))
+            ->orderByDesc('reviewed_at')
+            ->orderByDesc('id')
+            ->paginate(24);
+
+        return response()->json([
+            'data' => [
+                'seller' => [
+                    'id' => $sellerProfile->id,
+                    'name' => $sellerProfile->trading_name,
+                    'cac_verified' => $sellerProfile->seller_type === SellerProfile::TYPE_BUSINESS,
+                ],
+                'products' => $products->getCollection()
+                    ->map(fn (Product $product): array => ProductPresenter::listing($product))
+                    ->all(),
+            ],
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ],
+        ])->header('Cache-Control', 'no-store');
     }
 
     public function media(Product $product, ProductMedia $productMedia): BinaryFileResponse
