@@ -1,0 +1,133 @@
+TO: webubble4@... (or primary contact at Webubble Limited)
+CC: (Optional: your business partner, finance team)
+SUBJECT: Webubble MVP Development Agreement - First Payment Due (₦2,902,500 Excl. Tax)
+
+---
+
+BODY:
+
+Dear Webubble Limited,
+
+We hope you're excited about the Webubble MVP platform development! Week 1 is complete with excellent progress on the foundation.
+
+As per our Commercial Agreement dated November 2026, we are writing to request the first installment payment for the web MVP development contract.
+
+PAYMENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Contract Value (Excluding VAT):        ₦2,700,000.00
+VAT at 7.5%:                            ₦202,500.00
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL DUE (Including VAT):              ₦2,902,500.00
+
+MIGHTSKY TECH BANK ACCOUNT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Account Holder:          MightySky Tech
+Bank:                    Lloyds Bank (UK)
+Account Number:          39778662
+Sort Code:               30-55-66
+Currency:                GBP (please send Nigeria NGN equivalent)
+
+Please arrange a bank transfer of the Nigeria equivalent amount to our Lloyds Bank account using your preferred money transfer service or international payment method.
+
+WHAT THIS PAYMENT COVERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Full MVP Development (22 tasks in scope)
+✅ Website + Admin Portal + API
+✅ Design System & Components
+✅ Database & Infrastructure Setup
+✅ CI/CD Pipeline & Automated Testing
+✅ 30-Day Warranty & Support
+✅ Comprehensive Documentation
+✅ Security & Performance Optimization
+
+DELIVERABLE STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Week 1 (Nov 23-29): Foundation Complete
+   → Responsive storefront live
+   → Product discovery optimized (1.8s load on 3G)
+   → GitHub infrastructure ready
+   → Demo available: https://sn5j7r6b-3000.eun1.devtunnels.ms
+
+PAYMENT SCHEDULE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Installment 1: ₦540,000 (DUE NOW - on signing)
+  Installment 2: ₦540,000 (Due 31 Dec 2026)
+  Installment 3: ₦540,000 (Due 31 Jan 2027)
+  Installment 4: ₦540,000 (Due 28 Feb 2027)
+  Installment 5: ₦540,000 (Due 31 Mar 2027)
+
+Total: ₦2,700,000 + ₦202,500 (VAT) = ₦2,902,500
+
+WHAT'S NOT INCLUDED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Hosting & Domain Services
+   → You will provide your own hosting and domain
+   → If you'd like MightySky to assist with hosting/domain setup,
+      this will be a separate service (quote available upon request)
+
+❌ Post-MVP Features (Phase 2)
+   → Android & iOS mobile apps
+   → Advanced voice commerce features
+   → WebRTC video call integration
+   → Advanced fraud detection & dispute resolution
+
+IMPORTANT NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. VAT Compliance: 7.5% VAT is calculated and included as per Nigerian regulations
+
+2. Tax Fees: Any bank transfer fees, currency conversion charges, or applicable taxes 
+   should be covered by Webubble (please confirm with your financial institution)
+
+3. Payment Confirmation: Once payment is processed, please send:
+   - Transaction/reference number
+   - Bank receipt or payment confirmation
+   - Any required documentation for your accounting records
+
+4. Work Continuation: Development continues as scheduled. If any installment is 
+   more than 14 days late, work will pause per the agreement
+
+5. Essential Support: Please confirm whether Webubble will subscribe to MightySky's
+   Essential Support (₦250k/month) for minimum 6 months post-launch, as discussed
+
+NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Upon receipt of payment confirmation:
+→ Week 2 development begins immediately (Auth & API Contract)
+→ Gate A approval process starts (screens, data model, API spec)
+→ Weekly demo & feedback cycles continue
+
+CONTACT INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For any questions regarding:
+- Payment details
+- Banking information
+- Invoice requirements
+- Contract terms or timelines
+
+Please contact:
+📧 Email: enquiries@mightyskytech.com
+📱 WhatsApp/Phone: [Your contact number]
+
+---
+
+We greatly appreciate your partnership and look forward to building an excellent 
+platform that serves your local commerce community.
+
+Thank you,
+
+MightySky Tech
+Webubble MVP Development Team
+
+---
+
+P.S. We're on track to deliver Gate A approval (screens, data model, API contract) 
+by Week 3 as planned. Payment receipt will unlock Week 2 development with no delays.
