@@ -15,6 +15,9 @@ import {
 import type { ProductCategory, ProductListing } from "@webubble/api-client/products";
 import GlobalProductSearch from "./GlobalProductSearch";
 import CatalogueFinder from "./CatalogueFinder";
+import TrendingProducts from "./TrendingProducts";
+import QuickCategories from "./QuickCategories";
+import WhatPeopleBuy from "./WhatPeopleBuy";
 import { clearRecentSearches, getRecentSearches } from "@/lib/searchHistory";
 
 type CataloguePreviewCard = components["schemas"]["CataloguePreviewCard"];
@@ -415,6 +418,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* NEW: Trending Products Section */}
+      <TrendingProducts />
+
+      {/* NEW: Quick Category Navigation */}
+      <QuickCategories />
+
       <section className="wb-recommendations" aria-labelledby="recommendations-title">
         <div className="wb-section-heading">
           <div>
@@ -475,6 +484,11 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {/* NEW: What People Buy Section - Shows related products based on recent searches */}
+      {recentSearches.length > 0 && (
+        <WhatPeopleBuy searchQuery={recentSearches[0]} />
+      )}
 
       <section className="wb-home-products" id="local-picks" aria-labelledby="local-picks-title">
         <div className="wb-section-heading">
