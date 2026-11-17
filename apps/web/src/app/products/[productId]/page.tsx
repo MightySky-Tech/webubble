@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   formatProductPrice,
@@ -13,6 +13,148 @@ import {
   productError,
 } from "@webubble/api-client/products";
 import GlobalProductSearch from "../../GlobalProductSearch";
+
+interface CartItem {
+  id: string;
+  product_id: number;
+  variant_id: number;
+  variant_label: string;
+  product_name: string;
+  seller_name: string;
+  price_minor: number;
+  quantity: number;
+  stock_available: number;
+}
+
+function AddToCartForm({ product, selectedVariantId }: { product: ProductListing; selectedVariantId: number | null }) {
+  const router = useRouter();
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const getCartFromStorage = (): CartItem[] => {
+    if (typeof window === "undefined") return [];
+    const stored = localStorage.getItem("webubble_cart");
+    return stored ? JSON.parse(stored) : [];
+  };
+
+  const selectedVariant = product.variants.find((v) => v.id === selectedVariantId);
+  const isOutOfStock = !selectedVariant?.is_available;
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant || isOutOfStock) return;
+
+    try {
+      setLoading(true);
+      setMessage(null);
+
+      const cartItems = getCartFromStorage();
+      const cartItemId = `${product.id}-${selectedVariant.id}`;
+      const existingItem = cartItems.find((item) => item.id === cartItemId);
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cartItems.push({
+          id: cartItemId,
+          product_id: product.id,
+          variant_id: selectedVariant.id,
+          variant_label: selectedVariant.label,
+          product_name: product.name,
+          seller_name: product.seller_name,
+          price_minor: product.price_minor,
+          quantity,
+          stock_available: selectedVariant.stock_available || 0,
+        });
+      }
+
+      localStorage.setItem("webubble_cart", JSON.stringify(cartItems));
+      setMessage({ type: "success", text: `${product.name} added to cart!` });
+      setQuantity(1);
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to add to cart. Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCheckout = () => {
+    handleAddToCart();
+    setTimeout(() => {
+      router.push("/cart");
+    }, 500);
+  };
+
+  return (
+    <div className="wb-add-to-cart">
+      {message && (
+        <div className={`wb-add-to-cart__message wb-add-to-cart__message--${message.type}`} role="status">
+          {message.text}
+        </div>
+      )}
+
+      <div className="wb-add-to-cart__quantity">
+        <label htmlFor="quantity">Quantity:</label>
+        <div className="wb-quantity-selector">
+          <button
+            type="button"
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            disabled={quantity <= 1 || isOutOfStock}
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+          <input
+            id="quantity"
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            disabled={isOutOfStock}
+            aria-label="Quantity"
+          />
+          <button
+            type="button"
+            onClick={() => setQuantity(quantity + 1)}
+            disabled={isOutOfStock}
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <div className="wb-add-to-cart__actions">
+        <button
+          className="wb-add-to-cart__button wb-add-to-cart__button--primary"
+          onClick={handleAddToCart}
+          disabled={loading || isOutOfStock}
+          aria-label={`Add ${quantity} ${product.name} to cart`}
+        >
+          {loading ? "Adding..." : "Add to Cart"}
+        </button>
+        <button
+          className="wb-add-to-cart__button wb-add-to-cart__button--checkout"
+          onClick={handleCheckout}
+          disabled={loading || isOutOfStock}
+          aria-label={`Add ${quantity} ${product.name} to cart and proceed to checkout`}
+        >
+          {loading ? "Processing..." : "Add & Checkout"}
+        </button>
+      </div>
+
+      {isOutOfStock && (
+        <p className="wb-add-to-cart__notice" role="alert">
+          This variant is currently out of stock.
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function ProductDetailsPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -140,9 +282,7 @@ export default function ProductDetailsPage() {
               ))}
             </dl>
           )}
-          <p className="wb-product-detail__notice">
-            Ordering is not available yet. No payment or purchase will be taken here.
-          </p>
+          <AddToCartForm product={product} selectedVariantId={selectedVariantId} />
         </section>
       </article>
     </main>

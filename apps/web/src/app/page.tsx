@@ -418,6 +418,20 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SELLER ALERT BANNER - Prominent call-to-action */}
+      <section className="wb-seller-alert">
+        <div className="wb-seller-alert__content">
+          <div className="wb-seller-alert__icon">📦</div>
+          <div className="wb-seller-alert__text">
+            <h2>Local street seller? Want to reach more customers?</h2>
+            <p>Get started in minutes. No experience needed. Join hundreds of local sellers already on Webubble.</p>
+          </div>
+          <Link href="/seller/quick-setup" className="wb-seller-alert__cta">
+            Start Selling Today →
+          </Link>
+        </div>
+      </section>
+
       {/* NEW: Trending Products Section */}
       <TrendingProducts />
 

@@ -25,6 +25,12 @@ main {
   padding: var(--wb-space-7) var(--wb-space-4);
 }
 
+/* Quick Buy / One-Page Checkout */
+.wb-quick-buy main {
+  max-width: none;
+  padding: 0;
+}
+
 .wb-storefront,
 .wb-account-page {
   --wb-local-ink: #203b32;
@@ -5115,3 +5121,451 @@ a.wb-category-card {
     width: 100%;
   }
 }
+
+/* ============================================================================
+   SELLER ALERT BANNER
+   ============================================================================ */
+
+.wb-seller-alert {
+  background: linear-gradient(135deg, #315d49 0%, #183d30 100%);
+  color: white;
+  padding: 2rem;
+  margin: 3rem auto;
+  max-width: 1200px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(49, 93, 73, 0.2);
+}
+
+.wb-seller-alert__content {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.wb-seller-alert__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.wb-seller-alert__text h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.wb-seller-alert__text p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.wb-seller-alert__cta {
+  background: #d4e9a6;
+  color: #183d30;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.wb-seller-alert__cta:hover {
+  background: #e2f2c2;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .wb-seller-alert {
+    padding: 1.5rem;
+  }
+
+  .wb-seller-alert__content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .wb-seller-alert__cta {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ============================================================================
+   SELLER QUICK SETUP
+   ============================================================================ */
+
+.wb-seller-setup {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f0 100%);
+}
+
+.wb-seller-setup__header {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wb-seller-setup__logo {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #000;
+  text-decoration: none;
+}
+
+.wb-seller-setup__step-indicator {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.wb-seller-setup__progress {
+  height: 4px;
+  background: #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.wb-seller-setup__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #315d49 0%, #183d30 100%);
+  transition: width 0.3s ease;
+}
+
+.wb-seller-setup__container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.wb-seller-setup__step {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  animation: slideIn 0.3s ease-out;
+}
+
+.wb-seller-setup__step--center {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wb-seller-setup__icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.wb-seller-setup__step h1,
+.wb-seller-setup__step h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.wb-seller-setup__description {
+  color: #666;
+  margin: 1rem 0 2rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Benefits List */
+.wb-seller-setup__benefits {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.wb-benefit {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.wb-benefit-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  background: #315d49;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-top: 0.1rem;
+}
+
+.wb-benefit span {
+  color: #000;
+  font-weight: 500;
+}
+
+/* Form */
+.wb-seller-setup__form {
+  display: grid;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.wb-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wb-form-group label {
+  font-weight: 600;
+  color: #000;
+  font-size: 0.95rem;
+}
+
+.wb-form-group input,
+.wb-form-group select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.wb-form-group input:focus,
+.wb-form-group select:focus {
+  outline: none;
+  border-color: #315d49;
+  box-shadow: 0 0 0 3px rgba(49, 93, 73, 0.1);
+}
+
+.wb-form-group input:disabled,
+.wb-form-group select:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.wb-error-message {
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #d32f2f;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+/* Category Grid */
+.wb-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.wb-category-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.wb-category-option:hover {
+  border-color: #315d49;
+  background: #f8fdf7;
+}
+
+.wb-category-option input[type="radio"] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.wb-category-option input[type="radio"]:checked ~ span {
+  font-weight: 700;
+  color: #315d49;
+}
+
+.wb-category-option span {
+  flex: 1;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .wb-category-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Review Section */
+.wb-review-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-left: 4px solid #315d49;
+}
+
+.wb-review-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.wb-review-item:last-child {
+  border-bottom: none;
+}
+
+.wb-review-label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.wb-review-value {
+  color: #000;
+  font-weight: 500;
+}
+
+/* Form Actions */
+.wb-form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.wb-btn {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #ddd;
+  background: white;
+  color: #000;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.wb-btn:hover:not(:disabled) {
+  border-color: #000;
+  background: #f5f5f5;
+}
+
+.wb-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wb-btn--large {
+  padding: 0.9rem 1.8rem;
+  font-size: 1.05rem;
+  flex: 1;
+}
+
+.wb-btn--primary {
+  background: #315d49;
+  color: white;
+  border-color: #315d49;
+}
+
+.wb-btn--primary:hover:not(:disabled) {
+  background: #234536;
+  border-color: #234536;
+}
+
+.wb-btn--secondary {
+  background: white;
+  color: #000;
+  border: 1px solid #ddd;
+}
+
+.wb-btn--secondary:hover:not(:disabled) {
+  background: #f5f5f5;
+}
+
+/* Success State */
+.wb-success-icon {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  background: #4caf50;
+  color: white;
+  border-radius: 50%;
+  line-height: 60px;
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.wb-seller-setup__redirect {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .wb-seller-setup__header {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .wb-seller-setup__container {
+    padding: 0 0.5rem;
+  }
+
+  .wb-seller-setup__step {
+    padding: 1.5rem;
+  }
+
+  .wb-seller-setup__step h1,
+  .wb-seller-setup__step h2 {
+    font-size: 1.5rem;
+  }
+
+  .wb-form-actions {
+    flex-direction: column;
+  }
+
+  .wb-btn--large {
+    width: 100%;
+  }
+}
+
