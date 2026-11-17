@@ -13,6 +13,10 @@ interface CartNotification {
   timestamp: number;
 }
 
+interface QuickPayProduct extends ProductListing {
+  quantity?: number;
+}
+
 export default function ShoppingPage() {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<ProductListing[]>([]);
@@ -21,6 +25,10 @@ export default function ShoppingPage() {
   const [cartItems, setCartItems] = useState<Map<string, number>>(new Map());
   const [notification, setNotification] = useState<CartNotification | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [quickPayOpen, setQuickPayOpen] = useState(false);
+  const [quickPayProduct, setQuickPayProduct] = useState<QuickPayProduct | null>(null);
+  const [quickPayQuantity, setQuickPayQuantity] = useState(1);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const searchRef = useRef<HTMLFormElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
