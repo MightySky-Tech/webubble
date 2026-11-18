@@ -54,6 +54,17 @@ export default function SellerDashboard() {
     loadOrders();
   }, []);
 
+  const loadOrders = () => {
+    try {
+      const savedOrders = localStorage.getItem("seller_orders");
+      if (savedOrders) {
+        setOrders(JSON.parse(savedOrders));
+      }
+    } catch (err) {
+      console.error("Error loading orders:", err);
+    }
+  };
+
   const fetchSellerProfile = async () => {
     try {
       const response = await fetch("/api/seller/me");
