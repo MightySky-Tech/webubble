@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface SellerProfile {
   id: number;
   user_id: number;
-  seller_type: 'informal' | 'registered_business';
+  seller_type: "informal" | "registered_business";
   trading_name: string;
   phone: string;
-  status: 'draft' | 'pending' | 'approved' | 'rejected' | 'needs_more_info';
+  status: "draft" | "pending" | "approved" | "rejected" | "needs_more_info";
   cac_number?: string;
   cac_verified?: boolean;
   created_at: string;
@@ -18,34 +18,60 @@ interface SellerProfile {
   review_notes?: string;
 }
 
+interface OrderItem {
+  id: string;
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  price: number;
+}
+
+interface Order {
+  id: string;
+  customer_email: string;
+  customer_phone: string;
+  items: OrderItem[];
+  status: "pending" | "confirmed" | "shipped" | "delivered" | "refunded";
+  fulfillment_status: "pending" | "ready_for_pickup" | "picked_up" | "in_transit" | "delivered";
+  total: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function SellerDashboard() {
   const router = useRouter();
   const [seller, setSeller] = useState<SellerProfile | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "orders" | "analytics">("overview");
+  const [filterStatus, setFilterStatus] = useState<"all" | Order["status"]>("all");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
     fetchSellerProfile();
+    loadOrders();
   }, []);
 
   const fetchSellerProfile = async () => {
     try {
-      const response = await fetch('/api/seller/me');
-      
+      const response = await fetch("/api/seller/me");
+
       if (response.status === 401) {
-        router.push('/sign-in');
+        router.push("/sign-in");
         return;
       }
 
       if (!response.ok) {
-        throw new Error('Failed to load seller profile');
+        throw new Error("Failed to load seller profile");
       }
 
       const data = await response.json();
       setSeller(data.data?.seller || null);
     } catch (err) {
-      console.error('Error fetching seller profile:', err);
-      setError('Failed to load seller dashboard');
+      console.error("Error fetching seller profile:", err);
+      setError("Failed to load seller dashboard");
     } finally {
       setLoading(false);
     }

@@ -14,12 +14,29 @@ interface QuickPayState {
   city: string;
 }
 
+interface FilterState {
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  minRating: number;
+  inStockOnly: boolean;
+}
+
 export default function ShoppingMinimalPage() {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<ProductListing[]>([]);
   const [loading, setLoading] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<FilterState>({
+    category: "",
+    minPrice: 0,
+    maxPrice: 1000000,
+    minRating: 0,
+    inStockOnly: false,
+  });
   
   // Quick Pay Modal
   const [quickPay, setQuickPay] = useState<QuickPayState>({
@@ -37,7 +54,19 @@ export default function ShoppingMinimalPage() {
   // Load cart count on mount
   useEffect(() => {
     updateCartCount();
+    loadWishlist();
   }, []);
+
+  const loadWishlist = () => {
+    try {
+      const stored = localStorage.getItem("webubble_wishlist_data") || "[]";
+      const items = JSON.parse(stored);
+      const ids = new Set(items.map((item: ProductListing) => item.id));
+      setWishlistIds(ids);
+    } catch (err) {
+      console.error("Failed to load wishlist", err);
+    }
+  };
 
   const updateCartCount = () => {
     const stored = localStorage.getItem("webubble_cart");
@@ -56,6 +85,54 @@ export default function ShoppingMinimalPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Load filters from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("webubble_filters");
+    if (saved) {
+      try {
+        setFilters(JSON.parse(saved));
+      } catch (err) {
+        console.error("Failed to load filters", err);
+      }
+    }
+  }, []);
+
+  // Save filters to localStorage whenever they change
+  const updateFilters = (newFilters: Partial<FilterState>) => {
+    const updated = { ...filters, ...newFilters };
+    setFilters(updated);
+    localStorage.setItem("webubble_filters", JSON.stringify(updated));
+  };
+
+  // Apply filters to products
+  const applyFilters = (productsToFilter: ProductListing[]): ProductListing[] => {
+    return productsToFilter.filter((product) => {
+      // Category filter
+      if (filters.category && product.category?.toLowerCase() !== filters.category.toLowerCase()) {
+        return false;
+      }
+
+      // Price filter
+      const price = product.price || 0;
+      if (price < filters.minPrice || price > filters.maxPrice) {
+        return false;
+      }
+
+      // Rating filter
+      const rating = product.rating || 0;
+      if (rating < filters.minRating) {
+        return false;
+      }
+
+      // Stock filter
+      if (filters.inStockOnly && product.stock === 0) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const term = query.trim();
@@ -71,10 +148,11 @@ export default function ShoppingMinimalPage() {
       
       const data = await response.json();
       const validProducts = Array.isArray(data) ? data : data.results || [];
-      setProducts(validProducts.filter(isProductListing));
+      const filtered = applyFilters(validProducts.filter(isProductListing));
+      setProducts(filtered);
       
-      if (validProducts.length === 0) {
-        showToast("No products found", "error");
+      if (filtered.length === 0) {
+        showToast("No products match your filters", "error");
       }
     } catch (err) {
       console.error("Search error:", err);
@@ -189,6 +267,34 @@ export default function ShoppingMinimalPage() {
     }
   };
 
+  const toggleWishlist = (product: ProductListing) => {
+    try {
+      const stored = localStorage.getItem("webubble_wishlist_data") || "[]";
+      let items = JSON.parse(stored);
+      
+      const isInWishlist = wishlistIds.has(product.id);
+      
+      if (isInWishlist) {
+        items = items.filter((item: ProductListing) => item.id !== product.id);
+        setWishlistIds((prev) => {
+          const updated = new Set(prev);
+          updated.delete(product.id);
+          return updated;
+        });
+        showToast(`Removed from wishlist`, "success");
+      } else {
+        items.push(product);
+        setWishlistIds((prev) => new Set([...prev, product.id]));
+        showToast(`Added to wishlist`, "success");
+      }
+      
+      localStorage.setItem("webubble_wishlist_data", JSON.stringify(items));
+    } catch (err) {
+      console.error("Wishlist error:", err);
+      showToast("Failed to update wishlist", "error");
+    }
+  };
+
   return (
     <div className="wb-shopping-minimal">
       {/* Toast Notification */}
@@ -202,9 +308,108 @@ export default function ShoppingMinimalPage() {
       <header className="wb-shopping-mini-header">
         <h1>🛍️ Shop</h1>
         <div className="wb-header-right">
-          <span className="wb-cart-counter">{cartCount}</span>
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className="wb-filter-toggle"
+            title="Toggle filters"
+          >
+            🔽 Filters
+          </button>
+          <a href="/wishlist" className="wb-wishlist-link" title="View wishlist">
+            ❤️ Wishlist
+          </a>
+          <a href="/shopping" className="wb-cart-link" title="View cart">
+            🛒 Cart ({cartCount})
+          </a>
         </div>
       </header>
+
+      {/* Filter Panel - Collapsible */}
+      {showFilters && (
+        <section className="wb-filter-panel">
+          <div className="wb-filter-group">
+            <label className="wb-filter-label">Category</label>
+            <select
+              value={filters.category}
+              onChange={(e) => updateFilters({ category: e.target.value })}
+              className="wb-filter-select"
+            >
+              <option value="">All categories</option>
+              <option value="electronics">Electronics</option>
+              <option value="food">Food & Drinks</option>
+              <option value="fashion">Fashion & Clothing</option>
+              <option value="home">Home & Garden</option>
+              <option value="books">Books & Media</option>
+              <option value="health">Health & Beauty</option>
+              <option value="sports">Sports & Outdoors</option>
+            </select>
+          </div>
+
+          <div className="wb-filter-group">
+            <label className="wb-filter-label">
+              Price: ₦{filters.minPrice.toLocaleString()} - ₦{filters.maxPrice.toLocaleString()}
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="500000"
+              value={filters.minPrice}
+              onChange={(e) => updateFilters({ minPrice: parseInt(e.target.value) })}
+              className="wb-filter-range"
+            />
+            <input
+              type="range"
+              min="0"
+              max="500000"
+              value={filters.maxPrice}
+              onChange={(e) => updateFilters({ maxPrice: parseInt(e.target.value) })}
+              className="wb-filter-range"
+            />
+          </div>
+
+          <div className="wb-filter-group">
+            <label className="wb-filter-label">Minimum Rating</label>
+            <div className="wb-rating-filter">
+              {[0, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  onClick={() => updateFilters({ minRating: rating })}
+                  className={`wb-rating-btn ${filters.minRating === rating ? "active" : ""}`}
+                >
+                  {rating === 0 ? "All" : `${rating}★+`}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="wb-filter-group">
+            <label className="wb-filter-checkbox">
+              <input
+                type="checkbox"
+                checked={filters.inStockOnly}
+                onChange={(e) => updateFilters({ inStockOnly: e.target.checked })}
+              />
+              In Stock Only
+            </label>
+          </div>
+
+          <button
+            onClick={() => {
+              setFilters({
+                category: "",
+                minPrice: 0,
+                maxPrice: 500000,
+                minRating: 0,
+                inStockOnly: false,
+              });
+              localStorage.removeItem("webubble_filters");
+            }}
+            className="wb-filter-reset"
+          >
+            Reset Filters
+          </button>
+        </section>
+      )}
 
       {/* Search - Sticky at top */}
       <section className="wb-search-sticky">
@@ -241,11 +446,31 @@ export default function ShoppingMinimalPage() {
                   ) : (
                     <div className="wb-img-placeholder">📦</div>
                   )}
+                  
+                  {/* Wishlist Heart Button */}
+                  <button
+                    onClick={() => toggleWishlist(product)}
+                    className={`wb-wishlist-heart ${wishlistIds.has(product.id) ? "active" : ""}`}
+                    title={wishlistIds.has(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                  >
+                    {wishlistIds.has(product.id) ? "❤️" : "🤍"}
+                  </button>
                 </div>
 
                 {/* Info - Minimal text */}
                 <div className="wb-product-mini-info">
                   <h3 className="wb-name-mini">{product.name}</h3>
+                  
+                  {/* Rating */}
+                  {product.rating && (
+                    <div className="wb-mini-rating">
+                      <span className="wb-stars-mini">
+                        {"★".repeat(Math.round(product.rating))}
+                        {"☆".repeat(5 - Math.round(product.rating))}
+                      </span>
+                    </div>
+                  )}
+                  
                   <p className="wb-price-mini">₦{formatProductPrice(product.price)}</p>
                 </div>
 
