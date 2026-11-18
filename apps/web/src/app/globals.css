@@ -2491,13 +2491,46 @@ a.wb-category-card {
 }
 
 .wb-auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--wb-space-4);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.wb-auth-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wb-auth-page > * {
+  position: relative;
+  z-index: 2;
   max-width: 32rem;
-  padding-top: var(--wb-space-8);
+  width: 100%;
 }
 
 .wb-auth-card {
   display: grid;
   gap: var(--wb-space-4);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--wb-radius-lg);
+  padding: var(--wb-space-8);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .wb-auth-card h1,
@@ -2550,6 +2583,39 @@ a.wb-category-card {
 .wb-auth-page a {
   color: var(--wb-color-primary);
   font-weight: var(--wb-font-weight-medium);
+}
+
+@media (max-width: 600px) {
+  .wb-auth-page {
+    padding: var(--wb-space-4);
+    min-height: 100vh;
+  }
+
+  .wb-auth-card {
+    padding: var(--wb-space-6);
+  }
+
+  .wb-auth-card h1 {
+    font-size: var(--wb-font-size-lg);
+  }
+
+  .wb-auth-form {
+    gap: var(--wb-space-3);
+  }
+}
+
+@media (max-width: 1000px) {
+  .wb-auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wb-auth-card {
+    width: 100%;
+    max-width: 32rem;
+  }
 }
 
 .wb-pwa-install {
