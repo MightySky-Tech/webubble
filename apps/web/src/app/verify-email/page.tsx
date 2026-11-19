@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Alert, Button, TextField } from "@webubble/ui";
 import { resendOtp, verifyOtp } from "@/lib/auth";
+import AuthBrand from "../AuthBrand";
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function VerifyEmailPage() {
   return (
     <main className="wb-auth-page">
       <section className="wb-auth-card" aria-labelledby="verify-title">
+        <AuthBrand />
         <p className="wb-auth-eyebrow">Email verification</p>
         <h1 id="verify-title">Check your inbox</h1>
         <p>Enter the six-digit code sent to your email address. It expires in 10 minutes.</p>

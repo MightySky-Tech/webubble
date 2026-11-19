@@ -2491,14 +2491,18 @@ a.wb-category-card {
 }
 
 .wb-auth-page {
+  /* Cancels the global `main` column so the gradient fills the whole viewport. */
+  max-width: none;
+  margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--wb-space-4);
+  color: #fff;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
-  overflow: hidden;
 }
 
 .wb-auth-page::before {
@@ -2525,7 +2529,9 @@ a.wb-category-card {
 .wb-auth-card {
   display: grid;
   gap: var(--wb-space-4);
-  background: rgba(255, 255, 255, 0.95);
+  color: var(--wb-color-text);
+  background: var(--wb-color-bg);
+  background: color-mix(in srgb, var(--wb-color-bg) 95%, transparent);
   backdrop-filter: blur(10px);
   border-radius: var(--wb-radius-lg);
   padding: var(--wb-space-8);
@@ -2540,6 +2546,27 @@ a.wb-category-card {
 
 .wb-auth-card h1 {
   line-height: var(--wb-line-height-tight);
+}
+
+.wb-auth-page .wb-auth-brand {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wb-space-3);
+  color: var(--wb-color-text);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.wb-auth-brand__image {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(17, 18, 19, 0.12);
+  border-radius: 14px;
+  object-fit: cover;
 }
 
 .wb-auth-eyebrow {
@@ -2570,6 +2597,11 @@ a.wb-category-card {
   gap: var(--wb-space-2);
 }
 
+/* TextField keeps its text and required marker inline in one label; the grid rule above would stack them. */
+.wb-auth-form .wb-field__label {
+  display: block;
+}
+
 .wb-auth-footer {
   font-size: var(--wb-font-size-sm);
 }
@@ -2586,11 +2618,6 @@ a.wb-category-card {
 }
 
 @media (max-width: 600px) {
-  .wb-auth-page {
-    padding: var(--wb-space-4);
-    min-height: 100vh;
-  }
-
   .wb-auth-card {
     padding: var(--wb-space-6);
   }
@@ -2601,20 +2628,6 @@ a.wb-category-card {
 
   .wb-auth-form {
     gap: var(--wb-space-3);
-  }
-}
-
-@media (max-width: 1000px) {
-  .wb-auth-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .wb-auth-card {
-    width: 100%;
-    max-width: 32rem;
   }
 }
 
@@ -2692,12 +2705,6 @@ a.wb-category-card {
 
 .wb-pwa-install__error {
   color: #9d3026;
-}
-
-@media (max-width: 480px) {
-  .wb-auth-page {
-    padding-top: var(--wb-space-6);
-  }
 }
 
 @media (min-width: 761px) and (max-width: 900px) {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Alert, Button, TextField } from "@webubble/ui";
 import { requestOtp } from "@/lib/auth";
+import AuthBrand from "../AuthBrand";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function SignUpPage() {
   return (
     <main className="wb-auth-page">
       <section className="wb-auth-card" aria-labelledby="signup-title">
+        <AuthBrand />
         <p className="wb-auth-eyebrow">Webubble account</p>
         <h1 id="signup-title">Create your account</h1>
         <p>Use your email to receive a secure, one-time verification code.</p>
