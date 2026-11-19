@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -9,7 +10,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUpTraits()
     {
         if ($this->app && in_array(
-            \Illuminate\Foundation\Testing\RefreshDatabase::class,
+            RefreshDatabase::class,
             class_uses_recursive(static::class),
             true,
         )) {

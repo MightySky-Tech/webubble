@@ -41,6 +41,7 @@ class AdminSellerController extends Controller
     public function show(SellerProfile $seller): JsonResponse
     {
         $seller->load('user');
+
         return response()->json(['data' => $seller]);
     }
 
