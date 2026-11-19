@@ -279,6 +279,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/catalogue/sellers/{sellerProfile}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPublicSellerStorefront"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/catalogue/products/{product}/media/{productMedia}": {
         parameters: {
             query?: never;
@@ -616,10 +632,28 @@ export interface components {
             price_minor: number;
             /** @constant */
             currency: "NGN";
+            /** @description Public seller storefront identifier. */
+            seller_id: number;
             seller_name: string;
             seller_cac_verified: boolean;
             variants: components["schemas"]["ProductVariant"][];
             media: components["schemas"]["ProductMedia"][];
+        };
+        SellerStorefront: {
+            data: {
+                seller: {
+                    id: number;
+                    name: string;
+                    cac_verified: boolean;
+                };
+                products: components["schemas"]["ProductListing"][];
+            };
+            meta: {
+                current_page: number;
+                last_page: number;
+                per_page: number;
+                total: number;
+            };
         };
         SellerProduct: components["schemas"]["ProductListing"] & {
             /** @enum {string} */
@@ -1412,6 +1446,37 @@ export interface operations {
                 };
             };
             /** @description The listing is not published. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getPublicSellerStorefront: {
+        parameters: {
+            query?: {
+                page?: number;
+            };
+            header?: never;
+            path: {
+                sellerProfile: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public seller name, CAC verification state and approved listings. No private contact details. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SellerStorefront"];
+                };
+            };
+            /** @description The seller is not approved. */
             404: {
                 headers: {
                     [name: string]: unknown;
