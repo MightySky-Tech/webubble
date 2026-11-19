@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Review {
@@ -13,15 +13,17 @@ interface Review {
   verified?: boolean;
 }
 
+type SortOption = "recent" | "rating-high" | "rating-low";
+
 export default function ProductReviewsPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const { productId } = params;
+  const { productId } = use(params);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<"recent" | "rating-high" | "rating-low">("recent");
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -237,7 +239,7 @@ export default function ProductReviewsPage({
           <select
             id="sort"
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
             className="wb-sort-select"
           >
             <option value="recent">Most Recent</option>

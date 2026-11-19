@@ -130,7 +130,7 @@ export default function SellerOnboardingWizard({ onComplete }: Props) {
             <p className="wb-wizard-kicker">Ready to sell?</p>
             <h1 id="role-title">Choose your path</h1>
             <p className="wb-wizard-description">
-              Tell us what type of seller you are. Don't worry—you can change this later if needed.
+              Tell us what type of seller you are. Don&apos;t worry—you can change this later if needed.
             </p>
 
             <div className="wb-wizard-options">
@@ -141,8 +141,8 @@ export default function SellerOnboardingWizard({ onComplete }: Props) {
               >
                 <span className="wb-wizard-option__icon">🏪</span>
                 <div className="wb-wizard-option__content">
-                  <strong>I'm an individual or informal seller</strong>
-                  <p>I don't have a CAC registration. I sell goods or services locally.</p>
+                  <strong>I&apos;m an individual or informal seller</strong>
+                  <p>I don&apos;t have a CAC registration. I sell goods or services locally.</p>
                 </div>
                 <span className="wb-wizard-option__arrow">→</span>
               </button>
@@ -178,9 +178,9 @@ export default function SellerOnboardingWizard({ onComplete }: Props) {
             </button>
 
             <p className="wb-wizard-kicker">Your contact</p>
-            <h1 id="phone-title">What's your phone number?</h1>
+            <h1 id="phone-title">What&apos;s your phone number?</h1>
             <p className="wb-wizard-description">
-              We'll use this to contact you about orders and payouts. No one else can see it.
+              We&apos;ll use this to contact you about orders and payouts. No one else can see it.
             </p>
 
             {error && <Alert tone="error">{error}</Alert>}
@@ -197,7 +197,7 @@ export default function SellerOnboardingWizard({ onComplete }: Props) {
                 autoFocus
               />
               <p className="wb-wizard-note">
-                ℹ️ We'll send a code to confirm it's really you. Takes 30 seconds.
+                ℹ️ We&apos;ll send a code to confirm it&apos;s really you. Takes 30 seconds.
               </p>
               <Button type="submit" fullWidth loading={loading} loadingLabel="Verifying phone…">
                 Send verification code
@@ -251,7 +251,7 @@ export default function SellerOnboardingWizard({ onComplete }: Props) {
                 {state.locationLabel && (
                   <p className="wb-wizard-location__current">📍 {state.locationLabel}</p>
                 )}
-                {geoError && <Alert tone="warning">{geoError}</Alert>}
+                {geoError && <Alert tone="info">{geoError}</Alert>}
                 <Button
                   type="button"
                   onClick={requestGeolocation}

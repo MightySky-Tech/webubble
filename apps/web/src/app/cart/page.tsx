@@ -54,7 +54,7 @@ export default function CartPage() {
       if (response.ok) {
         const { data } = await response.json();
         const enrichedItems = items.map((item: CartItem) => {
-          const product = data.find((p: any) => p.id === item.product_id);
+          const product = data.find((p: { id: number }) => p.id === item.product_id);
           return product ? { ...item, ...product } : item;
         });
         recalculateCart(enrichedItems);

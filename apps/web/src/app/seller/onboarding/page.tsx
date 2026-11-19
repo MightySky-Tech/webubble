@@ -77,12 +77,12 @@ export default function SellerOnboardingPage() {
           </p>
           {profile.seller_type === "informal" && (
             <p>
-              You're approved to sell! Your shop is live. Head to your dashboard to manage products and orders.
+              You&apos;re approved to sell! Your shop is live. Head to your dashboard to manage products and orders.
             </p>
           )}
           {profile.seller_type === "registered_business" && (
             <p>
-              Your business registration is under review. We'll notify you when it's approved.
+              Your business registration is under review. We&apos;ll notify you when it&apos;s approved.
             </p>
           )}
           {profile.review_notes && (

@@ -12,7 +12,7 @@ export default function SellerOrdersPage() {
 
       <div className="wb-empty-state">
         <p>
-          You don't have any orders yet.
+          You don&apos;t have any orders yet.
           <br />
           Once customers start buying your products, they will appear here.
         </p>

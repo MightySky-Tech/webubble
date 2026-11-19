@@ -315,7 +315,7 @@ export default function QuickBuyPage() {
             <div className="wb-quick-buy__step">
               <h2 className="wb-quick-buy__step-title">Review Order</h2>
               <p className="wb-quick-buy__step-description">
-                You're about to order {quantity}x {product.name}
+                You&apos;re about to order {quantity}x {product.name}
               </p>
               {isOutOfStock && (
                 <div className="wb-quick-buy__warning">Out of stock. Please select another option.</div>

@@ -266,7 +266,7 @@ export default function QuickSellerSetupPage() {
         {step === "contact-info" && (
           <div className="wb-seller-setup__step">
             <h2>How to Reach You</h2>
-            <p className="wb-seller-setup__description">We'll use this to verify your account and send updates</p>
+            <p className="wb-seller-setup__description">We&apos;ll use this to verify your account and send updates</p>
 
             {error && <div className="wb-error-message">{error}</div>}
 

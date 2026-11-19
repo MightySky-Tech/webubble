@@ -14,7 +14,7 @@ export default function SellerSettingsPage() {
         <p>
           Settings and preferences will be available soon.
           <br />
-          You'll be able to update your business information, payment methods, and preferences here.
+          You&apos;ll be able to update your business information, payment methods, and preferences here.
         </p>
       </div>
     </div>
