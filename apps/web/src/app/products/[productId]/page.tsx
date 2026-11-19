@@ -13,30 +13,13 @@ import {
   productError,
 } from "@webubble/api-client/products";
 import GlobalProductSearch from "../../GlobalProductSearch";
-
-interface CartItem {
-  id: string;
-  product_id: number;
-  variant_id: number;
-  variant_label: string;
-  product_name: string;
-  seller_name: string;
-  price_minor: number;
-  quantity: number;
-  stock_available: number;
-}
+import { addToCart } from "@/lib/cart";
 
 function AddToCartForm({ product, selectedVariantId }: { product: ProductListing; selectedVariantId: number | null }) {
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  const getCartFromStorage = (): CartItem[] => {
-    if (typeof window === "undefined") return [];
-    const stored = localStorage.getItem("webubble_cart");
-    return stored ? JSON.parse(stored) : [];
-  };
 
   const selectedVariant = product.variants.find((v) => v.id === selectedVariantId);
   const isOutOfStock = !selectedVariant?.is_available;
@@ -48,27 +31,7 @@ function AddToCartForm({ product, selectedVariantId }: { product: ProductListing
       setLoading(true);
       setMessage(null);
 
-      const cartItems = getCartFromStorage();
-      const cartItemId = `${product.id}-${selectedVariant.id}`;
-      const existingItem = cartItems.find((item) => item.id === cartItemId);
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        cartItems.push({
-          id: cartItemId,
-          product_id: product.id,
-          variant_id: selectedVariant.id,
-          variant_label: selectedVariant.label,
-          product_name: product.name,
-          seller_name: product.seller_name,
-          price_minor: product.price_minor,
-          quantity,
-          stock_available: selectedVariant.stock_available || 0,
-        });
-      }
-
-      localStorage.setItem("webubble_cart", JSON.stringify(cartItems));
+      addToCart(window.localStorage, product, selectedVariant, quantity);
       setMessage({ type: "success", text: `${product.name} added to cart!` });
       setQuantity(1);
 

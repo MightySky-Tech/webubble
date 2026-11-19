@@ -32,12 +32,12 @@ interface OrderRequest {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const cookieStore = cookies();
-    const token = cookieStore.get('webubble_auth_token')?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get('webubble_access_token')?.value;
 
     if (!token) {
       return NextResponse.json(
-        { error: 'Not authenticated' },
+        { message: 'Not authenticated' },
         { status: 401 }
       );
     }
@@ -47,20 +47,20 @@ export async function POST(request: NextRequest) {
     // Validate request
     if (!body.cart_items || !Array.isArray(body.cart_items) || body.cart_items.length === 0) {
       return NextResponse.json(
-        { error: 'Cart cannot be empty' },
+        { message: 'Cart cannot be empty' },
         { status: 400 }
       );
     }
 
     if (!body.shipping_address) {
       return NextResponse.json(
-        { error: 'Shipping address required' },
+        { message: 'Shipping address required' },
         { status: 400 }
       );
     }
 
     // Forward order creation to API
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://webubble-api:8100';
+    const apiUrl = process.env.WEBUBBLE_API_URL ?? 'http://localhost:8100';
 
     const response = await fetch(
       `${apiUrl}/api/v1/orders`,
@@ -83,6 +83,14 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    if (response.status === 404) {
+      // The API has no orders endpoint yet; don't expose its route message to buyers.
+      return NextResponse.json(
+        { message: 'Online ordering is not available yet. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
     if (!response.ok) {
       const error = await response.json();
       return NextResponse.json(
@@ -99,7 +107,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Order creation error:', error);
     return NextResponse.json(
-      { error: 'Failed to create order' },
+      { message: 'Failed to create order' },
       { status: 500 }
     );
   }

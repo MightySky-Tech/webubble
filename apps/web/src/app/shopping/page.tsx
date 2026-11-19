@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { formatProductPrice, isProductListing, isRecord, productError, type ProductListing } from "@webubble/api-client/products";
+import { formatProductPrice, isProductListing, isRecord, productError, type ProductListing, type ProductVariant } from "@webubble/api-client/products";
+import { addToCart, readCart } from "@/lib/cart";
 import { recordSearch } from "@/lib/searchHistory";
 
 interface CartNotification {
@@ -34,20 +35,9 @@ export default function ShoppingPage() {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem("webubble_cart");
-    if (stored) {
-      try {
-        const items = JSON.parse(stored);
-        const itemMap = new Map<string, number>();
-        items.forEach((item: any) => {
-          itemMap.set(item.id, item.quantity);
-        });
-        setCartItems(itemMap);
-        setCartCount(items.length);
-      } catch (err) {
-        console.error("Failed to load cart", err);
-      }
-    }
+    const items = readCart(window.localStorage);
+    setCartItems(new Map(items.map((item) => [item.id, item.quantity])));
+    setCartCount(items.length);
   }, []);
 
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
@@ -63,7 +53,7 @@ export default function ShoppingPage() {
       setError("");
       setProducts([]);
 
-      recordSearch(term);
+      recordSearch(term, window.localStorage);
 
       const params = new URLSearchParams({
         q: term,
@@ -103,39 +93,16 @@ export default function ShoppingPage() {
     }
   };
 
-  const handleAddToCart = (product: ProductListing, variant: any, quantity: number = 1) => {
+  const handleAddToCart = (product: ProductListing, variant: ProductVariant | undefined, quantity = 1) => {
     if (!variant || !variant.is_available) {
       return;
     }
 
     try {
-      const cartItemId = `${product.id}-${variant.id}`;
-      const stored = localStorage.getItem("webubble_cart");
-      let items = stored ? JSON.parse(stored) : [];
-
-      const existingIndex = items.findIndex((item: any) => item.id === cartItemId);
-      if (existingIndex >= 0) {
-        items[existingIndex].quantity += quantity;
-      } else {
-        items.push({
-          id: cartItemId,
-          product_id: product.id,
-          variant_id: variant.id,
-          variant_label: variant.label,
-          product_name: product.name,
-          seller_name: product.seller_name,
-          price_minor: product.price_minor,
-          quantity,
-          stock_available: variant.stock_available || 0,
-        });
-      }
-
-      localStorage.setItem("webubble_cart", JSON.stringify(items));
+      const items = addToCart(window.localStorage, product, variant, quantity);
 
       // Update local state
-      const newMap = new Map(cartItems);
-      newMap.set(cartItemId, (newMap.get(cartItemId) || 0) + quantity);
-      setCartItems(newMap);
+      setCartItems(new Map(items.map((item) => [item.id, item.quantity])));
       setCartCount(items.length);
 
       // Show notification
@@ -197,7 +164,7 @@ export default function ShoppingPage() {
           {products.length > 0 && (
             <div className="wb-shopping-results-header">
               <h2>Found {products.length} products</h2>
-              <p className="wb-shopping-results-hint">Click "Add to Cart" and keep shopping</p>
+              <p className="wb-shopping-results-hint">Click &quot;Add to Cart&quot; and keep shopping</p>
             </div>
           )}
 

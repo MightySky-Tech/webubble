@@ -1,43 +1,34 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatProductPrice, type ProductListing } from "@webubble/api-client/products";
-import Link from "next/link";
+import { addToCart, firstAvailableVariant, productImageUrl } from "@/lib/cart";
+import { getAverageRating } from "@/lib/reviews";
+import { readWishlist, removeFromWishlist } from "@/lib/wishlist";
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<ProductListing[]>([]);
+  const [ratings, setRatings] = useState<Map<number, number | null>>(new Map());
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
-    loadWishlist();
+    const items = readWishlist(window.localStorage);
+    setWishlist(items);
+    setRatings(new Map(items.map((product) => [product.id, getAverageRating(window.localStorage, product.id)])));
+    setLoading(false);
   }, []);
 
-  const loadWishlist = () => {
-    try {
-      const stored = localStorage.getItem("webubble_wishlist") || "[]";
-      const ids = JSON.parse(stored);
-      
-      // In a real app, fetch product details from API
-      // For now, we'll store the full product data with the ID
-      const wishlistData = localStorage.getItem("webubble_wishlist_data") || "[]";
-      const products = JSON.parse(wishlistData);
-      setWishlist(products);
-    } catch (err) {
-      console.error("Failed to load wishlist", err);
-    } finally {
-      setLoading(false);
-    }
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
   };
 
-  const removeFromWishlist = (productId: string) => {
+  const handleRemove = (productId: number) => {
     try {
-      const stored = localStorage.getItem("webubble_wishlist_data") || "[]";
-      const products = JSON.parse(stored);
-      const updated = products.filter((p: ProductListing) => p.id !== productId);
-      localStorage.setItem("webubble_wishlist_data", JSON.stringify(updated));
-      setWishlist(updated);
+      setWishlist(removeFromWishlist(window.localStorage, productId));
       showToast("Removed from wishlist", "success");
     } catch (err) {
       console.error("Failed to remove from wishlist", err);
@@ -45,35 +36,20 @@ export default function WishlistPage() {
     }
   };
 
-  const addToCart = (product: ProductListing) => {
+  const handleAddToCart = (product: ProductListing) => {
+    const variant = firstAvailableVariant(product);
+    if (!variant) {
+      showToast(`"${product.name}" is out of stock`, "error");
+      return;
+    }
+
     try {
-      const stored = localStorage.getItem("webubble_cart") || "[]";
-      const items = JSON.parse(stored);
-      
-      const existingItem = items.find((item: any) => item.id === product.id);
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        items.push({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity: 1,
-        });
-      }
-      
-      localStorage.setItem("webubble_cart", JSON.stringify(items));
+      addToCart(window.localStorage, product, variant);
       showToast(`"${product.name}" added to cart`, "success");
     } catch (err) {
       console.error("Cart error:", err);
       showToast("Failed to add to cart", "error");
     }
-  };
-
-  const showToast = (message: string, type: "success" | "error") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
   };
 
   if (loading) {
@@ -88,7 +64,7 @@ export default function WishlistPage() {
     <div className="wb-wishlist-page">
       {/* Toast Notification */}
       {toast && (
-        <div className={`wb-toast wb-toast-${toast.type}`}>
+        <div className={`wb-toast wb-toast-${toast.type}`} role="status">
           {toast.type === "success" ? "✓" : "✕"} {toast.message}
         </div>
       )}
@@ -120,68 +96,68 @@ export default function WishlistPage() {
         <>
           {/* Wishlist Grid */}
           <section className="wb-wishlist-grid">
-            {wishlist.map((product) => (
-              <div key={product.id} className="wb-wishlist-card">
-                {/* Image */}
-                <div className="wb-wishlist-image-container">
-                  {product.image ? (
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="wb-wishlist-image"
-                      sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="wb-wishlist-image-placeholder">📦</div>
-                  )}
-                  <button
-                    onClick={() => removeFromWishlist(product.id)}
-                    className="wb-wishlist-remove-btn"
-                    title="Remove from wishlist"
-                  >
-                    ✕
-                  </button>
-                </div>
+            {wishlist.map((product) => {
+              const imageUrl = productImageUrl(product);
+              const rating = ratings.get(product.id) ?? null;
 
-                {/* Product Info */}
-                <div className="wb-wishlist-info">
-                  <h3 className="wb-wishlist-name">{product.name}</h3>
-                  
-                  {/* Rating */}
-                  {product.rating && (
-                    <div className="wb-wishlist-rating">
-                      <span className="wb-stars">
-                        {"★".repeat(Math.round(product.rating))}
-                        {"☆".repeat(5 - Math.round(product.rating))}
-                      </span>
-                      <span className="wb-rating-value">({product.rating})</span>
-                    </div>
-                  )}
-
-                  {/* Price */}
-                  <div className="wb-wishlist-price">
-                    <strong>{formatProductPrice(product.price || 0)}</strong>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="wb-wishlist-actions">
+              return (
+                <div key={product.id} className="wb-wishlist-card">
+                  {/* Image */}
+                  <div className="wb-wishlist-image-container">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={product.name}
+                        fill
+                        className="wb-wishlist-image"
+                        sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="wb-wishlist-image-placeholder">📦</div>
+                    )}
                     <button
-                      onClick={() => addToCart(product)}
-                      className="wb-wishlist-add-btn"
+                      onClick={() => handleRemove(product.id)}
+                      className="wb-wishlist-remove-btn"
+                      title="Remove from wishlist"
+                      aria-label={`Remove ${product.name} from wishlist`}
                     >
-                      🛒 Add to Cart
+                      ✕
                     </button>
-                    <Link
-                      href={`/products/${product.id}`}
-                      className="wb-wishlist-view-btn"
-                    >
-                      👁️ View
-                    </Link>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="wb-wishlist-info">
+                    <h3 className="wb-wishlist-name">{product.name}</h3>
+
+                    {/* Rating */}
+                    {rating !== null && (
+                      <div className="wb-wishlist-rating">
+                        <span className="wb-stars">
+                          {"★".repeat(Math.round(rating))}
+                          {"☆".repeat(5 - Math.round(rating))}
+                        </span>
+                        <span className="wb-rating-value">({rating})</span>
+                      </div>
+                    )}
+
+                    {/* Price */}
+                    <div className="wb-wishlist-price">
+                      <strong>{formatProductPrice(product.price_minor)}</strong>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="wb-wishlist-actions">
+                      <button onClick={() => handleAddToCart(product)} className="wb-wishlist-add-btn">
+                        🛒 Add to Cart
+                      </button>
+                      <Link href={`/products/${product.id}`} className="wb-wishlist-view-btn">
+                        👁️ View
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </section>
 
           {/* Continue Shopping Footer */}
