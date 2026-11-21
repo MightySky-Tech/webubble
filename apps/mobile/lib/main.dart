@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'design/theme.dart';
+
 /// The API base URL is injected at build time, e.g.
 /// `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8100/api/v1`.
 const apiBaseUrl = String.fromEnvironment(
@@ -16,11 +18,12 @@ class WebubbleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Theme tokens are replaced by the shared design system in WB-002.
     return MaterialApp(
       title: 'Webubble',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
+      theme: wbTheme(Brightness.light),
+      darkTheme: wbTheme(Brightness.dark),
+      themeMode: ThemeMode.system,
       home: const HomeScreen(),
     );
   }

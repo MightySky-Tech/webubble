@@ -1,0 +1,17 @@
+{
+  "name": "@webubble/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/schema.ts",
+    "./products": "./src/products.ts"
+  },
+  "scripts": {
+    "generate": "openapi-typescript ../../apps/api/openapi/openapi.yaml -o src/schema.ts",
+    "build": "pnpm generate"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.8.0"
+  }
+}

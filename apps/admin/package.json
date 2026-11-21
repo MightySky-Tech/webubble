@@ -11,6 +11,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@webubble/ui": "workspace:*",
+    "@webubble/api-client": "workspace:*",
     "next": "15.5.29",
     "react": "19.1.0",
     "react-dom": "19.1.0"

@@ -1,0 +1,38 @@
+{
+  "id": "/",
+  "name": "Webubble",
+  "short_name": "Webubble",
+  "description": "Buy and sell locally on Webubble.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf6",
+  "theme_color": "#315d49",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.jpg",
+      "sizes": "640x640",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/webubble-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/webubble-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/webubble-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

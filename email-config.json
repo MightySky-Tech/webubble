@@ -1,0 +1,8 @@
+{
+    "smtpServer":  "mightyskytech.com",
+    "createdAt":  "2026-11-17T10:03:13.3745317+00:00",
+    "smtpPort":  587,
+    "username":  "enquiries@mightyskytech.com",
+    "encryptedPassword":  "M0nday@12",
+    "emailAddress":  "enquiries@mightyskytech.com"
+}

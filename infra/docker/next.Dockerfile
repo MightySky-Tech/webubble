@@ -8,7 +8,9 @@ FROM base AS build
 ARG APP
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/${APP}/package.json apps/${APP}/
+COPY packages/ui/package.json packages/ui/
 RUN pnpm install --frozen-lockfile --filter "./apps/${APP}..."
+COPY packages packages
 COPY apps/${APP} apps/${APP}
 RUN pnpm --filter "./apps/${APP}" build
 

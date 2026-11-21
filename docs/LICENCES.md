@@ -9,11 +9,18 @@ by the lockfiles (`pnpm-lock.yaml`, `apps/api/composer.lock`, `apps/mobile/pubsp
 | Next.js | web, admin | MIT | |
 | React, React DOM | web, admin | MIT | |
 | TypeScript | web, admin | Apache-2.0 | dev only |
+| openapi-typescript | api-client | MIT | dev only; generates TypeScript contract types |
 | ESLint, eslint-config-next | web, admin | MIT | dev only |
-| Vitest, @vitejs/plugin-react | web, admin | MIT | dev only |
-| Testing Library (react, dom) | web, admin | MIT | dev only |
-| jsdom | web, admin | MIT | dev only |
+| Vitest, @vitejs/plugin-react | web, admin, ui | MIT | dev only |
+| Testing Library (react, dom) | web, admin, ui | MIT | dev only |
+| @testing-library/user-event | ui | MIT | dev only |
+| axe-core | ui | MPL-2.0 | dev only; automated accessibility checks |
+| @eslint/eslintrc | ui | MIT | dev only |
+| @types/react, @types/react-dom | ui | MIT | dev only |
+| jsdom | web, admin, ui | MIT | dev only |
 | Laravel framework and skeleton | api | MIT | |
+| Laravel Sanctum | api | MIT | API bearer tokens |
+| pragmarx/google2fa | api | MIT | Admin authenticator-based TOTP MFA |
 | Laravel Pint | api | MIT | dev only |
 | PHPUnit | api | BSD-3-Clause | dev only |
 | FrankenPHP | api runtime image | MIT | |
