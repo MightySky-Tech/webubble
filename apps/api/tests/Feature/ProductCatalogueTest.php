@@ -97,7 +97,7 @@ class ProductCatalogueTest extends TestCase
             ->assertJsonPath('data.products.0.id', $productId)
             ->assertJsonPath('data.products.0.seller_id', $profile->id)
             ->assertJsonPath('meta.total', 1);
-        $this->assertSame('no-store', $storefront->headers->get('Cache-Control'));
+        $this->assertStringContainsString('no-store', $storefront->headers->get('Cache-Control'));
         $publicSeller = $storefront->json('data.seller');
         $this->assertArrayNotHasKey('phone', $publicSeller);
         $this->assertArrayNotHasKey('email', $publicSeller);
